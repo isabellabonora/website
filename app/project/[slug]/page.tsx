@@ -147,7 +147,7 @@ export default function ProjectPage() {
     overlay.style.setProperty("--ox", ox);
     overlay.style.setProperty("--oy", oy);
     overlay.classList.add("active");
-    setTimeout(() => { window.location.href = href; }, 550);
+    setTimeout(() => { window.location.href = href; }, 680);
   }
 
   const idx = projects.findIndex((p) => p.slug === slug);
@@ -157,7 +157,7 @@ export default function ProjectPage() {
   return (
     <>
       <div id="cur" />
-      <div id="pageTransitionOverlay" />
+      <div id="pageTransitionOverlay" className="no-transition active" />
       <div className="prj-rail"><div className="prj-rail-drop" id="prjRailDrop" /></div>
 
       {/* NAV */}

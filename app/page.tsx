@@ -191,8 +191,8 @@ export default function Home() {
     function drawScene() {
       SMX += (MX - SMX) * .05; SMY += (MY - SMY) * .05;
       octx.clearRect(0, 0, W, H);
-      const cx = W * .5, cy = H * .5;
-      const maxR = Math.min(W, H) * .42;
+      const cx = W * .55, cy = H * .5;
+      const maxR = Math.min(W, H) * .5;
       const dxm = SMX - cx, dym = SMY - cy;
       const mouseAngle = Math.atan2(dym, dxm);
       const mouseDist = Math.min(1, Math.hypot(dxm, dym) / (maxR * 2.2));
@@ -211,9 +211,9 @@ export default function Home() {
           s === 0 ? octx.moveTo(x, y) : octx.lineTo(x, y);
         }
         octx.closePath();
-        const ringA = (1 - r.t) * .35 + .04;
+        const ringA = (1 - r.t) * .5 + .07;
         octx.strokeStyle = `rgba(196,85,58,${ringA})`;
-        octx.lineWidth = 1 + (1 - r.t) * 1.2;
+        octx.lineWidth = 1.2 + (1 - r.t) * 1.4;
         octx.stroke();
       });
 
@@ -362,13 +362,13 @@ export default function Home() {
     overlay.style.setProperty("--ox", ox);
     overlay.style.setProperty("--oy", oy);
     overlay.classList.add("active");
-    setTimeout(() => { window.location.href = href; }, 550);
+    setTimeout(() => { window.location.href = href; }, 680);
   }
 
   return (
     <>
       <div id="cur" />
-      <div id="pageTransitionOverlay" />
+      <div id="pageTransitionOverlay" className="no-transition active" />
       <canvas id="threadCanvas" />
       <div className="home-rail-drop" id="homeRailDrop" />
       <div id="scrollProgress" />
