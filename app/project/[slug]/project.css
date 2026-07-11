@@ -1,0 +1,482 @@
+/* ── PROJECT PAGE ── */
+/* reuses .logo / .nav-r / .cta / .magnetic / .work-image / .work-image-card
+   from globals.css so nav, buttons and images stay consistent with the home page */
+
+.prj-hero,
+.prj-brief,
+.prj-challenge,
+.prj-process,
+.prj-screens,
+.prj-reflection {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* nav itself is styled globally (fixed, translucent, blurred) via the shared
+   `nav{}` rule in globals.css, so it stays identical to the home page header */
+
+/* ── hero ── */
+/* padding-top clears the fixed/translucent nav so hero content (incl. the
+   "Back to home" button) never sits underneath it and stays clickable */
+.prj-hero {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-top: 112px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.prj-hero.show { opacity: 1; transform: translateY(0); }
+.prj-hero-left {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 48px 80px;
+  width: 50%;
+}
+/* same outline-pill treatment as the nav "My CV" button (.cta), for a
+   consistent secondary-action style across the whole site */
+.prj-back {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 9px 18px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: rgba(250, 248, 243, 0.75);
+  backdrop-filter: blur(4px);
+  font-family: "Geist", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--ink);
+  text-decoration: none;
+  --drop: var(--ink);
+}
+.prj-back:hover .btn-label { color: var(--bg); }
+.prj-back-arrow { transition: transform 0.25s; }
+.prj-back:hover .prj-back-arrow { transform: translateX(-4px); }
+.prj-hero-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.prj-sector {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 6px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 20px;
+  font-family: "Geist", sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.prj-title {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 3.4vw, 3rem);
+  line-height: 1.1;
+  color: var(--ink);
+}
+.prj-tags {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.prj-tag {
+  padding: 8px 14px;
+  background: var(--bg);
+  border: 1px solid rgba(24, 24, 24, 0.1);
+  border-radius: 100px;
+  font-family: "Geist", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--accent);
+}
+.prj-quote {
+  font-family: "Geist", sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+.prj-hero-image {
+  width: 50%;
+  padding: 44px 80px 44px 0;
+}
+
+/* ── hero image card: reuses home's rounded, slightly-tilted card look,
+   overriding the .work-row-gated reveal rules so it shows without that ancestor ── */
+.prj-hero-image .work-image-card img {
+  opacity: 1;
+  transform: rotate(var(--tilt)) scale(1);
+  animation: float-tilt 7s ease-in-out 0.6s infinite;
+}
+.prj-hero-image:hover .work-image-card img {
+  animation-play-state: paused;
+  transform: rotate(0deg) scale(1.03);
+}
+
+/* ── shared label ── */
+.prj-label {
+  font-family: "Geist", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ── brief ── */
+.prj-brief {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  padding: 80px;
+  width: 100%;
+}
+.prj-brief-text {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+}
+.prj-brief-body {
+  font-family: "Geist", sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+}
+.prj-brief-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-shrink: 0;
+}
+.prj-brief-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.prj-pill {
+  padding: 6px 12px;
+  background: var(--beige);
+  border-radius: 4px;
+  font-family: "Geist", sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--ink);
+  width: fit-content;
+}
+.prj-brief-stat-value {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+}
+
+/* ── challenge ── */
+.prj-challenge {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding: 80px;
+}
+.prj-challenge-text {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.prj-challenge-heading {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 3vw, 2.75rem);
+}
+.prj-challenge-body {
+  font-family: "Geist", sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  max-width: 900px;
+}
+.prj-stats {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+}
+.prj-stat-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 40px;
+  background: var(--beige);
+  border-radius: 16px;
+}
+.prj-stat-value {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  color: var(--accent);
+}
+.prj-stat-label {
+  font-family: "Geist", sans-serif;
+  font-size: 15px;
+  opacity: 0.8;
+}
+
+/* ── process ── */
+.prj-process {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding: 100px 80px;
+}
+.prj-process-list {
+  display: flex;
+  gap: 40px;
+  width: 100%;
+}
+.prj-process-item {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  position: relative;
+}
+.prj-process-rule {
+  position: absolute;
+  top: 0;
+  right: -20px;
+  bottom: 0;
+  width: 1px;
+  background: var(--muted);
+  opacity: 0.3;
+}
+.prj-process-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.prj-process-num {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 56px;
+  color: var(--muted);
+  opacity: 0.3;
+}
+.prj-process-heading {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+}
+.prj-process-body {
+  font-family: "Geist", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ── screens ── */
+.prj-screens {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding: 80px;
+}
+.prj-screens-image-wrap {
+  width: 100%;
+  max-width: 1040px;
+  padding: 0;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 42px rgba(24, 24, 24, 0.12);
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.prj-reveal.show .prj-screens-image-wrap {
+  opacity: 1;
+  transform: translateY(0);
+}
+.prj-screens-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.prj-screens-points {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 800px;
+}
+.prj-screens-point {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.prj-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex-shrink: 0;
+}
+.prj-screens-point p {
+  font-family: "Geist", sans-serif;
+  font-size: 16px;
+}
+
+/* ── reflection ── */
+.prj-reflection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 100px 80px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+.prj-reflection-mark {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: 72px;
+  color: var(--muted);
+  line-height: 1;
+}
+.prj-reflection-text {
+  font-family: "Outfit", sans-serif;
+  font-size: 26px;
+  line-height: 1.5;
+}
+.prj-reflection-author {
+  font-family: "Geist", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ── nav footer ── */
+.prj-navfooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px 80px;
+  background: var(--ink);
+}
+/* text links match .footer-social a from the global footer: plain white,
+   fading slightly on hover */
+.prj-navfooter-side {
+  font-family: "Geist", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--bg);
+  text-decoration: none;
+  max-width: 30%;
+  transition: opacity 0.25s;
+}
+.prj-navfooter-side:hover { opacity: 0.7; text-decoration: underline; }
+
+/* "Back to home" is the one primary action in this bar, so it gets the
+   same filled accent pill as the global footer CTA (.footer-cta) */
+.prj-navfooter-home {
+  display: inline-flex;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+  font-family: "Geist", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  background: var(--accent);
+  border-radius: 999px;
+  padding: 14px 26px;
+  --drop: var(--accent-light);
+}
+
+/* ── reading rail: home's connective thread, reinterpreted as a drop that
+   travels down the left edge as you scroll ── */
+.prj-rail {
+  position: fixed;
+  top: 0;
+  left: 28px;
+  bottom: 0;
+  width: 1px;
+  background: rgba(var(--ink-rgb), 0.1);
+  z-index: 150;
+  pointer-events: none;
+}
+.prj-rail-drop {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.15);
+  transform: translate(-50%, -50%);
+  transition: top 0.1s linear;
+}
+
+/* ── reveal animation ── */
+.prj-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.prj-reveal.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── responsive ──
+   same breakpoints and padding tiers as the home page (80 / 60 / 20px)
+   so left/right edges stay aligned across every page and screen size */
+@media (max-width: 1440px) {
+  .prj-brief,
+  .prj-challenge,
+  .prj-process,
+  .prj-screens,
+  .prj-navfooter,
+  .prj-hero-left,
+  .prj-hero-image,
+  .prj-reflection {
+    padding-left: 60px;
+    padding-right: 60px;
+  }
+}
+
+@media (max-width: 900px) {
+  .prj-brief,
+  .prj-challenge,
+  .prj-process,
+  .prj-screens,
+  .prj-navfooter,
+  .prj-hero-left,
+  .prj-hero-image,
+  .prj-reflection {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .prj-hero {
+    flex-direction: column;
+    padding-top: 88px;
+  }
+  .prj-hero-left,
+  .prj-hero-image {
+    width: 100%;
+  }
+  .prj-brief {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .prj-stats,
+  .prj-process-list {
+    flex-direction: column;
+    width: 100%;
+  }
+  .prj-process-rule { display: none; }
+  .prj-rail { display: none; }
+}

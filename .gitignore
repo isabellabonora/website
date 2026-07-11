@@ -36,6 +36,13 @@ yarn-error.log*
 # vercel
 .vercel
 
+# raw working/source material, not used by the app (already copied into public/)
+/assets
+/figma-export
+/figma-export2
+portfolio html.html
+IMG_1149.JPG
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
