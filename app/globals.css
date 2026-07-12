@@ -49,6 +49,13 @@ h1,h2,h3,.font-display{font-family:'Outfit',sans-serif;}
   box-shadow:0 0 0 1px rgba(var(--cur-rgb),.18);
   filter:blur(.3px);
 }
+/* touch devices never fire mousemove, so the custom dot just sits frozen
+   at its initial coordinates instead of tracking a finger — hide it and
+   bring back the native cursor there. */
+@media (hover:none), (pointer:coarse){
+  body{cursor:auto;}
+  #cur{display:none;}
+}
 
 /* ── PAGE TRANSITION ──
    a solid drop of accent color grows from the click point to cover the
@@ -57,13 +64,36 @@ h1,h2,h3,.font-display{font-family:'Outfit',sans-serif;}
    so the same drop keeps growing on the next page instead of a new one
    popping up centered, then recedes from that same point to reveal it. */
 #pageTransitionOverlay{
-  position:fixed;inset:0;z-index:400;pointer-events:none;
+  position:fixed;z-index:400;pointer-events:none;
+  top:var(--oy,50%);left:var(--ox,50%);
+  width:300vmax;height:300vmax;
+  margin-top:-150vmax;margin-left:-150vmax;
+  border-radius:50%;
   background:var(--accent);
-  clip-path:circle(0% at var(--ox,50%) var(--oy,50%));
-  transition:clip-path .7s cubic-bezier(.76,0,.24,1);
+  transform:scale(0);
+  transform-origin:center center;
+  will-change:transform;
+  transition:transform .7s cubic-bezier(.76,0,.24,1);
 }
-#pageTransitionOverlay.active{clip-path:circle(150% at var(--ox,50%) var(--oy,50%));}
+#pageTransitionOverlay.active{transform:scale(1);}
 #pageTransitionOverlay.no-transition{transition:none;}
+/* the "ib." wordmark surfaces only once the drop has fully covered the
+   screen, and fades before it recedes — a quick beat of brand presence
+   without adding any extra motion cost (pure opacity, no reflow). it's a
+   sibling fixed to the viewport center, not a child of the click-positioned
+   circle, so it never drifts to wherever the user clicked. */
+.pt-mark{
+  position:fixed;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-family:'Outfit',sans-serif;font-weight:600;
+  font-size:1.5rem;color:var(--bg);
+  z-index:401;pointer-events:none;
+  opacity:0;
+  transition:opacity .25s ease;
+  transition-delay:.35s;
+}
+#pageTransitionOverlay.active + .pt-mark{opacity:1;transition-delay:.4s;}
+#pageTransitionOverlay.no-transition + .pt-mark{transition:none;}
 
 /* ── MAGNETIC HOVER ── */
 .magnetic{transition:transform .35s cubic-bezier(.16,1,.3,1);display:inline-block;}
@@ -597,7 +627,7 @@ canvas#natureCanvas{
   .stats-grid{grid-template-columns:1fr 1fr;gap:28px 20px;}
 
   #hero{
-    flex-direction:column;height:auto;min-height:100vh;max-height:none;
+    flex-direction:column;align-items:stretch;height:auto;min-height:100vh;max-height:none;
     padding:0 20px 40px;gap:28px;
   }
   .hero-left{padding:0;}

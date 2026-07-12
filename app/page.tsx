@@ -369,6 +369,7 @@ export default function Home() {
     <>
       <div id="cur" />
       <div id="pageTransitionOverlay" className="no-transition active" />
+      <span className="pt-mark">ib.</span>
       <canvas id="threadCanvas" />
       <div className="home-rail-drop" id="homeRailDrop" />
       <div id="scrollProgress" />
