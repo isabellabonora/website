@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { useParams, notFound } from "next/navigation";
+import { useParams, useRouter, notFound } from "next/navigation";
 import { getProject, projects } from "../data";
 import Link from "next/link";
 
@@ -8,6 +8,7 @@ const heroTilt = -3;
 
 export default function ProjectPage() {
   const { slug } = useParams<{ slug: string }>();
+  const router = useRouter();
   const project = getProject(slug);
   if (!project) notFound();
 
@@ -140,14 +141,14 @@ export default function ProjectPage() {
   function goTo(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
     e.preventDefault();
     const overlay = document.getElementById("pageTransitionOverlay");
-    if (!overlay) { window.location.href = href; return; }
+    if (!overlay) { router.push(href); return; }
     const ox = e.clientX + "px", oy = e.clientY + "px";
     sessionStorage.setItem("pt-ox", ox);
     sessionStorage.setItem("pt-oy", oy);
     overlay.style.setProperty("--ox", ox);
     overlay.style.setProperty("--oy", oy);
     overlay.classList.add("active");
-    setTimeout(() => { window.location.href = href; }, 680);
+    setTimeout(() => { router.push(href); }, 680);
   }
 
   const idx = projects.findIndex((p) => p.slug === slug);
@@ -165,7 +166,7 @@ export default function ProjectPage() {
       <nav id="nav" className="prj-navbar">
         <a href="/" className="logo" onClick={(e) => goTo(e, "/")}>ib.</a>
         <ul className="nav-r">
-          <li><a href="/#work" onClick={(e) => goTo(e, "/#work")}>Work</a></li>
+          <li><a href="/work" onClick={(e) => goTo(e, "/work")}>Work</a></li>
           <li><a href="/#about" onClick={(e) => goTo(e, "/#about")}>About</a></li>
           <li><a href="https://drive.google.com/file/d/1BTYYnIWpKvz0lza_J3MkC6NBpez5lSQr/view" target="_blank" className="cta drop-btn magnetic"><span className="btn-label">My CV</span></a></li>
         </ul>
@@ -174,8 +175,8 @@ export default function ProjectPage() {
       {/* HERO */}
       <section className="prj-hero">
         <div className="prj-hero-left">
-          <a href="/#work" className="prj-back drop-btn magnetic" onClick={(e) => goTo(e, "/#work")}>
-            <span className="btn-label"><span className="prj-back-arrow">←</span> Back to home</span>
+          <a href="/work" className="prj-back drop-btn magnetic" onClick={(e) => goTo(e, "/work")}>
+            <span className="btn-label"><span className="prj-back-arrow">←</span> Back to Work</span>
           </a>
           <div className="prj-hero-copy">
             <span className="prj-sector">{project.sector}</span>
@@ -271,13 +272,13 @@ export default function ProjectPage() {
 
       {/* NAV FOOTER */}
       <div className="prj-navfooter">
-        <Link href={`/project/${prevProject.slug}`} className="prj-navfooter-side magnetic" onClick={(e) => goTo(e, `/project/${prevProject.slug}`)}>
+        <Link href={`/work/${prevProject.slug}`} className="prj-navfooter-side magnetic" onClick={(e) => goTo(e, `/work/${prevProject.slug}`)}>
           ← {prevProject.title.split(" ").slice(0, 3).join(" ")}
         </Link>
-        <Link href="/#work" className="prj-navfooter-home drop-btn magnetic" onClick={(e) => goTo(e, "/#work")}>
-          <span className="btn-label">Back to home</span>
+        <Link href="/work" className="prj-navfooter-home drop-btn magnetic" onClick={(e) => goTo(e, "/work")}>
+          <span className="btn-label">Back to Work</span>
         </Link>
-        <Link href={`/project/${nextProject.slug}`} className="prj-navfooter-side magnetic" onClick={(e) => goTo(e, `/project/${nextProject.slug}`)}>
+        <Link href={`/work/${nextProject.slug}`} className="prj-navfooter-side magnetic" onClick={(e) => goTo(e, `/work/${nextProject.slug}`)}>
           {nextProject.title.split(" ").slice(0, 3).join(" ")} →
         </Link>
       </div>

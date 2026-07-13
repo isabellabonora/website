@@ -5,6 +5,7 @@ export type Project = {
   title: string;
   tags: string[];
   heroQuote: string;
+  teaser?: string;
   heroImage: string;
   brief: {
     text: string;
@@ -26,13 +27,56 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "warehouse-workflow-manager",
+    slug: "narrative-landing-page",
     num: "01",
+    sector: "AI SaaS · Landing Page",
+    title: "Designing a landing page that doesn't tell a story. It is one",
+    tags: ["Product Designer", "Desktop + Mobile", "Brand & Conversion"],
+    heroQuote: "Complete creative freedom. A wow effect. 48 hours. And one instruction hidden in the brief: build the page around this story.",
+    teaser: "Total creative freedom, one hidden instruction, 48 hours.",
+    heroImage: "/work/landing-page-large.png",
+    brief: {
+      text: "An AI-native SaaS startup was repositioning: born as the internal software of a short-term rental operator, it was becoming a standalone product for B2C brands. One system unifying every comment, DM, call and email, with AI agents handling conversations end to end. They needed a landing page for the new positioning. The brief gave total creative freedom, asked for a \"wow effect\", and pointed at one hero example: a TikTok comment that becomes a paying customer, automatically.",
+      tags: ["Narrative design", "Conversion", "AI-assisted workflow"],
+      stat: "48h from brief to delivery",
+    },
+    challenge: {
+      heading: "Total freedom is a trap.",
+      text: "With no constraints, most landing pages converge on the same safe layout: headline, three benefits, feature grid, CTA. Correct, and forgettable. But the brief contained one line almost everyone would treat as content instead of architecture: \"this is the story the whole page should tell.\" Taking that line literally became the entire project.",
+      stat1: { value: "\"Build the page around this\"", label: "the one instruction that mattered" },
+      stat2: { value: "90% of solutions", label: "converge on the same safe layout" },
+    },
+    process: [
+      {
+        heading: "Research before pixels",
+        body: "Before opening Figma, I looked at what the company actually was: a product mid-pivot, a live site still speaking to the old vertical, a logo carrying a house icon from the rental days. I mapped the competitive space, enterprise AI support tools on one side, consumer DM automation on the other, and found the gap the product sits in. The buyer is a B2C founder or marketer: someone who lives inside TikTok and Instagram, already knows the pain, and needs to see the difference, not read about it.",
+      },
+      {
+        heading: "The story as the architecture",
+        body: "The page opens at night: a comment posted at 2:47am, nobody awake, a red notification ringing in the dark. Scrolling turns night into day, the system working while the team sleeps. Five steps show one comment becoming a €39 order across real channel UIs, with the same fictional brand, person and price kept consistent from first comment to final purchase. Color works semantically: red is the unread notification, blue is the system acting, green is the problem solved. A CTA sits inside the story at the moment of highest intent, not at the bottom, where attention has already decayed. The structure held from the start; the visual system took several rounds of trying, discarding and simplifying to get there.",
+      },
+      {
+        heading: "From static frames to a living page",
+        body: "I built the page with an AI-assisted workflow: structured HTML imported into Figma for speed and consistency, then an animated prototype for everything static frames can't show. The sticky glass header, scroll reveals, the bell ringing, the counter running to 347, a DM writing itself. I closed the file the way I'd hand it to a team: style foundations, a mobile version, and a \"start here\" panel documenting every decision, the assumptions I made, and the two A/B tests I'd run after launch.",
+      },
+    ],
+    screensImage: "/work/landing-page-detail.png",
+    screensPoints: [
+      "Full delivery in 48 hours: desktop, mobile, animated prototype, documented rationale",
+      "One small system: 5 semantic colors, 2 typefaces, reusable components built to extend into the product",
+      "Every decision documented: assumptions declared, post-launch tests defined",
+    ],
+    reflection: "Freedom in a brief doesn't make work more creative. It makes everyone converge on the same safe answer. The real brief is almost always hidden in one line. The job is finding it, taking it seriously, and having the reasoning to defend where it takes you.",
+    color: "rgba(45,58,90,",
+  },
+  {
+    slug: "warehouse-workflow-manager",
+    num: "02",
     sector: "Fashion & Retail · Logistics",
     title: "Bringing digital workflows into a physical environment",
     tags: ["UX/UI Design", "Supply chain", "B2B Internal Tool"],
     heroQuote: "Five systems, no single source of truth. Manual workarounds every single day.",
-    heroImage: "/work/wf-hero.png",
+    heroImage: "/work/digital workflow-large.png",
     brief: {
       text: "The client is a globally recognized fashion brand operating complex supply chain distribution flows across multiple countries. Internal teams needed a reliable way to manage, execute and monitor the loading of factories, allowing the tracking of goods with minimal friction.",
       tags: ["End-to-end UX", "B2B Internal", "Supply Chain"],
@@ -58,7 +102,7 @@ export const projects: Project[] = [
         body: "Unified the 5 systems into a single real-time timeline visible to every role: pickers, managers, and dispatch. For the first time, a shift could start without a 20-minute catch-up.",
       },
     ],
-    screensImage: "/work/wf-screens.png",
+    screensImage: "/work/digital workflow-detail.png",
     screensPoints: [
       "Five disconnected systems replaced by one unified interface",
       "Real-time visibility: every team member sees the same status",
@@ -69,12 +113,12 @@ export const projects: Project[] = [
   },
   {
     slug: "smart-financing-application-flow",
-    num: "02",
+    num: "03",
     sector: "Financial Technology",
     title: "Designing a funding application flow that people could actually complete",
     tags: ["UX/UI Designer", "Desktop", "FinTech"],
     heroQuote: "Multi-step, multi-document, zero guidance. Most people gave up halfway.",
-    heroImage: "/work/funding-hero.png",
+    heroImage: "/work/funding application-large.png",
     brief: {
       text: "The client helps businesses access funding by acting as intermediary between companies and banks. Their existing process was slow and frustrating: users had to manually download, fill out, and upload multiple documents, often giving up halfway. The goal was a guided experience that felt manageable even for first-time users.",
       tags: ["Guided UX", "High-stakes", "FinTech"],
@@ -100,7 +144,7 @@ export const projects: Project[] = [
         body: "Key features included auto-filling documents based on user responses, real-time validation, and automatic extraction of identity data from uploaded ID scans. By the time a user hit submit, documents were generated and ready: no redundant effort from the user.",
       },
     ],
-    screensImage: "/work/funding-screens.png",
+    screensImage: "/work/funding application-detail.png",
     screensPoints: [
       "Complete flow without external support or clarification",
       "Documents auto-generated, no manual download or upload",
@@ -111,12 +155,12 @@ export const projects: Project[] = [
   },
   {
     slug: "retail-store-management-tools",
-    num: "03",
+    num: "04",
     sector: "Fashion & Retail · Mobile + Desktop",
     title: "Designing for global store teams with different needs and different devices",
     tags: ["UX/UI Design", "Desktop+Mobile", "Global teams"],
     heroQuote: "Same team. Completely different needs. Completely different devices.",
-    heroImage: "/work/retail-hero.png",
+    heroImage: "/work/global store teams-large.png",
     brief: {
       text: "A globally operating fashion brand needed two integrated digital tools for store operations: a desktop platform for managers (planning, reporting, oversight) and a mobile app for associates (daily tasks, floor management). Two user groups, fundamentally different contexts, and the tools had to work together without sharing UI complexity.",
       tags: ["Multi-platform", "Mobile + Desktop", "Fashion Retail"],
@@ -142,7 +186,7 @@ export const projects: Project[] = [
         body: "Ran usability sessions across multiple markets with teams speaking different languages. Icon-heavy navigation consistently outperformed text labels for speed and comprehension, especially in time-pressured floor environments.",
       },
     ],
-    screensImage: "/work/retail-screens.png",
+    screensImage: "/work/global store teams-detail.png",
     screensPoints: [
       "Desktop for managers: planning, oversight, team tasks",
       "Mobile for associates: execution, daily tasks, real-time updates",
@@ -153,12 +197,12 @@ export const projects: Project[] = [
   },
   {
     slug: "facility-management-platform",
-    num: "04",
+    num: "05",
     sector: "Facility Management · SaaS",
     title: "When powerful software becomes too complex to use",
     tags: ["UX/UI Designer", "Desktop", "SaaS"],
     heroQuote: "A platform with everything. That users actively worked around.",
-    heroImage: "/work/facility-hero.png",
+    heroImage: "/work/powerful software-large.png",
     brief: {
       text: "The client provides a facility management SaaS used by large organizations to manage buildings, maintenance, and operations. Despite being feature-rich, users created workarounds: spreadsheets, sticky notes, WhatsApp groups, because the interface made simple tasks unnecessarily complex. Goal: redesign around what users actually needed to do.",
       tags: ["UX Redesign", "SaaS", "Internal Tool"],
@@ -184,7 +228,7 @@ export const projects: Project[] = [
         body: "Kept all power features in the product but removed them from primary navigation. Advanced functionality was surfaced contextually, only when users needed it in their workflow. First-time users could complete core tasks without encountering edge cases.",
       },
     ],
-    screensImage: "/work/facility-screens.png",
+    screensImage: "/work/powerful software-detail.png",
     screensPoints: [
       "Core task paths reduced from 4+ screens to 1-2 interactions",
       "IA reorganized around user goals, not system logic",

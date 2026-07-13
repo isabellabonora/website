@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
-import { projects } from "./project/data";
+import { useRouter } from "next/navigation";
+import { projects } from "./work/data";
 
 const skills = [
   "UX Design", "Bubble.io", "Product Design", "Hackathons", "No-Code",
@@ -20,6 +21,7 @@ const toolTagColors = ["green", "green", "dark", "dark", "pink", "dark", "pink",
 const workTilts = [-4, 3, -2, 4];
 
 export default function Home() {
+  const router = useRouter();
 
   useEffect(() => {
     /* ── page-transition entry: recede the drop from wherever it grew on the
@@ -355,14 +357,14 @@ export default function Home() {
   function goToProject(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
     e.preventDefault();
     const overlay = document.getElementById("pageTransitionOverlay");
-    if (!overlay) { window.location.href = href; return; }
+    if (!overlay) { router.push(href); return; }
     const ox = e.clientX + "px", oy = e.clientY + "px";
     sessionStorage.setItem("pt-ox", ox);
     sessionStorage.setItem("pt-oy", oy);
     overlay.style.setProperty("--ox", ox);
     overlay.style.setProperty("--oy", oy);
     overlay.classList.add("active");
-    setTimeout(() => { window.location.href = href; }, 680);
+    setTimeout(() => { router.push(href); }, 680);
   }
 
   return (
@@ -378,7 +380,7 @@ export default function Home() {
       <nav id="nav">
         <a href="/" className="logo">ib.</a>
         <ul className="nav-r">
-          <li><a href="#work" data-nav="work">Work</a></li>
+          <li><a href="/work" onClick={(e) => goToProject(e, "/work")}>Work</a></li>
           <li><a href="#about" data-nav="about">About</a></li>
           <li><a href="https://drive.google.com/file/d/1BTYYnIWpKvz0lza_J3MkC6NBpez5lSQr/view" target="_blank" className="cta drop-btn magnetic"><span className="btn-label">My CV</span></a></li>
         </ul>
@@ -428,20 +430,20 @@ export default function Home() {
           <div className="what-card what-card-main" data-delay="0">
             <div className="what-card-top">
               <h3 className="what-label">Design &amp; UX</h3>
-              <p className="what-text">I design digital products that people enjoy and that build business outcomes. From research, prototyping and systems thinking to complex screen clarity, balancing user needs with business impact.</p>
+              <p className="what-text">I design digital products people enjoy using and that drive real business outcomes, from early research and prototyping to the systems thinking that keeps complex products clear and usable.</p>
             </div>
           </div>
           <div className="what-col">
             <div className="what-card what-card-green" data-delay="100">
               <div className="what-card-top">
                 <h3 className="what-label">Innovation &amp; Startups</h3>
-                <p className="what-text">Adaptability meets focus. Technical tradeoffs, uncertainty, velocity, navigated.</p>
+                <p className="what-text">Comfortable with ambiguity and fast pace, I help early-stage teams navigate technical tradeoffs and move from idea to shipped product.</p>
               </div>
             </div>
             <div className="what-card what-card-pink" data-delay="200">
               <div className="what-card-top">
                 <h3 className="what-label">No Code &amp; Emerging Tech</h3>
-                <p className="what-text">Speed through no-code and dev-light approaches. Less friction, more innovation.</p>
+                <p className="what-text">I use no-code tools to test ideas fast, cutting friction between a concept and a working product.</p>
               </div>
             </div>
           </div>
@@ -456,30 +458,36 @@ export default function Home() {
           <div className="title-wrap"><h2 className="section-title reveal-title">Case studies</h2></div>
         </div>
 
-        {projects.map((p, i) => (
+        {projects.slice(0, 3).map((p, i) => (
           <a
             key={p.slug}
-            href={`/project/${p.slug}`}
+            href={`/work/${p.slug}`}
             className={`work-row${i % 2 === 1 ? " reverse" : ""}`}
             data-delay={i * 100}
-            onClick={(e) => goToProject(e, `/project/${p.slug}`)}
+            onClick={(e) => goToProject(e, `/work/${p.slug}`)}
           >
             <div className="work-text">
               <div className="work-tag-body">
                 <span className="work-tag">{p.sector}</span>
                 <h3 className="work-title">{p.title}</h3>
                 <canvas className="case-wave" data-wave={`w${i}`} />
-                <p className="work-desc">{p.heroQuote}</p>
+                <p className="work-desc">{p.teaser ?? p.heroQuote}</p>
                 <span className="work-link magnetic">Read case study <span className="arrow">→</span></span>
               </div>
             </div>
             <div className="work-image magnetic" data-parallax="0.04">
               <div className="work-image-card" style={{ "--tilt": `${workTilts[i]}deg` } as React.CSSProperties}>
-                <img src={`/cs${i + 1}.png`} alt="" />
+                <img src={p.heroImage} alt="" />
               </div>
             </div>
           </a>
         ))}
+
+        <div className="work-viewall">
+          <a href="/work" className="work-viewall-btn drop-btn magnetic" onClick={(e) => goToProject(e, "/work")}>
+            <span className="btn-label">View all work <span className="arrow">→</span></span>
+          </a>
+        </div>
       </section>
 
       {/* ABOUT */}

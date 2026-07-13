@@ -1,0 +1,22 @@
+/* ── WORK PAGE ── */
+/* reuses .work-row / .work-head / .work-image / .prj-rail / .prj-navfooter
+   from globals.css and project.css so this page stays visually consistent
+   with the home page's preview section and the project detail pages */
+
+#work .work-head.work-page-head{
+  padding-top:112px;
+  opacity:0;
+  transform:translateY(16px);
+  transition:opacity .9s ease,transform .9s ease;
+}
+#work .work-head.work-page-head.show{opacity:1;transform:translateY(0);}
+
+@media(max-width:900px){
+  #work .work-head.work-page-head{padding-top:88px;}
+}
+
+.work-page-subtitle{
+  font-size:1.05rem;
+  color:var(--ink);opacity:.7;
+  max-width:100%;
+}
