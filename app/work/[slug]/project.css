@@ -511,3 +511,20 @@
   .prj-process-rule { display: none; }
   .prj-rail { display: none; }
 }
+
+/* the navfooter row (prev link / Back to Work / next link) still fits fine
+   on one line at tablet widths, it only needs to stack on narrow phones */
+@media (max-width: 520px) {
+  .prj-navfooter {
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 28px;
+    padding-bottom: 28px;
+    text-align: center;
+  }
+  .prj-navfooter-side {
+    max-width: 100%;
+    order: 2;
+  }
+  .prj-navfooter-home { order: 1; }
+}

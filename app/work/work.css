@@ -20,3 +20,8 @@
   color:var(--ink);opacity:.7;
   max-width:100%;
 }
+
+/* this page's closing bar has just one centered button, no prev/next
+   links, so it never needs the space-between layout or the column
+   stacking that the project detail pages' navfooter uses on narrow screens */
+.prj-navfooter.work-list-navfooter{justify-content:center;}

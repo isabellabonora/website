@@ -229,12 +229,10 @@ export default function WorkPage() {
       </section>
 
       {/* NAV FOOTER */}
-      <div className="prj-navfooter">
-        <span className="prj-navfooter-side" />
+      <div className="prj-navfooter work-list-navfooter">
         <a href="/#about" className="prj-navfooter-home drop-btn magnetic" onClick={(e) => goTo(e, "/#about")}>
           <span className="btn-label">More about me</span>
         </a>
-        <span className="prj-navfooter-side" />
       </div>
     </>
   );
