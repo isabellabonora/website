@@ -382,7 +382,7 @@ export default function Home() {
         <ul className="nav-r">
           <li><a href="/work" onClick={(e) => goToProject(e, "/work")}>Work</a></li>
           <li><a href="#about" data-nav="about">About</a></li>
-          <li><a href="https://drive.google.com/file/d/1BTYYnIWpKvz0lza_J3MkC6NBpez5lSQr/view" target="_blank" className="cta drop-btn magnetic"><span className="btn-label">My CV</span></a></li>
+          <li><a href="https://drive.google.com/file/d/1BTYYnIWpKvz0lza_J3MkC6NBpez5lSQr/view" target="_blank" rel="noopener noreferrer" className="cta drop-btn magnetic"><span className="btn-label">My CV</span></a></li>
         </ul>
       </nav>
 
@@ -391,11 +391,11 @@ export default function Home() {
         <div className="hero-left">
           <div className="hero-top">
             <p className="hero-eyebrow">Hi, I&apos;m Isa!</p>
-            <div className="hero-titles">
+            <h1 className="hero-titles">
               <div className="tline"><span className="tw">Designer.</span></div>
               <div className="tline"><span className="tw">Builder.</span></div>
               <div className="tline"><span className="tw">Speaker.</span></div>
-            </div>
+            </h1>
             <p className="hero-subtitle" id="hsub">
               I turn messy realities into products people want to use.
             </p>
@@ -477,7 +477,7 @@ export default function Home() {
             </div>
             <div className="work-image magnetic" data-parallax="0.04">
               <div className="work-image-card" style={{ "--tilt": `${workTilts[i]}deg` } as React.CSSProperties}>
-                <img src={p.heroImage} alt="" />
+                <img src={p.heroImage} alt={p.title} />
               </div>
             </div>
           </a>
@@ -504,7 +504,7 @@ export default function Home() {
           <h2 className="about-lead">I started with economics. Then discovered I could design AND build.</h2>
           <p className="about-text">Today I work at the intersection of product design, facilitation, and no-code building. What drives me is the exact point where design decisions become business decisions, and the other way around.</p>
           <p className="about-text">I hold a degree in Economics and a Master&apos;s in Entrepreneurship, but the real shift happened when I stopped treating strategy, design, and building as separate jobs. Outside client work, I facilitate workshops and hackathons and run Digital People, a community for tech and digital professionals in Trentino, because I&apos;ve never believed the best ideas happen alone.</p>
-          <a href="https://drive.google.com/file/d/1BTYYnIWpKvz0lza_J3MkC6NBpez5lSQr/view" target="_blank" className="about-link magnetic">View full CV <span className="arrow">→</span></a>
+          <a href="https://drive.google.com/file/d/1BTYYnIWpKvz0lza_J3MkC6NBpez5lSQr/view" target="_blank" rel="noopener noreferrer" className="about-link magnetic">View full CV <span className="arrow">→</span></a>
         </div>
       </section>
 
@@ -589,8 +589,8 @@ export default function Home() {
           </div>
           <div className="footer-social">
             <span className="footer-social-label">Social</span>
-            <a href="https://www.linkedin.com/in/isabella-bonora/" target="_blank" className="magnetic">LinkedIn</a>
-            <a href="https://drive.google.com/file/d/1BTYYnIWpKvz0lza_J3MkC6NBpez5lSQr/view" target="_blank" className="magnetic">View CV</a>
+            <a href="https://www.linkedin.com/in/isabella-bonora/" target="_blank" rel="noopener noreferrer" className="magnetic">LinkedIn</a>
+            <a href="https://drive.google.com/file/d/1BTYYnIWpKvz0lza_J3MkC6NBpez5lSQr/view" target="_blank" rel="noopener noreferrer" className="magnetic">View CV</a>
           </div>
         </div>
         <div className="footer-bottom">

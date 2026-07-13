@@ -3,8 +3,26 @@ import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://isabellabonora.com"),
   title: "Isabella Bonora | UX & Product Designer",
   description: "I ask the questions nobody thought to ask.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Isabella Bonora | UX & Product Designer",
+    description: "I ask the questions nobody thought to ask.",
+    url: "https://isabellabonora.com",
+    siteName: "Isabella Bonora",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Isabella Bonora | UX & Product Designer",
+    description: "I ask the questions nobody thought to ask.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

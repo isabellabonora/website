@@ -190,7 +190,7 @@ export default function WorkPage() {
         <ul className="nav-r">
           <li><a href="/work" className="active">Work</a></li>
           <li><a href="/#about" onClick={(e) => goTo(e, "/#about")}>About</a></li>
-          <li><a href="https://drive.google.com/file/d/1BTYYnIWpKvz0lza_J3MkC6NBpez5lSQr/view" target="_blank" className="cta drop-btn magnetic"><span className="btn-label">My CV</span></a></li>
+          <li><a href="https://drive.google.com/file/d/1BTYYnIWpKvz0lza_J3MkC6NBpez5lSQr/view" target="_blank" rel="noopener noreferrer" className="cta drop-btn magnetic"><span className="btn-label">My CV</span></a></li>
         </ul>
       </nav>
 
@@ -221,7 +221,7 @@ export default function WorkPage() {
             </div>
             <div className="work-image magnetic">
               <div className="work-image-card" style={{ "--tilt": `${workTilts[i]}deg` } as React.CSSProperties}>
-                <img src={p.heroImage} alt="" />
+                <img src={p.heroImage} alt={p.title} />
               </div>
             </div>
           </a>
