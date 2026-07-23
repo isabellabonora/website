@@ -24,7 +24,10 @@ const css = `
     --chip: #1a1f27;
   }
 
-  #portfolio-root * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { margin: 0; padding: 0; box-sizing: border-box; cursor: auto; overflow-x: visible; }
+
+  /* low-specificity reset (plain universal selector) so component classes below can freely override margin/padding */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
   #portfolio-root { scroll-behavior: smooth; }
 
@@ -1912,6 +1915,10 @@ export default function Home() {
       panelCloseBtn.removeEventListener("click", closePanel);
       overlay.removeEventListener("click", closePanel);
       document.removeEventListener("keydown", onEscape);
+      revealObserver.disconnect();
+      navObserver.disconnect();
+      countObserver.disconnect();
+      kwObserver.disconnect();
     };
   }, []);
 

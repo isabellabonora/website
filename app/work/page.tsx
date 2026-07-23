@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { projects } from "./data";
+import "../globals.css";
 import "./work.css";
 import "./[slug]/project.css";
 
