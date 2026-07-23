@@ -507,8 +507,9 @@ const css = `
 
   .entry {
     display: grid;
-    grid-template-columns: 130px 1fr;
-    gap: 20px;
+    grid-template-columns: 130px 16px 1fr;
+    align-items: center;
+    gap: 8px;
     margin-bottom: 30px;
     position: relative;
     padding: 12px 14px;
@@ -523,7 +524,15 @@ const css = `
     font-size: 0.82rem;
     color: var(--ink-soft);
     font-family: 'JetBrains Mono', monospace;
-    padding-top: 3px;
+  }
+
+  #experience .entry .dot {
+    justify-self: center;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
   }
 
   .entry .role-title {
@@ -533,12 +542,14 @@ const css = `
   }
 
   .entry .org {
+    grid-column: 3;
     color: var(--ink-soft);
     font-size: 0.92rem;
     margin-top: 2px;
   }
 
   .entry p.desc {
+    grid-column: 3;
     margin-top: 8px;
     font-size: 0.95rem;
     color: var(--ink-soft);
@@ -548,8 +559,11 @@ const css = `
   @media (max-width: 560px) {
     .entry {
       grid-template-columns: 1fr;
+      align-items: start;
       gap: 6px;
     }
+    .entry .dot { display: none; }
+    .entry .org, .entry p.desc { grid-column: 1; }
   }
 
   /* ---------- SKILLS ---------- */
@@ -709,32 +723,15 @@ const css = `
   #experience::before {
     content: '';
     position: absolute;
-    left: 140px;
+    left: 146px;
     top: 6px;
     bottom: 6px;
     width: 1px;
     background: var(--line);
   }
 
-  #experience .entry .period {
-    position: relative;
-  }
-
-  #experience .entry .period::after {
-    content: '';
-    position: absolute;
-    right: -18px;
-    top: calc(0.92rem - 3.5px);
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--accent);
-    border: 2px solid var(--bg);
-  }
-
   @media (max-width: 560px) {
     #experience::before { display: none; }
-    #experience .entry .period::after { display: none; }
   }
 
   /* ---------- EDUCATION LIST ---------- */
@@ -1184,47 +1181,42 @@ const bodyHtml = `
 
     <div class="entry">
       <div class="period">2023 to present</div>
-      <div>
+      <span class="dot"></span>
         <div class="role-title">Product &amp; UX Designer</div>
         <div class="org">CodicePlastico</div>
         <p class="desc">Lead end-to-end <span class="kw kw-design">product discovery</span> for complex B2B and B2C platforms, turning ambiguous business requirements into testable prototypes. Integrate <span class="kw kw-ai">AI workflows</span> (Claude, Gemini, Figma AI) to keep design and dev docs in sync, and work directly with developers to ensure smooth handoffs.</p>
-      </div>
     </div>
 
     <div class="entry">
       <div class="period">2025 to present</div>
-      <div>
+      <span class="dot"></span>
         <div class="role-title">Founder &amp; Community Organizer</div>
         <div class="org">Digital People</div>
         <p class="desc">Founded and scaled a <span class="kw kw-community">tech community</span> of <span class="count-up" data-target="80">0</span>+ members, organizing monthly meetups and speaking on <span class="kw kw-ai">AI-native design</span> at events like Product Heroes and XPUG.</p>
-      </div>
     </div>
 
     <div class="entry">
       <div class="period">2025 to present</div>
-      <div>
+      <span class="dot"></span>
         <div class="role-title">Hackathon Facilitator</div>
         <div class="org">Sprintaly</div>
         <p class="desc">Coach multidisciplinary teams through problem framing, <span class="kw kw-startup">Lean validation</span> and rapid prototyping to deliver pitch-ready <span class="kw kw-startup">MVPs</span> in 48 to 72 hour sprints, helping them turn complex ideas into investor-ready value propositions.</p>
-      </div>
     </div>
 
     <div class="entry">
       <div class="period">2021 to present</div>
-      <div>
+      <span class="dot"></span>
         <div class="role-title">Product Designer &amp; No-code Builder</div>
         <div class="org">Freelance</div>
         <p class="desc">Launched multiple production-ready <span class="kw kw-startup">MVPs</span> for early-stage <span class="kw kw-startup">startups</span>, from problem validation and <span class="kw kw-design">UX research</span> through functional <span class="kw kw-ai">Bubble.io</span> implementation. Long-term partner for a growing startup, evolving its MVP into a scaled platform.</p>
-      </div>
     </div>
 
     <div class="entry">
       <div class="period">2020 to 2021</div>
-      <div>
+      <span class="dot"></span>
         <div class="role-title">Product Lead &amp; Co-founder</div>
         <div class="org">Mimiroo, Startup Geeks Incubator</div>
         <p class="desc">End-to-end development of an <span class="kw kw-startup">EdTech project</span>: defined the business model and value proposition, ran competitor analysis, and built/tested a functional <span class="kw kw-startup">MVP</span> in Bubble.io to validate core assumptions with real users.</p>
-      </div>
     </div>
   </section>
 
