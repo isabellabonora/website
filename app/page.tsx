@@ -1061,6 +1061,45 @@ const css = `
     border: 1px solid currentColor;
     background: color-mix(in srgb, currentColor 12%, transparent);
   }
+
+  /* ---------- INTERSTITIAL (cinematic scroll-scrubbed reveal: blur/scale/color tied to scroll position) ---------- */
+  .interstitial {
+    position: relative;
+    padding: 40px 0 56px;
+    border-top: 1px solid var(--line);
+  }
+
+  .interstitial .int-frame {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 320px;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .interstitial .int-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 50%;
+    display: block;
+    will-change: filter, transform;
+  }
+
+  .interstitial .int-caption {
+    margin-top: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .interstitial .int-caption:hover { color: var(--accent); }
+
+  @media (max-width: 560px) {
+    .interstitial .int-frame { height: 220px; }
+  }
 `;
 
 const bodyHtml = `
@@ -1220,6 +1259,13 @@ const bodyHtml = `
     </div>
   </section>
 
+  <section class="interstitial reveal" id="interstitial">
+    <a class="int-frame" href="#offduty">
+      <img src="/isa/isa-talk-xpug-crop.jpg" alt="Isabella speaking on Rethink UX at XPUG Trento" />
+    </a>
+    <div class="int-caption jump-link" data-jump="offduty">Rethink UX, XPUG Trento ↓</div>
+  </section>
+
   <section class="block reveal" id="education">
     <h2>Education</h2>
 
@@ -1301,6 +1347,47 @@ const bodyHtml = `
 `;
 
 export default function Home() {
+  // Cinematic scroll-scrubbed reveal: the talk photo starts blurred, desaturated and
+  // slightly scaled up, then sharpens/colors/settles continuously as the section
+  // crosses the viewport - tied to scroll position, not a fixed-length animation.
+  useEffect(() => {
+    const host = document.getElementById("interstitial");
+    const photo = host?.querySelector(".int-frame img") as HTMLImageElement | null;
+    if (!host || !photo) return;
+
+    let raf = 0;
+
+    const update = () => {
+      raf = 0;
+      const rect = host!.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // 0 when the section's top just enters the viewport, 1 once it's fully in view
+      const progress = Math.min(1, Math.max(0, (vh - rect.top) / (vh * 0.7)));
+      const eased = progress < 0.5 ? 4 * progress ** 3 : 1 - (-2 * progress + 2) ** 3 / 2;
+
+      const blur = (1 - eased) * 18;
+      const saturation = 0.15 + eased * 0.85;
+      const scale = 1.08 - eased * 0.08;
+
+      photo.style.filter = `blur(${blur}px) saturate(${saturation})`;
+      photo.style.transform = `scale(${scale})`;
+    };
+
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   useEffect(() => {
     const input = document.getElementById("cmd-input") as HTMLInputElement;
     const output = document.getElementById("cmd-output") as HTMLElement;
@@ -1468,6 +1555,26 @@ export default function Home() {
         heading.classList.add("flash-target");
       }
     });
+
+    // .jump-link elements outside the terminal (e.g. the interstitial caption/photo)
+    // aren't inside #cmd-output, so they need their own document-level handler.
+    function onDocumentJumpLinkClick(e: MouseEvent) {
+      if (output.contains(e.target as Node)) return;
+      const link = (e.target as HTMLElement).closest(".jump-link") as HTMLElement | null;
+      if (!link) return;
+      e.preventDefault();
+      const targetId = link.dataset.jump as string;
+      const targetEl = document.getElementById(targetId);
+      if (!targetEl) return;
+      targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      const heading = targetEl.querySelector("h2");
+      if (heading) {
+        heading.classList.remove("flash-target");
+        void (heading as HTMLElement).offsetWidth;
+        heading.classList.add("flash-target");
+      }
+    }
+    document.addEventListener("click", onDocumentJumpLinkClick);
 
     const ghost = document.getElementById("cmd-ghost") as HTMLElement;
 
@@ -1907,6 +2014,7 @@ export default function Home() {
       panelCloseBtn.removeEventListener("click", closePanel);
       overlay.removeEventListener("click", closePanel);
       document.removeEventListener("keydown", onEscape);
+      document.removeEventListener("click", onDocumentJumpLinkClick);
       revealObserver.disconnect();
       navObserver.disconnect();
       countObserver.disconnect();
