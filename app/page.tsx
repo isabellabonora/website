@@ -255,118 +255,14 @@ const css = `
     color: var(--accent);
   }
 
-  /* ---------- TERMINAL ---------- */
-  .terminal {
-    position: relative;
-    margin: 40px 0 64px;
-    background: var(--mono-bg);
-    color: var(--mono-fg);
-    border-radius: 10px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.86rem;
-    overflow: hidden;
-    box-shadow: 0 12px 32px -12px rgba(28, 26, 23, 0.35);
-    opacity: 0;
-    animation: rise 0.7s ease forwards 0.15s;
-  }
-
-  .terminal::before {
-    content: '';
-    position: absolute;
-    top: var(--glow-y, 50%);
-    left: var(--glow-x, 50%);
-    width: 320px;
-    height: 320px;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(181, 80, 47, 0.18), transparent 70%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-  }
-
-  .terminal:hover::before { opacity: 1; }
-
-  .terminal-bar {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 11px 14px;
-    background: #17140f;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-
-  .terminal-bar span {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: #4a453c;
-  }
-
-  .terminal-bar .label {
-    margin-left: 8px;
-    color: #857e70;
-    font-size: 0.75rem;
-    width: auto;
-    height: auto;
-    border-radius: 0;
-    background: none;
-  }
-
-  .terminal-body {
-    padding: 20px 20px 24px;
-    min-height: 190px;
-  }
-
-  .terminal-line {
-    display: flex;
-    gap: 8px;
-    position: relative;
-  }
-
-  .prompt-sym { color: var(--accent); }
-
-  .input-wrap {
-    position: relative;
-    flex: 1;
-  }
-
-  #cmd-ghost {
-    position: absolute;
-    top: 0;
-    left: 0;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.86rem;
-    color: #55503f;
-    white-space: pre;
-    pointer-events: none;
-  }
-
-  #cmd-ghost .typed { color: transparent; }
-
-  #cmd-input {
-    position: relative;
-    background: none;
-    border: none;
-    outline: none;
-    color: var(--mono-fg);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.86rem;
-    width: 100%;
-    caret-color: var(--accent);
-    z-index: 1;
-  }
-
-  #cmd-input::placeholder { color: #6b6558; }
-
-  .jump-link,
-  .jump-cmd {
+  .jump-link {
     cursor: pointer;
     text-decoration: underline dotted;
     text-underline-offset: 3px;
     transition: color 0.2s;
   }
 
-  .jump-link:hover,
-  .jump-cmd:hover { color: #f2a679 !important; }
+  .jump-link:hover { color: var(--accent) !important; }
 
   @keyframes flash-highlight {
     0%, 100% { color: var(--accent); }
@@ -375,36 +271,214 @@ const css = `
 
   .flash-target { animation: flash-highlight 0.5s ease 2; }
 
-  .terminal-output {
-    margin-top: 14px;
-    white-space: pre-wrap;
-    color: #d8d2c5;
+  /* ---------- ROAD GAME ---------- */
+  .rg-stage {
+    position: relative;
+    margin: 40px 0 64px;
+    background: var(--mono-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 12px 32px -12px rgba(28, 26, 23, 0.35);
+    opacity: 0;
+    animation: rise 0.7s ease forwards 0.15s;
   }
 
-  .terminal-output .k { color: #e8a06f; }
-
-  .terminal-hints {
-    margin-top: 16px;
+  .rg-bar {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 16px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--mono-fg);
+    opacity: 0.7;
   }
 
-  .hint-btn {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #c9c3b6;
+  .rg-bar button {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.76rem;
-    padding: 4px 10px;
+    font-size: 0.68rem;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.18);
+    color: var(--mono-fg);
+    padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
+    opacity: 0.85;
   }
 
-  .hint-btn:hover {
-    background: rgba(181, 80, 47, 0.25);
-    color: #f2ede4;
+  .rg-bar button:hover { color: var(--accent); border-color: var(--accent); }
+
+  .rg-svg-wrap { position: relative; }
+  /* fixed to the light-theme paper/ink values (not var(--bg)/var(--ink)) so the
+     stage stays a bright paper strip inside the dark frame in both themes */
+  .rg-svg-wrap svg { display: block; width: 100%; height: clamp(180px, 30vw, 240px); background: #fbf7f2; }
+
+  .rg-ground-tick { fill: #1c1a17; opacity: 0.4; shape-rendering: crispEdges; }
+  .rg-hill { fill: #1c1a17; opacity: 0.12; }
+  .rg-cloud { fill: #1c1a17; opacity: 0.18; }
+
+  .rg-sprite-scale rect { fill: #1c1a17; shape-rendering: crispEdges; }
+
+  .rg-icon { transform: scale(1.8); transform-box: fill-box; transform-origin: center; }
+  .rg-sprite-scale { transform: scale(1.6); transform-box: fill-box; transform-origin: bottom center; }
+  .rg-icon rect, .rg-icon path, .rg-icon circle { shape-rendering: crispEdges; }
+  .rg-icon .fill { fill: var(--accent); }
+  .rg-icon .fill-soft { fill: #1c1a17; }
+  .rg-icon .outline { fill: none; stroke: var(--accent); stroke-width: 1.6; }
+  .rg-pizza-crust { fill: #e8b978; stroke: var(--accent); stroke-width: 1; shape-rendering: crispEdges; }
+  .rg-pizza-topping { fill: var(--accent); shape-rendering: crispEdges; }
+
+  @keyframes rg-pop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.6); }
+    100% { transform: scale(1); }
+  }
+  @keyframes rg-burst-ring {
+    0% { r: 6; opacity: 0.9; stroke-width: 3; }
+    100% { r: 34; opacity: 0; stroke-width: 0.5; }
+  }
+  .rg-burst { fill: none; stroke: var(--accent); animation: rg-burst-ring 0.5s ease-out forwards; pointer-events: none; }
+
+  .rg-hud {
+    position: absolute;
+    top: 14px; right: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: #1c1a17;
+    background: rgba(28,26,23,0.06);
+    border: 1px solid rgba(28,26,23,0.16);
+    border-radius: 5px;
+    padding: 5px 10px;
+  }
+  .rg-hud strong { color: var(--accent); font-variant-numeric: tabular-nums; }
+
+  .rg-card {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--mono-fg);
+    background: var(--mono-bg);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-left: 2px solid var(--accent);
+    border-radius: 6px;
+    padding: 16px 18px;
+    width: min(520px, 92%);
+    max-height: 88%;
+    overflow: auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -46%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.5);
+    z-index: 8;
+  }
+  .rg-card.show { opacity: 1; transform: translate(-50%, -50%); pointer-events: auto; }
+  .rg-card .rg-tag {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+    font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 2px;
+  }
+  .rg-card .rg-period {
+    display: block;
+    font-size: 0.66rem;
+    color: var(--mono-fg);
+    opacity: 0.6;
+    margin-bottom: 8px;
+  }
+  .rg-card .rg-close { all: unset; cursor: pointer; color: var(--mono-fg); opacity: 0.6; font-size: 0.8rem; padding: 2px 6px; }
+  .rg-card .rg-close:hover { color: var(--accent); opacity: 1; }
+  .rg-card .rg-cta-row { display: flex; gap: 8px; margin-top: 14px; }
+  .rg-card .rg-cta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    text-decoration: none;
+    background: none;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 7px 12px;
+    border-radius: 5px;
+  }
+  .rg-card .rg-cta:hover { background: var(--accent); color: var(--mono-bg); }
+  .rg-card .rg-cta.secondary { border-color: rgba(255,255,255,0.18); color: var(--mono-fg); opacity: 0.7; }
+  .rg-card .rg-cta.secondary:hover { border-color: var(--accent); color: var(--accent); background: none; opacity: 1; }
+
+  .rg-veil {
+    position: absolute; inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 7;
+  }
+  .rg-veil.show { opacity: 1; pointer-events: auto; }
+
+  .rg-jump-row {
+    padding: 14px 16px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--mono-fg);
+    opacity: 0.75;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .rg-jump-row span { opacity: 1; }
+  .rg-jump-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    color: var(--mono-bg);
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .rg-jump-btn:hover { opacity: 0.88; }
+  .rg-jump-btn:active { transform: translateY(1px); }
+
+  .rg-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 4px 16px 18px;
+  }
+  .rg-legend button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.16);
+    color: var(--mono-fg);
+    padding: 6px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    opacity: 0.55;
+  }
+  .rg-legend button.caught { color: var(--accent); border-color: var(--accent); opacity: 1; }
+  .rg-legend button:hover { opacity: 1; border-color: var(--accent); color: var(--accent); }
+
+  @media (max-width: 560px) {
+    .rg-bar { flex-wrap: wrap; gap: 8px; font-size: 0.66rem; }
+    .rg-svg-wrap svg { height: clamp(150px, 46vw, 200px); }
+    .rg-hud { top: 10px; right: 10px; font-size: 0.62rem; padding: 4px 8px; }
+    .rg-card { font-size: 0.76rem; padding: 14px 15px; }
+    .rg-card .rg-cta-row { flex-wrap: wrap; }
+    .rg-card .rg-cta { flex: 1 1 auto; text-align: center; }
+    .rg-jump-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .rg-jump-btn { align-self: stretch; text-align: center; }
+    .rg-legend { padding: 4px 12px 16px; gap: 6px; }
+    .rg-legend button { font-size: 0.66rem; padding: 5px 9px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rg-item-wrap { animation: none !important; }
   }
 
   /* ---------- WORK ---------- */
@@ -1141,29 +1215,77 @@ const bodyHtml = `
     <button class="pill-btn pill-community" data-topic="community">Community</button>
   </div>
 
-  <section class="terminal" id="terminal">
-    <div class="terminal-bar">
-      <span></span><span></span><span></span>
-      <div class="label" id="terminal-label">isa@portfolio — zsh</div>
+  <section class="rg-stage" id="road-game">
+    <div class="rg-bar">
+      <span id="rg-state">running, space to jump</span>
+      <button id="rg-reset">reset</button>
     </div>
-    <div class="terminal-body">
-      <div class="terminal-line">
-        <span class="prompt-sym">&gt;</span>
-        <div class="input-wrap">
-          <div id="cmd-ghost"></div>
-          <input id="cmd-input" type="text" placeholder="who-am-i" autocomplete="off" spellcheck="false" />
-        </div>
-      </div>
-      <div class="terminal-hints">
-        <button class="hint-btn" data-cmd="who-am-i">who-am-i</button>
-        <button class="hint-btn" data-cmd="what-i-do">what-i-do</button>
-        <button class="hint-btn" data-cmd="work">work</button>
-        <button class="hint-btn" data-cmd="skills">skills</button>
-        <button class="hint-btn" data-cmd="resume">resume</button>
-        <button class="hint-btn" data-cmd="email">email</button>
-      </div>
-      <div class="terminal-output" id="cmd-output"></div>
+
+    <div class="rg-svg-wrap" id="rg-svg-wrap">
+      <svg id="rg-svg" viewBox="0 0 900 260" preserveAspectRatio="xMidYMid meet">
+        <g id="rg-scenery"></g>
+        <g id="rg-ground-ticks"></g>
+
+        <g id="rg-item-wrap" class="rg-item-wrap" style="display:none;">
+          <g class="rg-icon" id="rg-icon-athletics">
+            <rect class="fill" x="-8" y="5" width="16" height="3" />
+            <rect class="fill" x="-7" y="0" width="12" height="5" />
+            <rect class="fill" x="3" y="-2" width="4" height="4" />
+          </g>
+          <g class="rg-icon" id="rg-icon-falsestart" style="display:none;">
+            <rect class="outline" x="-7" y="-2" width="14" height="11" />
+            <rect class="fill" x="-2" y="-6" width="4" height="4" />
+          </g>
+          <g class="rg-icon" id="rg-icon-economics" style="display:none;">
+            <rect class="fill" x="-7" y="1" width="3" height="8" />
+            <rect class="fill" x="-2" y="-3" width="3" height="12" />
+            <rect class="fill" x="3" y="-7" width="3" height="16" />
+          </g>
+          <g class="rg-icon" id="rg-icon-masters" style="display:none;">
+            <path class="fill" d="M -9 -1 L 0 -7 L 9 -1 L 0 4 Z" />
+            <rect class="fill" x="6" y="-1" width="1.6" height="9" />
+          </g>
+          <g class="rg-icon" id="rg-icon-startup" style="display:none;">
+            <path class="fill" d="M 0 -10 C 5 -6, 5 2, 0 8 C -5 2, -5 -6, 0 -10 Z" />
+            <path class="fill" d="M -4 4 L -8 9 L -2 7 Z" />
+            <path class="fill" d="M 4 4 L 8 9 L 2 7 Z" />
+          </g>
+          <g class="rg-icon" id="rg-icon-uxnocode" style="display:none;">
+            <rect class="outline" x="-8" y="-6" width="16" height="10" />
+            <rect class="fill" x="-9" y="4" width="18" height="2.5" />
+          </g>
+          <g class="rg-icon" id="rg-icon-product" style="display:none;">
+            <path class="rg-pizza-crust" d="M -9 -2 L 9 -2 L 0 12 Z" />
+            <circle class="rg-pizza-topping" cx="-2" cy="2" r="1.4" />
+            <circle class="rg-pizza-topping" cx="3" cy="1" r="1.4" />
+            <circle class="rg-pizza-topping" cx="0" cy="6" r="1.4" />
+          </g>
+          <g class="rg-icon" id="rg-icon-now" style="display:none;">
+            <path class="fill" d="M 0 -9 C 6 -9, 8 -3, 0 8 C -8 -3, -6 -9, 0 -9 Z" />
+            <circle class="fill-soft" cx="0" cy="-3" r="2.6" />
+          </g>
+        </g>
+
+        <g id="rg-sprite">
+          <g class="rg-sprite-scale">
+            <rect x="-5" y="-15" width="10" height="8" />
+            <rect x="-3" y="-7" width="3" height="3" id="rg-leg-a" />
+            <rect x="1" y="-7" width="3" height="3" id="rg-leg-b" />
+          </g>
+        </g>
+      </svg>
+
+      <div class="rg-hud"><strong id="rg-hud-count">0</strong>/8 caught</div>
+      <div id="rg-veil" class="rg-veil"></div>
+      <div id="rg-active-card" class="rg-card"></div>
     </div>
+
+    <div class="rg-jump-row">
+      <span>space bar to jump, catch what drifts by</span>
+      <button class="rg-jump-btn" id="rg-jump-btn">jump ↑</button>
+    </div>
+
+    <div class="rg-legend" id="rg-legend"></div>
   </section>
 
   <section class="block reveal" id="work">
@@ -1388,178 +1510,330 @@ export default function Home() {
     };
   }, []);
 
+  // Road game: dino-runner mechanics replacing the old terminal. The figure
+  // stays put, ground ticks scroll left (driven by the same offset as the
+  // approaching item, so direction/speed can never drift out of sync), and
+  // catching an item (space to jump) opens a card with that career stop.
   useEffect(() => {
-    const input = document.getElementById("cmd-input") as HTMLInputElement;
-    const output = document.getElementById("cmd-output") as HTMLElement;
+    const svg = document.getElementById("rg-svg") as unknown as SVGSVGElement;
+    const svgWrap = document.getElementById("rg-svg-wrap") as HTMLElement;
+    const sprite = document.getElementById("rg-sprite") as unknown as SVGGElement;
+    const legA = document.getElementById("rg-leg-a") as unknown as SVGRectElement;
+    const legB = document.getElementById("rg-leg-b") as unknown as SVGRectElement;
+    const itemWrap = document.getElementById("rg-item-wrap") as unknown as SVGGElement;
+    const groundTicksEl = document.getElementById("rg-ground-ticks") as unknown as SVGGElement;
+    const sceneryEl = document.getElementById("rg-scenery") as unknown as SVGGElement;
+    const hudCount = document.getElementById("rg-hud-count") as HTMLElement;
+    const activeCard = document.getElementById("rg-active-card") as HTMLElement;
+    const cardVeil = document.getElementById("rg-veil") as HTMLElement;
+    const stageState = document.getElementById("rg-state") as HTMLElement;
+    const jumpBtn = document.getElementById("rg-jump-btn") as HTMLButtonElement;
+    const resetBtn = document.getElementById("rg-reset") as HTMLButtonElement;
+    const legendEl = document.getElementById("rg-legend") as HTMLElement;
 
-    const responses: Record<string, string> = {
-      "who-am-i":
-        "I'm Isa, Product & UX Designer, MSc in Management of Innovation.\nI turn ambiguous problems into testable prototypes, then stay close through build so nothing gets lost between design and what actually ships.",
-      "what-i-do":
-        "<span class='k'>Product discovery</span>\nturning vague business asks into prototypes people can actually test\n\n<span class='k'>AI-native workflow</span>\nusing Claude, Gemini & Figma AI to keep design and dev docs in sync\n\n<span class='k'>No-code build</span>\nshipping working MVPs myself in Bubble.io, not just mockups\n\n<span class='k'>Facilitation</span>\nrunning startup hackathons & co-design workshops under pressure",
-      experience:
-        "<span class='k'>2023 to now</span>\nProduct & UX Designer @ CodicePlastico\n\n<span class='k'>2025 to now</span>\nFounder @ Digital People (80+ member tech community)\n\n<span class='k'>2025 to now</span>\nHackathon Facilitator @ Sprintaly\n\n<span class='k'>2021 to now</span>\nFreelance Product Designer & No-code Builder\n\n<span class='k'>2020 to 21</span>\nProduct Lead & Co-founder, Mimiroo (Startup Geeks Incubator)",
-      skills:
-        "<span class='k'>Design & Research</span>\nUX Research, Wireframing & Prototyping, UI Design, Usability Testing\n\n<span class='k'>Strategy</span>\nAs-is & Competitor Analysis, Market Research\n\n<span class='k'>Facilitation</span>\nCo-design Workshops, Hackathon Facilitation\n\n<span class='k'>Tools</span>\nFigma, Bubble.io, Framer, Webflow, Claude, VS Code",
-      "off-duty":
-        "Off the clock: yoga, running (slowly, but consistently), and making pizza that doesn't always come out right.",
-      help: "Try one of: who-am-i, what-i-do, experience, work, skills, off-duty, resume, email, linkedin",
-      work: "Five real projects I've worked on, across AI SaaS, retail, fintech and facility management.\nI can't share everything about each one, but <span class='k jump-link' data-jump='work'>jump to Selected Work ↓</span> and click through for what I can show.",
-    };
+    const CHAR_X = 150;
+    const GROUND_Y = 200;
+    const ITEM_Y = 130; // must be airborne to reach this
+    const CATCH_RADIUS = 48;
+    const SCROLL_SPEED = 230; // px/sec, shared by ground ticks and the item so they can never drift out of sync
+    const JUMP_DURATION = 0.55; // sec
+    const JUMP_HEIGHT = 78;
+    const TICK_GAP = 24;
+    const VIEW_W = 900;
+    const SVGNS = "http://www.w3.org/2000/svg";
 
-    const commandList = [
-      "who-am-i", "what-i-do", "experience", "work", "skills",
-      "off-duty", "resume", "email", "linkedin", "help", "clear",
-    ];
-
-    const synonyms: Record<string, string> = {
-      cv: "resume",
-      curriculum: "resume",
-      "curriculum vitae": "resume",
-      contact: "email",
-      contatti: "email",
-      reach: "email",
-      projects: "work",
-      progetti: "work",
-      portfolio: "work",
-      "case studies": "work",
-      casestudies: "work",
-      about: "who-am-i",
-      bio: "who-am-i",
-      intro: "who-am-i",
-      services: "what-i-do",
-      capabilities: "what-i-do",
-    };
-
-    function levenshtein(a: string, b: string) {
-      const m = a.length, n = b.length;
-      const dp: number[][] = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
-      for (let i = 0; i <= m; i++) dp[i][0] = i;
-      for (let j = 0; j <= n; j++) dp[0][j] = j;
-      for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-          dp[i][j] = a[i - 1] === b[j - 1]
-            ? dp[i - 1][j - 1]
-            : 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
-        }
-      }
-      return dp[m][n];
+    let worldOffset = 0;
+    const tickCount = Math.ceil(VIEW_W / TICK_GAP) + 2;
+    const ticks: SVGRectElement[] = [];
+    for (let i = 0; i < tickCount; i++) {
+      const t = document.createElementNS(SVGNS, "rect");
+      t.setAttribute("class", "rg-ground-tick");
+      t.setAttribute("y", String(GROUND_Y));
+      t.setAttribute("width", "10");
+      t.setAttribute("height", "2");
+      groundTicksEl.appendChild(t);
+      ticks.push(t);
+    }
+    function layoutTicks() {
+      const shift = ((worldOffset % TICK_GAP) + TICK_GAP) % TICK_GAP;
+      ticks.forEach((t, i) => t.setAttribute("x", String(i * TICK_GAP - shift - TICK_GAP)));
     }
 
-    function closestCommand(cmd: string): string | null {
-      const candidates = [...commandList, ...Object.keys(synonyms)];
-      let best: string | null = null;
-      let bestDist = Infinity;
-      candidates.forEach((c) => {
-        const d = levenshtein(cmd, c);
-        if (d < bestDist) { bestDist = d; best = c; }
+    const HILL_TILE = 300, HILL_PARALLAX = 0.35;
+    const CLOUD_TILE = 260, CLOUD_PARALLAX = 0.55;
+    const hills: SVGPathElement[] = [];
+    const hillCount = Math.ceil(VIEW_W / HILL_TILE) + 2;
+    for (let i = 0; i < hillCount; i++) {
+      const h = document.createElementNS(SVGNS, "path");
+      h.setAttribute("class", "rg-hill");
+      h.setAttribute("d", "M 0 0 Q 75 -46 150 0 Q 225 -30 300 0 L 300 40 L 0 40 Z");
+      sceneryEl.appendChild(h);
+      hills.push(h);
+    }
+    const clouds: SVGGElement[] = [];
+    const cloudCount = Math.ceil(VIEW_W / CLOUD_TILE) + 2;
+    for (let i = 0; i < cloudCount; i++) {
+      const c = document.createElementNS(SVGNS, "g") as unknown as SVGGElement;
+      c.setAttribute("class", "rg-cloud");
+      c.innerHTML = '<rect x="0" y="0" width="26" height="7" rx="3.5"></rect><rect x="8" y="-5" width="16" height="7" rx="3.5"></rect>';
+      sceneryEl.appendChild(c);
+      clouds.push(c);
+    }
+    function layoutScenery() {
+      const hillShift = (((worldOffset * HILL_PARALLAX) % HILL_TILE) + HILL_TILE) % HILL_TILE;
+      hills.forEach((h, i) => {
+        h.setAttribute("transform", `translate(${i * HILL_TILE - hillShift - HILL_TILE},${GROUND_Y - 40})`);
       });
-      if (!best || bestDist > 2) return null;
-      return synonyms[best] || best;
+      const cloudShift = (((worldOffset * CLOUD_PARALLAX) % CLOUD_TILE) + CLOUD_TILE) % CLOUD_TILE;
+      clouds.forEach((c, i) => {
+        c.setAttribute("transform", `translate(${i * CLOUD_TILE - cloudShift - CLOUD_TILE},${40 + (i % 3) * 18})`);
+      });
     }
 
-    const phraseMatches: { test: RegExp; target: string }[] = [
-      { test: /years? of experience|how (long|many years)/, target: "experience" },
-      { test: /what tools|tech stack|which tools|stack do you use/, target: "skills" },
-      { test: /how (can|do) i (contact|reach)|get in touch|talk to you|speak with you|hire you/, target: "email" },
-      { test: /what (projects|work) have you|show me (your work|projects)|see your work|case stud/, target: "work" },
-      { test: /who are you|tell me about yourself/, target: "who-am-i" },
-      { test: /what do you do|your role|your job/, target: "what-i-do" },
-      { test: /download.*(cv|resume)|see your resume|see your cv/, target: "resume" },
-    ];
-
-    function matchPhrase(cmd: string): string | null {
-      const hit = phraseMatches.find((p) => p.test.test(cmd));
-      return hit ? hit.target : null;
-    }
-
-    const actions: Record<string, () => void> = {
-      resume: () => window.open("https://drive.google.com/file/d/1BTYYnIWpKvz0lza_J3MkC6NBpez5lSQr/view", "_blank"),
-      email: () => { window.location.href = "mailto:isabellabonora1@gmail.com"; },
-      linkedin: () => window.open("https://www.linkedin.com/in/isabella-bonora/", "_blank"),
+    const order = ["athletics", "falsestart", "economics", "masters", "startup", "uxnocode", "product", "now"];
+    const content: Record<string, { tag: string; period: string; text: string }> = {
+      athletics: {
+        tag: "athletics", period: "growing up in Italy",
+        text: "Born in 1997. Years of competitive athletics before I knew what a career even was. Training was the first thing that was ever fully mine.",
+      },
+      falsestart: {
+        tag: "false start", period: "2016, after high school",
+        text: "A year studying Languages for Business, then a summer working in a B&B in the middle of nowhere in Scotland, before switching direction entirely.",
+      },
+      economics: {
+        tag: "economics & business", period: "2017 to 2020",
+        text: "BSc in Business Administration, University of Brescia. The switch that actually stuck.",
+      },
+      masters: {
+        tag: "master's, milan", period: "2020 to 2022",
+        text: "MSc Management of Innovation & Entrepreneurship, University of Milan. Thesis on Lean UX in early-stage startups.",
+      },
+      startup: {
+        tag: "startup & incubator", period: "2020 to 2021",
+        text: "Co-founded Mimiroo, an edtech startup, inside a startup incubator during the Master's. This is where discovering design and development could happen in the same project changed everything after.",
+      },
+      uxnocode: {
+        tag: "ux & no-code", period: "2021 to 2023",
+        text: "A UX/UI Design Master alongside freelance work: going deep on UX research and prototyping while shipping real, working products for early-stage startups using no-code tools like Bubble.io.",
+      },
+      product: {
+        tag: "product, ux & community", period: "2023 to now",
+        text: "Working as a Product & UX Designer, leading discovery for B2B and B2C platforms. Alongside that: founded an 80+ person tech community (Digital People) in Northern Italy, facilitate startup hackathons, and give talks on UX and AI at events like Product Heroes and XPUG.",
+      },
+      now: {
+        tag: "now: europe", period: "today",
+        text: "Based wherever I happen to be in Europe at the moment. Laptop, curiosity, and a stubborn habit of showing up.",
+      },
     };
 
-    const actionMessages: Record<string, string> = {
-      resume: "Opening CV...",
-      email: "Opening your email client...",
-      linkedin: "Opening LinkedIn in a new tab...",
-    };
-
-    let typeTimer: ReturnType<typeof setInterval> | null = null;
-
-    function typeHTML(html: string, el: HTMLElement, prefix?: string) {
-      if (typeTimer) clearInterval(typeTimer);
-      el.innerHTML = prefix || "";
-      const tokens = html.match(/<[^>]+>|[\s\S]/g) || [];
-      let i = 0;
-      typeTimer = setInterval(() => {
-        if (i >= tokens.length) {
-          if (typeTimer) clearInterval(typeTimer);
-          return;
-        }
-        el.innerHTML += tokens[i];
-        i++;
-      }, 12);
-    }
-
-    const terminalLabel = document.getElementById("terminal-label") as HTMLElement;
-
-    const history: string[] = [];
-    let historyIndex = 0;
-
-    function runCommand(raw: string) {
-      const cmd = raw.trim().toLowerCase();
-      if (!cmd) return;
-      history.push(cmd);
-      historyIndex = history.length;
-      if (cmd === "clear") {
-        output.innerHTML = "";
-        terminalLabel.textContent = "isa@portfolio — zsh";
-        return;
-      }
-      const resolved = synonyms[cmd] || matchPhrase(cmd) || cmd;
-      if (actions[resolved]) {
-        typeHTML(actionMessages[resolved], output);
-        terminalLabel.textContent = `isa@portfolio — ${resolved}`;
-        setTimeout(actions[resolved], 500);
-      } else if (responses[resolved]) {
-        typeHTML(responses[resolved], output);
-        terminalLabel.textContent = `isa@portfolio — ${resolved}`;
-      } else {
-        const suggestion = closestCommand(cmd);
-        if (suggestion) {
-          typeHTML(`command not found: ${cmd}\ndid you mean <span class="k jump-cmd" data-cmd="${suggestion}">${suggestion}</span>?`, output);
-        } else {
-          typeHTML(`command not found: ${cmd}\nI probably don't have a command for that, the info's likely somewhere below ↓. Or skip the terminal entirely and <span class="k jump-cmd" data-cmd="email">email me directly</span>, always happy to talk it through :)`, output);
-        }
-        terminalLabel.textContent = "isa@portfolio — zsh";
-      }
-    }
-
-    output.addEventListener("click", (e) => {
-      const cmdLink = (e.target as HTMLElement).closest(".jump-cmd") as HTMLElement | null;
-      if (cmdLink) {
-        runCommand(cmdLink.dataset.cmd as string);
-        return;
-      }
-      const link = (e.target as HTMLElement).closest(".jump-link") as HTMLElement | null;
-      if (!link) return;
-      const targetId = link.dataset.jump as string;
-      const targetEl = document.getElementById(targetId);
-      if (!targetEl) return;
-      targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
-      const heading = targetEl.querySelector("h2");
-      if (heading) {
-        heading.classList.remove("flash-target");
-        void (heading as HTMLElement).offsetWidth;
-        heading.classList.add("flash-target");
-      }
+    order.forEach((id) => {
+      const btn = document.createElement("button");
+      btn.textContent = content[id].tag;
+      btn.dataset.id = id;
+      btn.addEventListener("click", () => openCard(id, true));
+      legendEl.appendChild(btn);
     });
 
-    // .jump-link elements outside the terminal (e.g. the interstitial caption/photo)
-    // aren't inside #cmd-output, so they need their own document-level handler.
+    const caught = new Set<string>();
+    let queue = [...order];
+    let activeItemId: string | null = null;
+    let itemX = VIEW_W + 60;
+    let paused = false;
+    let jumping = false;
+    let jumpStart = 0;
+    let lastFrame: number | null = null;
+    let strideAt = 0;
+    let strideToggle = false;
+    let completionShown = false;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function spriteY() {
+      if (!jumping) return 0;
+      const t = Math.min(1, (performance.now() - jumpStart) / (JUMP_DURATION * 1000));
+      if (t >= 1) { jumping = false; return 0; }
+      return -JUMP_HEIGHT * 4 * t * (1 - t);
+    }
+
+    function spawnNext() {
+      if (queue.length === 0) {
+        activeItemId = null;
+        itemWrap.style.display = "none";
+        stageState.textContent = "all 8 caught, nothing left running";
+        return;
+      }
+      activeItemId = queue.shift() as string;
+      itemX = VIEW_W + 60;
+      itemWrap.setAttribute("transform", `translate(${itemX},${ITEM_Y})`);
+      itemWrap.style.display = "";
+      itemWrap.querySelectorAll<SVGGElement>(".rg-icon").forEach((g) => {
+        g.style.display = g.id === "rg-icon-" + activeItemId ? "" : "none";
+      });
+      stageState.textContent = "running, space to jump";
+    }
+
+    function burstAt(x: number, y: number) {
+      const ring = document.createElementNS(SVGNS, "circle");
+      ring.setAttribute("cx", String(x));
+      ring.setAttribute("cy", String(y));
+      ring.setAttribute("class", "rg-burst");
+      svg.appendChild(ring);
+      ring.addEventListener("animationend", () => ring.remove());
+    }
+
+    function showCompletion() {
+      completionShown = true;
+      activeCard.innerHTML =
+        '<span class="rg-tag">path complete<button class="rg-close" aria-label="close">×</button></span>'
+        + '<span class="rg-period">all 8 caught</span>'
+        + "That's the path so far, ready for what's next. If any of this looks like a fit, I'd like to hear from you."
+        + '<div class="rg-cta-row">'
+        + '<a class="rg-cta" href="mailto:isabellabonora1@gmail.com">email me</a>'
+        + '<a class="rg-cta secondary" href="https://www.linkedin.com/in/isabella-bonora/" target="_blank" rel="noopener">linkedin</a>'
+        + "</div>";
+      activeCard.classList.add("show");
+      cardVeil.classList.add("show");
+      paused = true;
+      activeCard.querySelector(".rg-close")?.addEventListener("click", closeCard);
+      cardVeil.onclick = closeCard;
+    }
+
+    function openCard(id: string, fromLegend: boolean) {
+      const c = content[id];
+      activeCard.innerHTML = '<span class="rg-tag">' + c.tag + '<button class="rg-close" aria-label="close">×</button></span>'
+        + '<span class="rg-period">' + c.period + "</span>" + c.text;
+      activeCard.classList.add("show");
+      cardVeil.classList.add("show");
+      paused = true;
+      if (!caught.has(id)) {
+        caught.add(id);
+        hudCount.textContent = String(caught.size);
+        const legendBtn = legendEl.querySelector<HTMLButtonElement>(`[data-id="${id}"]`);
+        legendBtn?.classList.add("caught");
+        if (!fromLegend) burstAt(CHAR_X, ITEM_Y);
+      }
+      activeCard.querySelector(".rg-close")?.addEventListener("click", closeCard);
+      cardVeil.onclick = closeCard;
+    }
+
+    function closeCard() {
+      activeCard.classList.remove("show");
+      cardVeil.classList.remove("show");
+      paused = false;
+      lastFrame = null;
+      if (activeItemId === null && queue.length === 0) {
+        stageState.textContent = "all 8 caught, nothing left running";
+        if (!completionShown && caught.size === order.length) {
+          setTimeout(showCompletion, 450);
+        }
+      } else if (activeItemId === null) {
+        spawnNext();
+      }
+    }
+
+    function tryJump() {
+      if (paused || jumping) return;
+      jumping = true;
+      jumpStart = performance.now();
+    }
+
+    function onKeydownSpace(e: KeyboardEvent) {
+      if (e.code !== "Space") return;
+      e.preventDefault();
+      if (activeCard.classList.contains("show")) { closeCard(); return; }
+      tryJump();
+    }
+    document.addEventListener("keydown", onKeydownSpace);
+    jumpBtn.addEventListener("click", tryJump);
+
+    function onStagePointerDown(e: PointerEvent) {
+      if ((e.target as HTMLElement).closest(".rg-card") || (e.target as HTMLElement).closest(".rg-veil")) return;
+      tryJump();
+    }
+    svgWrap.addEventListener("pointerdown", onStagePointerDown);
+
+    function onReset() {
+      caught.clear();
+      queue = [...order];
+      activeItemId = null;
+      worldOffset = 0;
+      completionShown = false;
+      hudCount.textContent = "0";
+      legendEl.querySelectorAll(".caught").forEach((b) => b.classList.remove("caught"));
+      closeCard();
+      spawnNext();
+    }
+    resetBtn.addEventListener("click", onReset);
+
+    let raf = 0;
+
+    function loop(now: number) {
+      if (lastFrame === null) lastFrame = now;
+      const dt = (now - lastFrame) / 1000;
+      lastFrame = now;
+
+      if (!paused) {
+        worldOffset += SCROLL_SPEED * dt;
+        layoutTicks();
+        layoutScenery();
+
+        if (now - strideAt > 130) { strideToggle = !strideToggle; strideAt = now; }
+        legA.setAttribute("y", strideToggle ? "-7" : "-5");
+        legB.setAttribute("y", strideToggle ? "-5" : "-7");
+
+        if (activeItemId) {
+          itemX -= SCROLL_SPEED * dt;
+          const dx = Math.abs(itemX - CHAR_X);
+          const airborne = jumping && spriteY() < -34;
+          if (dx < CATCH_RADIUS && airborne) {
+            itemWrap.style.display = "none";
+            const caughtId = activeItemId;
+            activeItemId = null;
+            openCard(caughtId, false);
+          } else if (itemX < CHAR_X - CATCH_RADIUS - 20) {
+            queue.push(activeItemId);
+            activeItemId = null;
+            itemWrap.style.display = "none";
+            setTimeout(() => { if (!paused) spawnNext(); }, 900);
+          } else {
+            const bob = Math.sin(now / 300) * 6;
+            itemWrap.setAttribute("transform", `translate(${itemX},${ITEM_Y + bob})`);
+          }
+        }
+      }
+
+      const y = spriteY();
+      sprite.setAttribute("transform", `translate(${CHAR_X},${GROUND_Y + y})`);
+
+      raf = requestAnimationFrame(loop);
+    }
+
+    layoutTicks();
+    layoutScenery();
+    spawnNext();
+    if (reducedMotion) {
+      order.forEach((id) => {
+        caught.add(id);
+        legendEl.querySelector<HTMLButtonElement>(`[data-id="${id}"]`)?.classList.add("caught");
+      });
+      hudCount.textContent = String(order.length);
+      stageState.textContent = "reduced motion: use the list below, all stops already available";
+      itemWrap.style.display = "none";
+    }
+    raf = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      document.removeEventListener("keydown", onKeydownSpace);
+      jumpBtn.removeEventListener("click", tryJump);
+      svgWrap.removeEventListener("pointerdown", onStagePointerDown);
+      resetBtn.removeEventListener("click", onReset);
+    };
+  }, []);
+
+  useEffect(() => {
+    // .jump-link elements (interstitial caption/photo, work summaries, etc.)
+    // scroll to their target section and flash its heading.
     function onDocumentJumpLinkClick(e: MouseEvent) {
-      if (output.contains(e.target as Node)) return;
       const link = (e.target as HTMLElement).closest(".jump-link") as HTMLElement | null;
       if (!link) return;
       e.preventDefault();
@@ -1575,72 +1849,6 @@ export default function Home() {
       }
     }
     document.addEventListener("click", onDocumentJumpLinkClick);
-
-    const ghost = document.getElementById("cmd-ghost") as HTMLElement;
-
-    function updateGhost() {
-      const val = input.value;
-      if (!val) { ghost.innerHTML = ""; return; }
-      const match = commandList.find((c) => c.startsWith(val.toLowerCase()) && c !== val.toLowerCase());
-      if (!match) { ghost.innerHTML = ""; return; }
-      ghost.innerHTML = `<span class="typed">${val}</span>${match.slice(val.length)}`;
-    }
-
-    input.addEventListener("input", updateGhost);
-
-    function onKeydown(e: KeyboardEvent) {
-      if (e.key === "Enter") {
-        runCommand(input.value);
-        input.value = "";
-        updateGhost();
-      } else if (e.key === "Tab") {
-        e.preventDefault();
-        const val = input.value.toLowerCase();
-        const match = commandList.find((c) => c.startsWith(val));
-        if (match) { input.value = match; updateGhost(); }
-      } else if (e.key === "ArrowRight" && input.selectionStart === input.value.length) {
-        const val = input.value;
-        const match = commandList.find((c) => c.startsWith(val.toLowerCase()) && c !== val.toLowerCase());
-        if (match) { input.value = match; updateGhost(); }
-      } else if (e.key === "ArrowUp") {
-        if (history.length === 0) return;
-        e.preventDefault();
-        historyIndex = Math.max(0, historyIndex - 1);
-        input.value = history[historyIndex] || "";
-        updateGhost();
-      } else if (e.key === "ArrowDown") {
-        if (history.length === 0) return;
-        e.preventDefault();
-        historyIndex = Math.min(history.length, historyIndex + 1);
-        input.value = history[historyIndex] || "";
-        updateGhost();
-      }
-    }
-    input.addEventListener("keydown", onKeydown);
-
-    const hintBtns = Array.from(document.querySelectorAll<HTMLButtonElement>(".hint-btn"));
-    const hintHandler = (btn: HTMLButtonElement) => () => {
-      const cmd = btn.dataset.cmd as string;
-      input.value = cmd;
-      updateGhost();
-      input.focus();
-      setTimeout(() => {
-        runCommand(cmd);
-        input.value = "";
-        updateGhost();
-      }, 380);
-    };
-    const hintHandlers = hintBtns.map((btn) => {
-      const handler = hintHandler(btn);
-      btn.addEventListener("click", handler);
-      return { btn, handler };
-    });
-
-    typeHTML(
-      "Just quick shortcuts. Try <span class='k'>who-am-i</span>, or <span class='k'>resume</span> / <span class='k'>email</span> to reach me directly.\nUse <span class='k'>tab</span> to autocomplete, <span class='k'>↑ / ↓</span> for history.",
-      output
-    );
-    input.focus();
 
     // day / night toggle
     const themeToggle = document.getElementById("theme-toggle") as HTMLButtonElement;
@@ -1891,15 +2099,6 @@ export default function Home() {
       },
     };
 
-    // terminal cursor glow
-    const terminalEl = document.getElementById("terminal") as HTMLElement;
-    function onTerminalMove(e: MouseEvent) {
-      const rect = terminalEl.getBoundingClientRect();
-      terminalEl.style.setProperty("--glow-x", `${e.clientX - rect.left}px`);
-      terminalEl.style.setProperty("--glow-y", `${e.clientY - rect.top}px`);
-    }
-    terminalEl.addEventListener("mousemove", onTerminalMove);
-
     const overlay = document.getElementById("panel-overlay") as HTMLElement;
     const panel = document.getElementById("side-panel") as HTMLElement;
     const panelExpand = document.getElementById("panel-expand") as HTMLButtonElement;
@@ -2001,13 +2200,8 @@ export default function Home() {
     document.addEventListener("keydown", onEscape);
 
     return () => {
-      if (typeTimer) clearInterval(typeTimer);
-      input.removeEventListener("input", updateGhost);
-      input.removeEventListener("keydown", onKeydown);
-      hintHandlers.forEach(({ btn, handler }) => btn.removeEventListener("click", handler));
       themeToggle.removeEventListener("click", onThemeToggle);
       window.removeEventListener("scroll", onScroll);
-      terminalEl.removeEventListener("mousemove", onTerminalMove);
       panelExpand.removeEventListener("click", onPanelExpand);
       workHandlers.forEach(({ btn, handler }) => btn.removeEventListener("click", handler));
       pillHandlers.forEach(({ btn, handler }) => btn.removeEventListener("click", handler));
