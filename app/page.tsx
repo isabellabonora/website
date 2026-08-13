@@ -393,7 +393,7 @@ const css = `
     opacity: 0.6;
     margin-bottom: 8px;
   }
-  .rg-card .rg-close { all: unset; cursor: pointer; color: var(--mono-fg); opacity: 0.6; font-size: 0.8rem; padding: 2px 6px; }
+  .rg-card .rg-close { all: unset; cursor: pointer; color: var(--mono-fg); opacity: 0.7; font-size: 1.3rem; line-height: 1; padding: 2px 6px; }
   .rg-card .rg-close:hover { color: var(--accent); opacity: 1; }
   .rg-card .rg-cta-row { display: flex; gap: 8px; margin-top: 14px; }
   .rg-card .rg-cta {
@@ -878,6 +878,45 @@ const css = `
     gap: 8px;
   }
 
+  .work-scroll-cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.2s, gap 0.2s;
+  }
+
+  .work-scroll-cue:hover, .work-scroll-cue:focus-visible {
+    color: var(--accent);
+    gap: 10px;
+  }
+
+  .work-scroll-cue .arrow {
+    display: inline-block;
+    animation: work-scroll-bounce 1.6s ease-in-out infinite;
+  }
+
+  @keyframes work-scroll-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+
+  .topic-pills-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-right: 4px;
+    align-self: center;
+  }
+
   .pill-btn {
     font-family: 'Inter', sans-serif;
     font-size: 0.82rem;
@@ -886,7 +925,12 @@ const css = `
     border-radius: 20px;
     background: none;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.15s;
+  }
+
+  .pill-btn:hover, .pill-btn:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
   }
 
   .pill-design { color: #b5502f; border: 1px solid #b5502f55; }
@@ -1209,15 +1253,20 @@ const bodyHtml = `
   </section>
 
   <div class="topic-pills">
+    <span class="topic-pills-label">Explore by topic:</span>
     <button class="pill-btn pill-design" data-topic="design">Design</button>
     <button class="pill-btn pill-ai" data-topic="ai">AI &amp; No-code</button>
     <button class="pill-btn pill-startup" data-topic="startup">Startup</button>
     <button class="pill-btn pill-community" data-topic="community">Community</button>
   </div>
 
+  <a class="work-scroll-cue" href="#work">
+    See my work below <span class="arrow" aria-hidden="true">↓</span>
+  </a>
+
   <section class="rg-stage" id="road-game">
     <div class="rg-bar">
-      <span id="rg-state">running, space to jump</span>
+      <span id="rg-state">play to discover more about me</span>
       <button id="rg-reset">reset</button>
     </div>
 
@@ -1281,7 +1330,7 @@ const bodyHtml = `
     </div>
 
     <div class="rg-jump-row">
-      <span>space bar to jump, catch what drifts by</span>
+      <span>hit space (or the button) to catch a story from my life</span>
       <button class="rg-jump-btn" id="rg-jump-btn">jump ↑</button>
     </div>
 
@@ -1658,7 +1707,7 @@ export default function Home() {
       if (queue.length === 0) {
         activeItemId = null;
         itemWrap.style.display = "none";
-        stageState.textContent = "all 8 caught, nothing left running";
+        stageState.textContent = "that's all of me, for now";
         return;
       }
       activeItemId = queue.shift() as string;
@@ -1668,7 +1717,7 @@ export default function Home() {
       itemWrap.querySelectorAll<SVGGElement>(".rg-icon").forEach((g) => {
         g.style.display = g.id === "rg-icon-" + activeItemId ? "" : "none";
       });
-      stageState.textContent = "running, space to jump";
+      stageState.textContent = "play to discover more about me";
     }
 
     function burstAt(x: number, y: number) {
@@ -1721,7 +1770,7 @@ export default function Home() {
       paused = false;
       lastFrame = null;
       if (activeItemId === null && queue.length === 0) {
-        stageState.textContent = "all 8 caught, nothing left running";
+        stageState.textContent = "that's all of me, for now";
         if (!completionShown && caught.size === order.length) {
           setTimeout(showCompletion, 450);
         }
