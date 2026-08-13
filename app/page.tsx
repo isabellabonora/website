@@ -964,7 +964,7 @@ const css = `
     top: 0;
     right: 0;
     height: 100%;
-    width: min(460px, 92vw);
+    width: min(560px, 92vw);
     background: var(--bg);
     box-shadow: -18px 0 40px -20px rgba(28, 26, 23, 0.4);
     transform: translateX(100%);
@@ -977,7 +977,7 @@ const css = `
 
   .side-panel.open { transform: translateX(0); }
 
-  .side-panel.expanded { width: min(760px, 96vw); }
+  .side-panel.expanded { width: min(880px, 96vw); }
 
   @media (max-width: 560px) {
     .side-panel { padding: 28px 20px; }
@@ -2181,7 +2181,7 @@ export default function Home() {
       if (caseData.tag) {
         panelTag.textContent = caseData.tag;
         panelTag.style.color = caseData.tagColor || "var(--accent)";
-        panelTag.style.display = "block";
+        panelTag.style.display = "inline-block";
       } else {
         panelTag.style.display = "none";
       }
