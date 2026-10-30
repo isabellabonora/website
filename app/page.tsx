@@ -228,7 +228,33 @@ const css = `
     align-items: center;
     gap: clamp(8px, 2vh, 18px);
     text-align: center;
+    position: relative;
+    isolation: isolate;
   }
+  /* the sidekick's tints, loose in the air around it: they drift on their own,
+     lean away from the cursor and swell a little when the drop is poked (JS) */
+  .hero-aura {
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    top: calc(clamp(84px, 17vh, 210px) / 2);
+    width: min(78vw, 980px);
+    height: min(62vh, 620px);
+    translate: -50% -50%;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .hero-aura span {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: aura-drift 16s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .hero-aura span:nth-child(1) { width: 52%; height: 70%; left: 4%; top: 18%; background: radial-gradient(closest-side, #a8dccf, rgba(168, 220, 207, 0)); }
+  .hero-aura span:nth-child(2) { width: 46%; height: 64%; right: 4%; top: 4%; background: radial-gradient(closest-side, #cbbcf4, rgba(203, 188, 244, 0)); animation-delay: -6s; }
+  .hero-aura span:nth-child(3) { width: 44%; height: 58%; left: 30%; bottom: 0; background: radial-gradient(closest-side, #ffd2bd, rgba(255, 210, 189, 0)); animation-delay: -11s; }
+  [data-theme="dark"] .hero-aura span { opacity: 0.16; }
   .hero-buddy p { font-size: calc(var(--hero-fs) * 0.95); max-width: 16em; line-height: 1.45; }
   .hero-buddy p span { color: var(--ink-soft); }
 
@@ -657,7 +683,7 @@ const css = `
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .compass-aura span { animation: none; }
+    .compass-aura span, .hero-aura span { animation: none; }
   }
 
   /* ---------- WORK ---------- */
@@ -1384,6 +1410,7 @@ const bodyHtml = `
     </div>
 
     <div class="hero-buddy">
+      <div class="hero-aura" id="hero-aura" aria-hidden="true"><span></span><span></span><span></span></div>
       <div class="orb-spot" id="orb-spot"></div>
       <p>Hi, I'm Isa's sidekick. <span>Scroll on, I'll show you around.</span></p>
     </div>
@@ -1632,6 +1659,7 @@ export default function Home() {
 
     const tints = Array.from(svg.querySelectorAll<SVGCircleElement>(".orb-tint"));
     const eyes = svg.querySelector<SVGGElement>("#orb-eyes")!;
+    const aura = document.getElementById("hero-aura");
     const N = 18;
     const R = 62;
     const lean = { x: 0, y: 0 };
@@ -1708,6 +1736,7 @@ export default function Home() {
         if (k >= 1) blinkAt = t + 2.5 + Math.random() * 3.5;
       }
       lid *= 1 - 0.2 * poke; // a slight squint while poked
+      aura?.style.setProperty("transform", `translate(${(-lean.x * 60).toFixed(1)}px, ${(-lean.y * 40).toFixed(1)}px) scale(${(1 + poke * 0.08).toFixed(3)})`);
       eyes.setAttribute("transform", `translate(${(lean.x * 12).toFixed(2)} ${(lean.y * 9).toFixed(2)}) scale(1 ${lid.toFixed(3)})`);
 
       g.setAttribute("transform", `translate(${(lean.x * 6).toFixed(2)} ${(float * 5 + lean.y * 4).toFixed(2)})`);
