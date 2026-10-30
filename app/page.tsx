@@ -973,7 +973,6 @@ const css = `
   .hero-stats > div:nth-child(2) { animation-delay: 0.93s; }
   .hero-stats > div:nth-child(3) { animation-delay: 1.01s; }
   .hero-stats > div:nth-child(4) { animation-delay: 1.09s; }
-  .hero-stats > div:nth-child(5) { animation-delay: 1.17s; }
 
   @media (prefers-reduced-motion: reduce) {
     .rv, .offduty-photos.rv .od-frame { opacity: 1; translate: none; scale: none; rotate: none; filter: none; transition: none; }
@@ -1426,7 +1425,6 @@ const bodyHtml = `
 
     <dl class="hero-stats">
       <div><dt>Years in product</dt><dd>06</dd></div>
-      <div><dt>Case studies</dt><dd>06</dd></div>
       <div><dt>Community members</dt><dd>90+</dd></div>
       <div><dt>Public talks</dt><dd>03</dd></div>
       <div><dt>Hackathons facilitated</dt><dd>02</dd></div>
