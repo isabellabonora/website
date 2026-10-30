@@ -1632,12 +1632,12 @@ export default function Home() {
 
     const tints = Array.from(svg.querySelectorAll<SVGCircleElement>(".orb-tint"));
     const eyes = svg.querySelector<SVGGElement>("#orb-eyes")!;
-    const N = 12;
+    const N = 18;
     const R = 62;
     const lean = { x: 0, y: 0 };
     let target = { x: 0, y: 0 };
-    // poking: when the cursor is over the drop, the side it touches gives way
-    // (a dent, with a bulge opposite) and a quick jiggle runs through it
+    // poking: only the spot under the cursor gives way, a shallow local dent
+    // that quivers for a moment when touched; the rest of the drop stays put
     const pointer = { x: -1e4, y: -1e4 };
     let poke = 0;
     let pokeAngle = 0;
@@ -1683,12 +1683,12 @@ export default function Home() {
       const float = Math.sin(t * 1.1);
       const pts = Array.from({ length: N }, (_, i) => {
         const a = (i / N) * Math.PI * 2;
-        const wobble = 0.018 * Math.sin(t * 0.8 + i * 1.7) + 0.01 * Math.sin(t * 1.5 + i * 2.9);
+        // low harmonics of the angle, so the outline stays smooth however many points it has
+        const wobble = 0.018 * Math.sin(t * 0.8 + a * 2) + 0.01 * Math.sin(t * 1.5 + a * 3 + 1.3);
         const pull = 0.05 * leanMag * Math.max(0, Math.cos(a - leanAngle));
-        const facing = Math.cos(a - pokeAngle);
-        const dent = poke * (-0.22 * Math.max(0, facing) ** 3 + 0.07 * Math.max(0, -facing));
-        const jig = 0.08 * jiggle * Math.sin(t * 13 + i * 2.4);
-        const r = R * (1 + wobble + pull + dent + jig);
+        const near = Math.max(0, Math.cos(a - pokeAngle)) ** 10; // 1 under the cursor, 0 a little way off
+        const dent = -near * (0.1 * poke + 0.03 * jiggle * Math.sin(t * 12));
+        const r = R * (1 + wobble + pull + dent);
         return { x: Math.cos(a) * r * (1 + float * 0.015), y: Math.sin(a) * r * (1 - float * 0.015) };
       });
       shape.setAttribute("d", toPath(pts));
@@ -1707,7 +1707,7 @@ export default function Home() {
         lid = k < 1 ? Math.abs(1 - 2 * k) * 0.9 + 0.1 : 1;
         if (k >= 1) blinkAt = t + 2.5 + Math.random() * 3.5;
       }
-      lid *= 1 - 0.5 * poke; // squints while poked
+      lid *= 1 - 0.2 * poke; // a slight squint while poked
       eyes.setAttribute("transform", `translate(${(lean.x * 12).toFixed(2)} ${(lean.y * 9).toFixed(2)}) scale(1 ${lid.toFixed(3)})`);
 
       g.setAttribute("transform", `translate(${(lean.x * 6).toFixed(2)} ${(float * 5 + lean.y * 4).toFixed(2)})`);
