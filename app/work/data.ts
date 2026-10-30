@@ -23,6 +23,12 @@ export type Project = {
   screensPoints: string[];
   reflection: string;
   color: string;
+  // Recruiter-facing additions; the case page falls back to the fields above when absent.
+  meta?: { year?: string; role: string; team: string; platform: string; tools?: string };
+  glance?: { problem: string; did: string; outcome: string };
+  decisions?: { title: string; chose: string; over?: string; why: string }[];
+  gallery?: { src: string; caption: string }[];
+  outcome?: string;
 };
 
 export const projects: Project[] = [
@@ -30,7 +36,7 @@ export const projects: Project[] = [
     slug: "career-paths-platform",
     num: "01",
     sector: "HR Tech · Internal Product",
-    title: "Turning a career framework into a tool people actually use",
+    title: "Making growth visible: from a career framework to a tool people use",
     tags: ["Product Designer + Developer", "Desktop", "Built with AI"],
     heroQuote: "A career framework that lived in spreadsheets, text files and memory. People wanted to grow, but didn't know how to prove it.",
     teaser: "From interviews to shipped code, designed and built end to end with AI.",
@@ -68,6 +74,59 @@ export const projects: Project[] = [
     ],
     reflection: "The official document and the real process are never the same thing. Interviews moved the goal from calculating progress to helping people prove their value. Designing and building as one person, with AI, collapses the loop between idea, mockup, code and test, but only with clear rules: mockup before code, and every step tested in the browser.",
     color: "rgba(90,75,200,",
+    meta: {
+      year: "2026",
+      role: "End to end, on my own: analysis, UX/UI design and development",
+      team: "The founder and business stakeholders, plus usability tests with real colleagues",
+      platform: "Desktop and mobile web",
+      tools: "FigJam, Figma, Claude Code, React, Elixir, PostgreSQL",
+    },
+    glance: {
+      problem: "The career framework lived in Excel, text files and memory. People couldn't show how they were growing, and the founders had no view of the team.",
+      did: "Ran discovery, modelled the domain, designed every flow and built the module in the real codebase with Claude Code, testing each step in the browser.",
+      outcome: "Checklists and journal notes now live in one tool, so people spend less time on paperwork, and managers see not just levels but how each person wants to grow. Two rounds of usability testing, 31 issues closed before launch.",
+    },
+    decisions: [
+      {
+        title: "Let people choose their own checklist",
+        chose: "Self-selection, starting from the lowest level at the first review and climbing until you stop",
+        over: "A dynamic questionnaire that classifies people automatically",
+        why: "Misclassifying someone is costly, and there are only two real forks in the career paths. The automation wouldn't pay for its complexity.",
+      },
+      {
+        title: "Link work to the checklist with a search, not a menu",
+        chose: "Free search over checklist items, like @mentions in Notion",
+        over: "A hierarchical menu by level and category",
+        why: "When people write a note they often don't know yet which level it belongs to. Search meets them where they are.",
+      },
+      {
+        title: "Three states on the map, not five",
+        chose: "Not reached, waiting for confirmation, confirmed",
+        why: "A full check had to mean \"confirmed in the call\", never \"I passed my own self-assessment\". Fewer states, one meaning each.",
+      },
+      {
+        title: "Eleven reviewer states, four badges",
+        chose: "Waiting, to review, ready for the call, confirmed",
+        why: "I listed every possible state, then kept only the ones the system can really tell apart.",
+      },
+      {
+        title: "A standalone module",
+        chose: "A separate module launched from Scrooge",
+        over: "A week of work integrating it into Scrooge's existing menu",
+        why: "The founder reversed the direction in a call: the company is moving to isolated modules and Scrooge will be redesigned. My first standalone wireframes already pointed that way, so little was thrown away.",
+      },
+    ],
+    gallery: [
+      { src: "/work/career-paths/01-wireframe-review.jpg", caption: "Wireframes of the first review flow, validated with the founder" },
+      { src: "/work/career-paths/02-reviewer-states.jpg", caption: "Eleven reviewer states reduced to four badges" },
+      { src: "/work/career-paths/03-mockup-map.jpg", caption: "Mockup: the career map is the fixed element, only node states change" },
+      { src: "/work/career-paths/04-wizard-checklist.jpg", caption: "The review became a guided wizard: checklist, soft skills, submit" },
+      { src: "/work/career-paths/05-wizard-next-level.jpg", caption: "One level at a time: stop here, or try the next one" },
+      { src: "/work/career-paths/06-ux-analysis.jpg", caption: "A focused UX analysis: inventory, problems, known patterns, proposal" },
+      { src: "/work/career-paths/07-live-map.jpg", caption: "Live: the career map with confirmed, current and draft levels" },
+      { src: "/work/career-paths/08-live-mobile.jpg", caption: "Live on mobile: the checklist with evidence linked from the journal" },
+    ],
+    outcome: "The module automated the checklist process and the journal, so people spend less time proving their work and more time doing it. Managers now receive more than a level: they see how each person wants to grow, what they ask for and what they need, which makes the yearly review a conversation and strengthens the human side of the company.",
   },
   {
     slug: "narrative-landing-page",
@@ -111,6 +170,19 @@ export const projects: Project[] = [
     ],
     reflection: "Freedom in a brief doesn't make work more creative. It makes everyone converge on the same safe answer. The real brief is almost always hidden in one line. The job is finding it, taking it seriously, and having the reasoning to defend where it takes you.",
     color: "rgba(45,58,90,",
+    meta: {
+      year: "2026",
+      role: "Product designer, on my own from brief to delivery",
+      team: "Developers, for the handoff",
+      platform: "Desktop and mobile",
+      tools: "Figma, HTML prototype, AI-assisted workflow",
+    },
+    glance: {
+      problem: "A brief with total creative freedom, a \"wow effect\" and 48 hours, for a startup repositioning its product.",
+      did: "Found the one line in the brief that mattered and turned it into the page's architecture: one comment becoming a customer, step by step.",
+      outcome: "Delivered in 48 hours: desktop, mobile, an animated prototype and every decision documented for the developers.",
+    },
+    outcome: "The page was delivered in 48 hours as a complete package: desktop and mobile layouts, an animated prototype for everything static frames can't show, a small reusable design system and a \"start here\" panel with the reasoning, the assumptions and the A/B tests to run after launch.",
   },
   {
     slug: "warehouse-workflow-manager",
@@ -153,12 +225,23 @@ export const projects: Project[] = [
     ],
     reflection: "If I could go back, I'd have spent more time with night-shift workers, not just day teams. The workflow changed significantly after midnight, and we only discovered this in user testing, not in research. Always interview the edge cases first.",
     color: "rgba(79,140,130,",
+    meta: {
+      year: "2026",
+      role: "UX/UI designer, from research on the floor to the final UI",
+      team: "Client developers and stakeholders, a PM bringing requests, warehouse users testing",
+      platform: "Tablet first",
+    },
+    glance: {
+      problem: "Warehouse teams tracked goods across five systems, and every shift started with a 20-minute reconciliation.",
+      did: "Studied the work on the warehouse floor, designed a tablet-first tool for gloved hands and low light, and merged five systems into one timeline.",
+      outcome: "One shared, real-time view for pickers, managers and dispatch, and shifts that start without the reconciliation.",
+    },
   },
   {
     slug: "smart-financing-application-flow",
     num: "04",
     sector: "Financial Technology",
-    title: "Designing a funding application flow that people could actually complete",
+    title: "Turning a document-heavy funding application into a guided flow",
     tags: ["UX/UI Designer", "Desktop", "FinTech"],
     heroQuote: "Multi-step, multi-document, zero guidance. Most people gave up halfway.",
     heroImage: "/work/v2/funding-flow.jpg",
@@ -195,6 +278,17 @@ export const projects: Project[] = [
     ],
     reflection: "Designing for high-stakes processes is different. When someone is applying for serious funding, they're not just filling a form, they're making an important decision and don't want to get it wrong. Every design choice had to reduce not just friction, but also anxiety.",
     color: "rgba(90,131,166,",
+    meta: {
+      year: "2026",
+      role: "UX/UI designer, from journey mapping to the final flow",
+      team: "Developers, who brought me the clients' requests",
+      platform: "Desktop",
+    },
+    glance: {
+      problem: "Applying for funding meant downloading, filling and uploading documents with no guidance. Most people gave up halfway.",
+      did: "Mapped where people dropped off, turned the form into a guided, conversational flow and designed AI automation for documents and ID data.",
+      outcome: "A flow people complete without external help, with documents generated automatically instead of downloaded and uploaded.",
+    },
   },
   {
     slug: "retail-store-management-tools",
@@ -237,6 +331,17 @@ export const projects: Project[] = [
     ],
     reflection: "Store associates were more tech-savvy than stakeholders assumed. They just had no patience for slow, cluttered UIs. Speed and clarity mattered more than feature richness. Designing for both without compromising either was the real challenge.",
     color: "rgba(198,138,78,",
+    meta: {
+      year: "2026",
+      role: "UX/UI designer for both products, from research to UI",
+      team: "Client developers and stakeholders, a PM bringing requests, store teams testing",
+      platform: "Desktop for managers, mobile for associates",
+    },
+    glance: {
+      problem: "Managers plan in weeks, associates execute in two-hour windows. One interface for both would have failed one of them.",
+      did: "Ran two research tracks, defined the shared data first, then designed two sibling products and tested them across markets and languages.",
+      outcome: "Two tools on one data layer, always in sync, with icon-led navigation that proved faster on the shop floor.",
+    },
   },
   {
     slug: "facility-management-platform",
@@ -279,6 +384,16 @@ export const projects: Project[] = [
     ],
     reflection: "The hardest part wasn't designing the new experience. It was convincing stakeholders that removing visible features could increase the product's value. Simplicity is a hard sell to teams who built every feature for a reason. Data from user testing was the only language that worked.",
     color: "rgba(154,127,176,",
+    meta: {
+      role: "UX/UI designer, from task analysis to the redesign",
+      team: "The client directly, who brought me their users' feedback",
+      platform: "Desktop SaaS",
+    },
+    glance: {
+      problem: "A feature-rich platform that users worked around with spreadsheets, sticky notes and WhatsApp groups.",
+      did: "Analysed 12 common tasks, reorganised the information architecture with card sorting, and moved power features behind progressive disclosure.",
+      outcome: "Core tasks went from 4+ screens to 1 or 2 interactions, without removing any feature.",
+    },
   },
 ];
 
