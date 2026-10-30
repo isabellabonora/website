@@ -719,7 +719,21 @@ const css = `
     padding: 24px 0;
     border-top: 1px solid var(--line);
   }
-  .xp:last-child { border-bottom: 1px solid var(--line); }
+  .xp:last-child, .xp:has(+ .xp-group) { border-bottom: 1px solid var(--line); }
+  .xp-group {
+    margin: 0 0 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .xp + .xp-group { margin-top: 56px; }
+  .xp-compact { padding: 16px 0; }
+  #portfolio-root .xp-compact h3 { font-size: 1.12rem; }
+  .xp-compact .xp-period { padding-top: 4px; }
+  .xp-compact .work-tag { padding-top: 5px; }
+  .xp-compact .xp-main p { margin-top: 6px; font-size: 0.9rem; }
 
   .xp-period {
     grid-area: period;
@@ -1388,54 +1402,62 @@ ${compassHtml}
   <section class="sec reveal" id="experience">
     <h2 class="sec-label"><span>02</span>Experience</h2>
     <div class="sec-body">
+      <div class="xp-group">Product work</div>
       <div class="xp">
         <div class="xp-period">2023 → now</div>
         <div class="xp-main">
           <h3>Product &amp; UX Designer</h3>
           <div class="xp-org">CodicePlastico</div>
-          <p>Lead end-to-end product discovery for complex B2B and B2C platforms, turning ambiguous business requirements into testable prototypes. Integrate AI workflows (Claude, Gemini, Figma AI) to keep design and dev docs in sync, and work directly with developers to ensure smooth handoffs.</p>
+          <p>End-to-end UX for B2B and B2C products: from co-design workshops with clients to hi-fi prototypes and developer handoff. AI is part of the daily workflow (Claude, Gemini, Figma AI), to get from requirements to something testable faster.</p>
         </div>
         <div class="work-tag tag-design">Design</div>
       </div>
-
-      <div class="xp">
-        <div class="xp-period">2025 → now</div>
-        <div class="xp-main">
-          <h3>Founder &amp; Community Organizer</h3>
-          <div class="xp-org">Digital People</div>
-          <p>Founded and scaled a tech community of <span class="count-up" data-target="90">0</span>+ members, organizing monthly meetups and speaking on AI-native design at events like Product Heroes and XPUG.</p>
-        </div>
-        <div class="work-tag tag-community">Community</div>
-      </div>
-
-      <div class="xp">
-        <div class="xp-period">2025 → now</div>
-        <div class="xp-main">
-          <h3>Hackathon Facilitator</h3>
-          <div class="xp-org">Sprintaly</div>
-          <p>Coach multidisciplinary teams through problem framing, Lean validation and rapid prototyping to deliver pitch-ready MVPs in 48 to 72 hour sprints, helping them turn complex ideas into investor-ready value propositions.</p>
-        </div>
-        <div class="work-tag tag-startup">Startup</div>
-      </div>
-
       <div class="xp">
         <div class="xp-period">2021 → now</div>
         <div class="xp-main">
           <h3>Product Designer &amp; No-code Builder</h3>
           <div class="xp-org">Freelance</div>
-          <p>Launched multiple production-ready MVPs for early-stage startups, from problem validation and UX research through functional Bubble.io implementation. Long-term partner for a growing startup, evolving its MVP into a scaled platform.</p>
+          <p>Design and build MVPs for early-stage startups in Bubble.io, from user research to production. Long-term partner for one startup, growing its MVP into a scaled platform.</p>
         </div>
         <div class="work-tag tag-ai">No-code</div>
       </div>
-
       <div class="xp">
         <div class="xp-period">2020 → 2021</div>
         <div class="xp-main">
-          <h3>Product Lead &amp; Co-founder</h3>
+          <h3>Co-founder</h3>
           <div class="xp-org">Mimiroo, Startup Geeks Incubator</div>
-          <p>End-to-end development of an EdTech project: defined the business model and value proposition, ran competitor analysis, and built/tested a functional MVP in Bubble.io to validate core assumptions with real users.</p>
+          <p>A platform matching tutors and students, built inside the Startup Geeks incubator. Led validation and research, then designed, built and tested the MVP myself.</p>
         </div>
         <div class="work-tag tag-startup">Startup</div>
+      </div>
+
+      <div class="xp-group">Alongside</div>
+      <div class="xp xp-compact">
+        <div class="xp-period">2026 → now</div>
+        <div class="xp-main">
+          <h3>Startup Mentor</h3>
+          <div class="xp-org">Startup Geeks</div>
+          <p>Back at the incubator that hosted Mimiroo, now mentoring early-stage founders.</p>
+        </div>
+        <div class="work-tag tag-startup">Startup</div>
+      </div>
+      <div class="xp xp-compact">
+        <div class="xp-period">2025 → now</div>
+        <div class="xp-main">
+          <h3>Hackathon Facilitator</h3>
+          <div class="xp-org">Sprintaly</div>
+          <p>Two editions of a residential hackathon in Turin for under-30s, from problem framing to MVP.</p>
+        </div>
+        <div class="work-tag tag-startup">Startup</div>
+      </div>
+      <div class="xp xp-compact">
+        <div class="xp-period">2025 → now</div>
+        <div class="xp-main">
+          <h3>Founder &amp; Community Organizer</h3>
+          <div class="xp-org">Digital People</div>
+          <p>A <span class="count-up" data-target="90">0</span>+ member community for tech people in Trentino-Alto Adige. Monthly meetups, talks on AI-native design.</p>
+        </div>
+        <div class="work-tag tag-community">Community</div>
       </div>
     </div>
   </section>
@@ -1451,7 +1473,7 @@ ${compassHtml}
     <h2 class="sec-label"><span>03</span>Education</h2>
     <div class="sec-body">
       <div class="edu">
-        <div class="edu-period">2021 → 2022</div>
+        <div class="edu-period">2021 → 2023</div>
         <div>
           <h3>UX / UI Design Master</h3>
           <p class="edu-school">Start2Impact University</p>
@@ -1880,12 +1902,12 @@ export default function Home() {
     if (!buddy || !say || !heroSpot || !endSpot) return;
 
     const lines: Record<string, string> = {
-      work: "Scroll to turn the dial. Each stop is a case study.",
-      experience: "Where the work happened.",
+      work: "Isa found out at an incubator that designing and building go together. Never stopped.",
+      experience: "Fun fact: Startup Geeks incubated Isa's first startup. Now Isa mentors there.",
       interstitial: "That's Isa on stage at XPUG.",
-      education: "The theory behind the practice.",
-      skills: "The toolbox.",
-      offduty: "And when Isa's off the clock.",
+      education: "Isa started with a year of business languages. Wrong path, quick switch.",
+      skills: "First job abroad? A guesthouse in the middle of nowhere, Scotland.",
+      offduty: "Isa was racing on the track before knowing what a career was.",
     };
     const sections = Object.keys(lines).map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
     type Side = "below" | "right" | "above";
