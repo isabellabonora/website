@@ -14,14 +14,14 @@ const css = `
   }
 
   :root[data-theme="dark"] {
-    --bg: #12151a;
-    --ink: #eef0f2;
-    --ink-soft: #8d97a3;
-    --accent: #ff8a65;
-    --line: #262c35;
-    --mono-bg: #0a0c10;
-    --mono-fg: #eef0f2;
-    --chip: #1a1f27;
+    --bg: #16130f;
+    --ink: #f2ede4;
+    --ink-soft: #a39a8d;
+    --accent: #f08a62;
+    --line: #2f2a23;
+    --mono-bg: #0d0b09;
+    --mono-fg: #f2ede4;
+    --chip: #211d18;
   }
 
   html, body { margin: 0; padding: 0; box-sizing: border-box; cursor: auto; overflow-x: visible; }
@@ -45,9 +45,9 @@ const css = `
   }
 
   #portfolio-root main {
-    max-width: 680px;
+    max-width: calc(1120px + 2 * clamp(16px, 4vw, 48px));
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 clamp(16px, 4vw, 48px);
   }
 
   #portfolio-root h1, #portfolio-root h2, #portfolio-root h3 {
@@ -71,8 +71,6 @@ const css = `
     grid-template-rows: auto minmax(0, 1fr) auto;
     grid-template-areas: "hello hello" "buddy buddy" "bio stats";
     column-gap: 48px;
-    opacity: 0;
-    animation: rise 0.9s ease forwards;
   }
 
   @keyframes rise {
@@ -234,11 +232,52 @@ const css = `
   .hero-buddy p { font-size: calc(var(--hero-fs) * 0.95); max-width: 16em; line-height: 1.45; }
   .hero-buddy p span { color: var(--ink-soft); }
 
-  .orb {
+  .orb, .orb-spot {
     width: clamp(84px, 17vh, 210px);
     height: clamp(84px, 17vh, 210px);
     overflow: visible;
   }
+  .orb-spot { flex: none; }
+
+  /* ---------- TRAVELLING DROP ---------- */
+  /* The drop isn't part of the hero: it's fixed to the viewport and springs
+     from spot to spot (the hero's .orb-spot, a dock per section, the footer).
+     Moved with transform from JS; scale shrinks it from hero size. */
+  .buddy {
+    position: fixed;
+    z-index: 180;
+    left: 0;
+    top: 0;
+    transform-origin: 0 0;
+    pointer-events: none;
+    will-change: transform;
+    animation: buddy-in 1.1s ease 0.35s both;
+  }
+  .buddy .orb { display: block; }
+  @keyframes buddy-in { from { opacity: 0; } to { opacity: 1; } }
+  .buddy-say {
+    position: fixed;
+    z-index: 181;
+    left: 0;
+    top: 0;
+    max-width: 190px;
+    padding: 8px 13px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: inset 0 1px 0 #fff, 0 12px 28px -16px rgba(60, 40, 25, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--ink);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .buddy-say.on { opacity: 1; }
+  [data-theme="dark"] .buddy-say { background: rgba(26, 31, 39, 0.8); border-color: rgba(255, 255, 255, 0.14); box-shadow: none; }
 
   .hero-bio {
     grid-area: bio;
@@ -375,6 +414,30 @@ const css = `
 
   .flash-target { animation: flash-highlight 0.5s ease 2; }
 
+  /* Opening a case: the active card lifts off the compass and grows to the
+     centre while the page fades to cream; the case page picks it up from there. */
+  .compass-fly {
+    position: fixed !important;
+    z-index: 400 !important;
+    margin: 0;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: left 0.6s cubic-bezier(0.65, 0, 0.35, 1), top 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+      width 0.6s cubic-bezier(0.65, 0, 0.35, 1), height 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .page-veil {
+    position: fixed;
+    inset: 0;
+    z-index: 399;
+    background: var(--bg);
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
+  }
+  .page-veil.on { opacity: 1; }
+
   /* ---------- WORK COMPASS ---------- */
   /* Glass compass: a frosted rim over soft colour (the sidekick's tints),
      project cards in glass frames riding an arc that turns with the scroll. */
@@ -478,10 +541,7 @@ const css = `
     transition: color 0.4s ease, opacity 0.4s ease;
   }
   .compass-name:hover span, .compass-name.is-active span { opacity: 1; }
-  .compass-name.is-active.tag-ai span { color: #3d726b; }
-  .compass-name.is-active.tag-design span { color: #b5502f; }
-  .compass-name.is-active.tag-startup span { color: #8a3450; }
-  .compass-name.is-active.tag-community span { color: #a9822a; }
+  .compass-name.is-active span { color: var(--accent); }
   .compass-name:focus-visible span { outline: 1px solid var(--accent); outline-offset: 4px; }
   .compass-needle {
     position: absolute;
@@ -522,7 +582,7 @@ const css = `
     border-radius: 24px;
     background: linear-gradient(160deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.4));
     border: 1px solid rgba(255, 255, 255, 0.9);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 30px 60px -30px rgba(40, 60, 70, 0.35);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 30px 60px -30px rgba(60, 40, 25, 0.35);
     transform-origin: 50% 100%;
     will-change: transform, opacity, filter;
   }
@@ -563,7 +623,7 @@ const css = `
     border-radius: 999px;
     border: 1px solid rgba(255, 255, 255, 0.9);
     background: rgba(255, 255, 255, 0.7);
-    box-shadow: 0 6px 18px -10px rgba(40, 60, 70, 0.35);
+    box-shadow: 0 6px 18px -10px rgba(60, 40, 25, 0.35);
     color: var(--ink);
     font-size: 0.85rem;
     text-decoration: none;
@@ -571,6 +631,8 @@ const css = `
   }
   .compass-cta span { transition: transform 0.25s ease; }
   .compass-cta:hover { background: rgba(255, 255, 255, 0.8); transform: translateY(-1px); }
+  [data-theme="dark"] .compass-cta { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.16); box-shadow: none; }
+  [data-theme="dark"] .compass-cta:hover { background: rgba(255, 255, 255, 0.12); }
   .compass-cta:hover span { transform: translateX(3px); }
 
   @media (max-width: 560px) {
@@ -593,184 +655,278 @@ const css = `
     letter-spacing: 0.06em;
   }
 
-  .work-tag.tag-ai { color: #3d726b; }
-  .work-tag.tag-design { color: #b5502f; }
-  .work-tag.tag-startup { color: #8a3450; }
-  .work-tag.tag-community { color: #a9822a; }
+  .work-tag { color: var(--accent); }
 
   /* ---------- SECTIONS ---------- */
+  /* Below the compass: the case-study column, a sticky mono label on the left
+     and the content on the right. Hairline rows like the hero stats; glass and
+     the sidekick's tints only where there's something to hold (photos). */
   section.block {
-    padding: 56px 0;
-    border-top: 1px solid var(--line);
+    padding: 56px 0 0;
   }
 
-  section.block h2 {
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+  #portfolio-root section.block h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--accent);
-    font-family: 'Inter', sans-serif;
+    color: var(--ink-soft);
     margin-bottom: 28px;
   }
 
-  .entry {
+  section.sec {
     display: grid;
-    grid-template-columns: 130px 16px 1fr;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 30px;
-    position: relative;
-    padding: 12px 14px;
-    margin-left: -14px;
-    margin-right: -14px;
-    border-radius: 10px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2.6fr);
+    gap: clamp(24px, 6vw, 96px);
+    padding: clamp(72px, 10vw, 128px) 0 0;
   }
 
-  .entry:last-child { margin-bottom: 0; }
-
-  .entry .period {
-    font-size: 0.82rem;
-    color: var(--ink-soft);
+  #portfolio-root .sec-label {
+    position: sticky;
+    top: 88px;
+    align-self: start;
+    display: flex;
+    gap: 10px;
     font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
   }
+  .sec-label span { color: var(--ink-soft); }
 
-  #experience .entry .dot {
-    justify-self: center;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--accent);
-    border: 2px solid var(--bg);
-  }
+  .sec-body { min-width: 0; }
 
-  .entry .role-title {
+  #portfolio-root .sec-body h3 {
     font-family: 'Fraunces', serif;
-    font-size: 1.15rem;
-    font-weight: 500;
+    font-weight: 400;
+    letter-spacing: -0.01em;
   }
 
-  .entry .org {
-    grid-column: 3;
-    color: var(--ink-soft);
-    font-size: 0.92rem;
-    margin-top: 2px;
+  @media (max-width: 760px) {
+    section.sec { grid-template-columns: 1fr; gap: 20px; }
+    #portfolio-root .sec-label { position: static; }
   }
 
-  .entry p.desc {
-    grid-column: 3;
-    margin-top: 8px;
-    font-size: 0.95rem;
-    color: var(--ink-soft);
-    max-width: 52ch;
+  /* ---------- EXPERIENCE ---------- */
+  .xp {
+    display: grid;
+    grid-template-columns: 116px minmax(0, 1fr) auto;
+    grid-template-areas: "period main tag";
+    column-gap: 24px;
+    padding: 24px 0;
+    border-top: 1px solid var(--line);
   }
+  .xp:last-child { border-bottom: 1px solid var(--line); }
+
+  .xp-period {
+    grid-area: period;
+    padding-top: 7px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.76rem;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .xp-main { grid-area: main; }
+  #portfolio-root .xp h3 { font-size: 1.35rem; line-height: 1.25; }
+  .xp-org { margin-top: 2px; font-size: 0.92rem; color: var(--ink-soft); }
+  .xp-main p { margin-top: 12px; max-width: 58ch; font-size: 0.95rem; color: var(--ink-soft); }
+  .xp .work-tag { grid-area: tag; padding-top: 8px; white-space: nowrap; }
 
   @media (max-width: 560px) {
-    .entry {
-      grid-template-columns: 1fr;
-      align-items: start;
-      gap: 6px;
+    .xp {
+      grid-template-columns: 1fr auto;
+      grid-template-areas: "period tag" "main main";
+      row-gap: 8px;
     }
-    .entry .dot { display: none; }
-    .entry .org, .entry p.desc { grid-column: 1; }
+    .xp-period, .xp .work-tag { padding-top: 0; }
+  }
+
+  /* ---------- EDUCATION ---------- */
+  .edu {
+    display: grid;
+    grid-template-columns: 116px minmax(0, 1fr);
+    column-gap: 24px;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+  }
+  .edu:last-child { border-bottom: 1px solid var(--line); }
+  .edu-period {
+    padding-top: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.76rem;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  #portfolio-root .edu h3 { font-size: 1.12rem; line-height: 1.3; }
+  .edu-school { font-size: 0.92rem; color: var(--ink-soft); }
+  .edu-thesis { margin-top: 8px; max-width: 60ch; font-size: 0.86rem; color: var(--ink-soft); }
+
+  @media (max-width: 560px) {
+    .edu { grid-template-columns: 1fr; row-gap: 6px; }
+    .edu-period { padding-top: 0; }
   }
 
   /* ---------- SKILLS ---------- */
-  .skill-row {
+  /* No boxes: three columns on the same hairline as experience and education. */
+  .skill-cards {
     display: grid;
-    grid-template-columns: 130px 1fr;
-    gap: 20px;
-    margin-bottom: 18px;
-    font-size: 0.92rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 32px;
   }
-
-  .skill-row:last-child { margin-bottom: 0; }
-
-  .skill-row .label {
-    color: var(--accent);
+  .skill-card {
+    padding: 18px 0 4px;
+    border-top: 1px solid var(--line);
+  }
+  .skill-card-label {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-    padding-top: 2px;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
   }
+  .skill-card ul { list-style: none; margin-top: 12px; display: grid; gap: 6px; font-size: 0.95rem; }
 
-  .skill-row .items { color: var(--ink-soft); }
-
-  .tools-row {
-    margin-top: 24px;
-    padding-top: 24px;
+  .tools {
+    margin-top: 32px;
+    padding-top: 18px;
     border-top: 1px solid var(--line);
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 10px;
-    font-size: 0.86rem;
+    gap: 8px;
   }
-
-  .tools-row span {
-    color: var(--ink);
-    background: var(--chip);
+  .tools span {
+    padding: 5px 13px;
+    border-radius: 999px;
     border: 1px solid var(--line);
-    padding: 3px 10px;
-    border-radius: 20px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
   }
 
-  @media (max-width: 560px) {
-    .skill-row { grid-template-columns: 1fr; gap: 4px; }
+  @media (max-width: 760px) {
+    .skill-cards { grid-template-columns: 1fr; }
+    .skill-card + .skill-card { margin-top: 20px; }
   }
 
   /* ---------- OFF DUTY ---------- */
   .offduty-text {
-    font-size: 1.02rem;
+    font-size: 1.05rem;
+    max-width: 52ch;
     color: var(--ink-soft);
-    max-width: 56ch;
   }
-
   .offduty-text strong { color: var(--ink); font-weight: 500; }
 
   .offduty-photos {
-    margin-top: 28px;
+    position: relative;
+    margin-top: 40px;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
   }
-
-  .offduty-photos img {
+  .offduty-photos::before {
+    /* the sidekick's tints, softly, behind the frames */
+    content: "";
+    position: absolute;
+    inset: -14% -6%;
+    z-index: -1;
+    background:
+      radial-gradient(closest-side, rgba(168, 220, 207, 0.45), transparent) 0% 40% / 45% 90% no-repeat,
+      radial-gradient(closest-side, rgba(203, 188, 244, 0.4), transparent) 60% 0% / 45% 80% no-repeat,
+      radial-gradient(closest-side, rgba(255, 210, 189, 0.45), transparent) 100% 100% / 45% 90% no-repeat;
+  }
+  [data-theme="dark"] .offduty-photos::before { opacity: 0.3; }
+  .od-frame {
+    padding: 7px;
+    border-radius: 18px;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.45));
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 24px 44px -28px rgba(60, 40, 25, 0.4);
+  }
+  [data-theme="dark"] .od-frame { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.16); }
+  /* a loose stack: alternate frames sit a little lower and tilt the other way */
+  .od-frame:nth-child(odd) { transform: rotate(-1.2deg); }
+  .od-frame:nth-child(even) { transform: translateY(24px) rotate(1.2deg); }
+  .od-frame img {
+    display: block;
     width: 100%;
-    aspect-ratio: 1;
+    aspect-ratio: 4 / 5;
     object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid var(--line);
+    border-radius: 12px;
   }
 
   @media (max-width: 560px) {
-    .offduty-photos { grid-template-columns: repeat(2, 1fr); }
+    .offduty-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 
-  /* ---------- FOOTER ---------- */
-  #portfolio-root footer {
-    padding: 48px 0 80px;
-    border-top: 1px solid var(--line);
-    font-size: 0.88rem;
-    color: var(--ink-soft);
-  }
-
-  #portfolio-root footer a {
+  /* ---------- CLOSING ---------- */
+  /* rendered by React next to #portfolio-root, so it carries its own base styles */
+  .home-end {
+    display: grid;
+    justify-items: center;
+    gap: 22px;
+    padding: clamp(96px, 12vw, 160px) 16px 56px;
+    background: var(--bg);
     color: var(--ink);
-    text-decoration: none;
-    border-bottom: 1px solid var(--line);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.6;
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
   }
-
-  #portfolio-root footer a:hover { border-color: var(--accent); color: var(--accent); }
-
+  .home-end p { margin: 0; }
+  .home-end-buddy { display: grid; justify-items: center; gap: 12px; font-size: 0.95rem; }
+  .home-end-buddy span { color: var(--ink-soft); }
+  .orb-spot-end { width: 96px; height: 96px; }
+  .home-end .hero-ctas { margin-top: 0; }
+  .home-end-sign { margin-top: 32px !important; font-size: 0.82rem; color: var(--ink-soft); }
+  .home-end-sign a { color: inherit; }
   /* ---------- SCROLL REVEAL ---------- */
-  .reveal {
+  /* Things appear as you reach them: each block rises from below, out of a
+     soft blur, one after the other. Uses translate/scale (not transform) so it
+     never fights the compass, which drives transform from JS. */
+  .rv {
     opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    translate: 0 56px;
+    scale: 0.98;
+    filter: blur(8px);
+    transition: opacity 0.9s ease, translate 1.1s cubic-bezier(0.22, 1, 0.36, 1), scale 1.1s cubic-bezier(0.22, 1, 0.36, 1), filter 0.9s ease;
+    transition-delay: var(--d, 0s);
   }
+  .rv.in { opacity: 1; translate: 0 0; scale: 1; filter: none; }
+  .offduty-photos.rv .od-frame { opacity: 0; translate: 0 40px; rotate: -3deg; transition: opacity 0.8s ease, translate 1s cubic-bezier(0.22, 1, 0.36, 1), rotate 1s cubic-bezier(0.22, 1, 0.36, 1); }
+  .offduty-photos.rv.in .od-frame { opacity: 1; translate: 0 0; rotate: 0deg; }
+  .offduty-photos.rv .od-frame:nth-child(2) { transition-delay: 0.12s; }
+  .offduty-photos.rv .od-frame:nth-child(3) { transition-delay: 0.24s; }
+  .offduty-photos.rv .od-frame:nth-child(4) { transition-delay: 0.36s; }
 
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
+  /* the compass assembles when you reach it: dial swings in, cards rise */
+  .compass-dial { transition: opacity 1s ease, scale 1.2s cubic-bezier(0.22, 1, 0.36, 1), rotate 1.4s cubic-bezier(0.22, 1, 0.36, 1); }
+  .compass:not(.in) .compass-dial { opacity: 0; scale: 0.92; rotate: 14deg; }
+  .compass-cards, .compass-meta, .compass-needle, .compass-count { transition: opacity 0.9s ease 0.3s, translate 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s; }
+  .compass:not(.in) .compass-cards { opacity: 0; translate: 0 80px; }
+  .compass:not(.in) .compass-meta { opacity: 0; translate: 0 30px; }
+  .compass:not(.in) .compass-needle, .compass:not(.in) .compass-count { opacity: 0; }
+
+  /* hero plays in on load */
+  .hero > * { animation: hero-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .hero > .hero-hello { animation-delay: 0.1s; }
+  .hero > .hero-buddy { animation-delay: 0.35s; }
+  .hero > .hero-bio { animation-delay: 0.6s; }
+  .hero > .hero-stats { animation-delay: 0.75s; }
+  @keyframes hero-in { from { opacity: 0; translate: 0 40px; filter: blur(8px); } to { opacity: 1; translate: 0 0; filter: none; } }
+  .hero-stats > div { animation: hero-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .hero-stats > div:nth-child(1) { animation-delay: 0.85s; }
+  .hero-stats > div:nth-child(2) { animation-delay: 0.93s; }
+  .hero-stats > div:nth-child(3) { animation-delay: 1.01s; }
+  .hero-stats > div:nth-child(4) { animation-delay: 1.09s; }
+  .hero-stats > div:nth-child(5) { animation-delay: 1.17s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rv, .offduty-photos.rv .od-frame { opacity: 1; translate: none; scale: none; rotate: none; filter: none; transition: none; }
+    .compass:not(.in) .compass-dial, .compass:not(.in) .compass-cards, .compass:not(.in) .compass-meta,
+    .compass:not(.in) .compass-needle, .compass:not(.in) .compass-count { opacity: 1; scale: none; rotate: none; translate: none; }
+    .hero > *, .hero-stats > div { animation: none; }
   }
 
   /* ---------- SIDE NAV DOTS ---------- */
@@ -825,158 +981,6 @@ const css = `
   @media (max-width: 860px) {
     .side-nav { display: none; }
   }
-
-  /* ---------- EXPERIENCE TIMELINE ---------- */
-  #experience { position: relative; }
-
-  #experience::before {
-    content: '';
-    position: absolute;
-    left: 146px;
-    top: 6px;
-    bottom: 6px;
-    width: 1px;
-    background: var(--line);
-  }
-
-  @media (max-width: 560px) {
-    #experience::before { display: none; }
-  }
-
-  /* ---------- EDUCATION LIST ---------- */
-  .edu-row {
-    display: grid;
-    grid-template-columns: 130px 1fr;
-    gap: 20px;
-    padding: 14px 0;
-    border-top: 1px solid var(--line);
-  }
-
-  .edu-row .edu-main {
-    font-size: 1rem;
-    order: 2;
-  }
-
-  .edu-row .edu-main strong {
-    font-family: 'Fraunces', serif;
-    font-weight: 500;
-    color: var(--ink);
-  }
-
-  .edu-row .edu-main span {
-    color: var(--ink-soft);
-  }
-
-  .edu-row .edu-period {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.82rem;
-    color: var(--ink-soft);
-    white-space: nowrap;
-    order: 1;
-    padding-top: 2px;
-  }
-
-  @media (max-width: 560px) {
-    .edu-row { grid-template-columns: 1fr; gap: 4px; }
-    .edu-row .edu-period { order: 1; }
-    .edu-row .edu-main { order: 2; }
-  }
-
-  .edu-thesis {
-    font-size: 0.86rem;
-    color: var(--ink-soft);
-    font-style: italic;
-    margin: -6px 0 14px 150px;
-  }
-
-  @media (max-width: 560px) {
-    .edu-thesis { margin-left: 0; }
-  }
-
-  /* ---------- KEYWORD TAGS ---------- */
-  .kw {
-    font-weight: 500;
-    color: var(--ink-soft);
-    transition: color 0.5s ease;
-  }
-
-  .kw-design.kw-visible { color: #b5502f; }
-  .kw-ai.kw-visible { color: #3d726b; }
-  .kw-startup.kw-visible { color: #8a3450; }
-  .kw-community.kw-visible { color: #a9822a; }
-
-  /* ---------- TOPIC PILLS ---------- */
-  .topic-pills {
-    margin: 0 0 40px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .work-scroll-cue {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin: 0 0 8px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--ink-soft);
-    text-decoration: none;
-    transition: color 0.2s, gap 0.2s;
-  }
-
-  .work-scroll-cue:hover, .work-scroll-cue:focus-visible {
-    color: var(--accent);
-    gap: 10px;
-  }
-
-  .work-scroll-cue .arrow {
-    display: inline-block;
-    animation: work-scroll-bounce 1.6s ease-in-out infinite;
-  }
-
-  @keyframes work-scroll-bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(4px); }
-  }
-
-  .topic-pills-label {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--ink-soft);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-right: 4px;
-    align-self: center;
-  }
-
-  .pill-btn {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.82rem;
-    font-weight: 500;
-    padding: 6px 14px;
-    border-radius: 20px;
-    background: none;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.15s;
-  }
-
-  .pill-btn:hover, .pill-btn:focus-visible {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
-  }
-
-  .pill-design { color: #b5502f; border: 1px solid #b5502f55; }
-  .pill-ai { color: #3d726b; border: 1px solid #3d726b55; }
-  .pill-startup { color: #8a3450; border: 1px solid #8a345055; }
-  .pill-community { color: #a9822a; border: 1px solid #a9822a55; }
-
-  .pill-design:hover, .pill-design.active { background: #b5502f; color: #fff; }
-  .pill-ai:hover, .pill-ai.active { background: #3d726b; color: #fff; }
-  .pill-startup:hover, .pill-startup.active { background: #8a3450; color: #fff; }
-  .pill-community:hover, .pill-community.active { background: #a9822a; color: #fff; }
 
   /* ---------- SIDE PANEL ---------- */
   .panel-overlay {
@@ -1218,18 +1222,37 @@ const css = `
   /* ---------- INTERSTITIAL (cinematic scroll-scrubbed reveal: blur/scale/color tied to scroll position) ---------- */
   .interstitial {
     position: relative;
-    padding: 40px 0 56px;
-    border-top: 1px solid var(--line);
+    padding: clamp(72px, 10vw, 128px) 0 0;
   }
 
   .interstitial .int-frame {
     position: relative;
     display: block;
-    width: 100%;
-    height: 320px;
-    border-radius: 6px;
-    overflow: hidden;
+    height: clamp(240px, 40vw, 520px);
+    padding: 10px;
+    border-radius: 24px;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.45));
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 30px 60px -32px rgba(60, 40, 25, 0.35);
     cursor: pointer;
+  }
+  [data-theme="dark"] .interstitial .int-frame { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.16); }
+  .interstitial .int-frame::before {
+    content: "";
+    position: absolute;
+    inset: -12% -6%;
+    z-index: -1;
+    background:
+      radial-gradient(closest-side, rgba(168, 220, 207, 0.45), transparent) 0% 40% / 55% 80% no-repeat,
+      radial-gradient(closest-side, rgba(203, 188, 244, 0.4), transparent) 100% 20% / 50% 70% no-repeat,
+      radial-gradient(closest-side, rgba(255, 210, 189, 0.4), transparent) 50% 100% / 50% 60% no-repeat;
+  }
+  [data-theme="dark"] .interstitial .int-frame::before { opacity: 0.3; }
+  .interstitial .int-clip {
+    display: block;
+    height: 100%;
+    border-radius: 15px;
+    overflow: hidden;
   }
 
   .interstitial .int-frame img {
@@ -1242,25 +1265,25 @@ const css = `
   }
 
   .interstitial .int-caption {
-    margin-top: 14px;
+    margin-top: 16px;
+    text-align: center;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: var(--ink-soft);
+    text-decoration: none;
     cursor: pointer;
   }
-  .interstitial .int-caption:hover { color: var(--accent); }
-
-  @media (max-width: 560px) {
-    .interstitial .int-frame { height: 220px; }
-  }
+  .interstitial .int-caption:hover { color: var(--ink) !important; }
 `;
 
 // Selected Work compass: one stop per case study, in dial order.
 const workItems = [
-  { slug: "career-paths-platform", dial: "Career paths", tag: "HR Tech, Internal Product", tagClass: "tag-ai", img: "/work/v2/career-paths.jpg", title: "Turning a career framework into a tool people actually use", teaser: "From interviews to shipped code, designed and built end to end with AI." },
+  { slug: "career-paths-platform", dial: "Career paths", tag: "HR Tech, Internal Product", tagClass: "tag-ai", img: "/work/v2/career-paths.jpg", title: "Making growth visible: from a career framework to a tool people use", teaser: "From interviews to shipped code, designed and built end to end with AI." },
   { slug: "narrative-landing-page", dial: "Story landing", tag: "AI SaaS, Landing Page", tagClass: "tag-ai", img: "/work/v2/story-landing.jpg", title: "Designing a landing page that doesn't tell a story, it is one", teaser: "Complete creative freedom, one hidden instruction, and a 48-hour timeframe." },
   { slug: "warehouse-workflow-manager", dial: "Warehouse", tag: "Fashion &amp; Retail, Logistics", tagClass: "tag-design", img: "/work/v2/warehouse.jpg", title: "Bringing digital workflows into a physical environment", teaser: "Five systems, no single source of truth, manual workarounds every single day." },
-  { slug: "smart-financing-application-flow", dial: "Funding flow", tag: "Financial Technology", tagClass: "tag-startup", img: "/work/v2/funding-flow.jpg", title: "Designing a funding application flow that people could actually complete", teaser: "Multi-step, multi-document, zero guidance. Most people gave up halfway." },
+  { slug: "smart-financing-application-flow", dial: "Funding flow", tag: "Financial Technology", tagClass: "tag-startup", img: "/work/v2/funding-flow.jpg", title: "Turning a document-heavy funding application into a guided flow", teaser: "Multi-step, multi-document, zero guidance. Most people gave up halfway." },
   { slug: "retail-store-management-tools", dial: "Store teams", tag: "Fashion &amp; Retail, Mobile + Desktop", tagClass: "tag-community", img: "/work/v2/store-teams.jpg", title: "Designing for global store teams with different needs and different devices", teaser: "One team, completely different needs, and devices that had nothing in common." },
   { slug: "facility-management-platform", dial: "Facility SaaS", tag: "Facility Management, SaaS", tagClass: "tag-design", img: "/work/v2/facility-saas.jpg", title: "When powerful software becomes too complex to use", teaser: "A platform with everything, that users actively worked around." },
 ];
@@ -1334,51 +1357,7 @@ const bodyHtml = `
     </div>
 
     <div class="hero-buddy">
-      <svg class="orb" id="orb" viewBox="-100 -100 200 200" aria-hidden="true">
-        <defs>
-          <path id="orb-shape" />
-          <clipPath id="orb-clip"><use href="#orb-shape" /></clipPath>
-          <radialGradient id="orb-glass" cx="42%" cy="38%" r="62%">
-            <stop offset="0" stop-color="#ffffff" stop-opacity="0.35" />
-            <stop offset="0.7" stop-color="#e8f1f0" stop-opacity="0.45" />
-            <stop offset="1" stop-color="#b7cfd0" stop-opacity="0.8" />
-          </radialGradient>
-          <linearGradient id="orb-edge" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#ffffff" stop-opacity="0.95" />
-            <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.15" />
-            <stop offset="1" stop-color="#5d7f86" stop-opacity="0.45" />
-          </linearGradient>
-          <filter id="orb-blur-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" /></filter>
-          <filter id="orb-blur-l" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9" /></filter>
-          <filter id="orb-blur-xl" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="16" /></filter>
-        </defs>
-        <ellipse id="orb-shadow" cx="0" cy="88" rx="44" ry="6" fill="rgba(93, 127, 134, 0.22)" filter="url(#orb-blur-l)" />
-        <g id="orb-g">
-          <g clip-path="url(#orb-clip)">
-            <rect x="-100" y="-100" width="200" height="200" fill="#f4f7f6" />
-            <g filter="url(#orb-blur-xl)">
-              <circle class="orb-tint" data-k="0" r="36" fill="#a8dccf" />
-              <circle class="orb-tint" data-k="1" r="32" fill="#cbbcf4" />
-              <circle class="orb-tint" data-k="2" r="30" fill="#ffd2bd" />
-            </g>
-            <use href="#orb-shape" fill="url(#orb-glass)" />
-            <ellipse cx="6" cy="56" rx="30" ry="12" fill="#ffffff" opacity="0.7" filter="url(#orb-blur-l)" />
-            <ellipse id="orb-spec" cx="-24" cy="-32" rx="28" ry="15" fill="#fff" opacity="0.75" filter="url(#orb-blur-s)" transform="rotate(-30)" />
-            <ellipse id="orb-spec-dot" cx="-30" cy="-36" rx="10" ry="3.8" fill="#fff" transform="rotate(-30)" />
-          </g>
-          <use href="#orb-shape" fill="none" stroke="url(#orb-edge)" stroke-width="1.6" />
-          <g id="orb-eyes">
-            <g class="orb-eye" transform="translate(-15 -2)">
-              <ellipse rx="4.6" ry="6.4" fill="#1c2a2c" />
-              <circle cx="1.4" cy="-2.2" r="1.4" fill="#fff" />
-            </g>
-            <g class="orb-eye" transform="translate(15 -2)">
-              <ellipse rx="4.6" ry="6.4" fill="#1c2a2c" />
-              <circle cx="1.4" cy="-2.2" r="1.4" fill="#fff" />
-            </g>
-          </g>
-        </g>
-      </svg>
+      <div class="orb-spot" id="orb-spot"></div>
       <p>Hi, I'm Isa's sidekick. <span>Scroll on, I'll show you around.</span></p>
     </div>
 
@@ -1400,133 +1379,191 @@ const bodyHtml = `
     </dl>
   </section>
 
-  <div class="topic-pills">
-    <span class="topic-pills-label">Explore by topic:</span>
-    <button class="pill-btn pill-design" data-topic="design">Design</button>
-    <button class="pill-btn pill-ai" data-topic="ai">AI &amp; No-code</button>
-    <button class="pill-btn pill-startup" data-topic="startup">Startup</button>
-    <button class="pill-btn pill-community" data-topic="community">Community</button>
-  </div>
-
-
   <section class="block reveal" id="work">
     <h2>Selected Work</h2>
 
 ${compassHtml}
   </section>
 
-  <section class="block reveal" id="experience">
-    <h2>Experience</h2>
+  <section class="sec reveal" id="experience">
+    <h2 class="sec-label"><span>02</span>Experience</h2>
+    <div class="sec-body">
+      <div class="xp">
+        <div class="xp-period">2023 → now</div>
+        <div class="xp-main">
+          <h3>Product &amp; UX Designer</h3>
+          <div class="xp-org">CodicePlastico</div>
+          <p>Lead end-to-end product discovery for complex B2B and B2C platforms, turning ambiguous business requirements into testable prototypes. Integrate AI workflows (Claude, Gemini, Figma AI) to keep design and dev docs in sync, and work directly with developers to ensure smooth handoffs.</p>
+        </div>
+        <div class="work-tag tag-design">Design</div>
+      </div>
 
-    <div class="entry">
-      <div class="period">2023 to present</div>
-      <span class="dot"></span>
-        <div class="role-title">Product &amp; UX Designer</div>
-        <div class="org">CodicePlastico</div>
-        <p class="desc">Lead end-to-end <span class="kw kw-design">product discovery</span> for complex B2B and B2C platforms, turning ambiguous business requirements into testable prototypes. Integrate <span class="kw kw-ai">AI workflows</span> (Claude, Gemini, Figma AI) to keep design and dev docs in sync, and work directly with developers to ensure smooth handoffs.</p>
-    </div>
+      <div class="xp">
+        <div class="xp-period">2025 → now</div>
+        <div class="xp-main">
+          <h3>Founder &amp; Community Organizer</h3>
+          <div class="xp-org">Digital People</div>
+          <p>Founded and scaled a tech community of <span class="count-up" data-target="90">0</span>+ members, organizing monthly meetups and speaking on AI-native design at events like Product Heroes and XPUG.</p>
+        </div>
+        <div class="work-tag tag-community">Community</div>
+      </div>
 
-    <div class="entry">
-      <div class="period">2025 to present</div>
-      <span class="dot"></span>
-        <div class="role-title">Founder &amp; Community Organizer</div>
-        <div class="org">Digital People</div>
-        <p class="desc">Founded and scaled a <span class="kw kw-community">tech community</span> of <span class="count-up" data-target="80">0</span>+ members, organizing monthly meetups and speaking on <span class="kw kw-ai">AI-native design</span> at events like Product Heroes and XPUG.</p>
-    </div>
+      <div class="xp">
+        <div class="xp-period">2025 → now</div>
+        <div class="xp-main">
+          <h3>Hackathon Facilitator</h3>
+          <div class="xp-org">Sprintaly</div>
+          <p>Coach multidisciplinary teams through problem framing, Lean validation and rapid prototyping to deliver pitch-ready MVPs in 48 to 72 hour sprints, helping them turn complex ideas into investor-ready value propositions.</p>
+        </div>
+        <div class="work-tag tag-startup">Startup</div>
+      </div>
 
-    <div class="entry">
-      <div class="period">2025 to present</div>
-      <span class="dot"></span>
-        <div class="role-title">Hackathon Facilitator</div>
-        <div class="org">Sprintaly</div>
-        <p class="desc">Coach multidisciplinary teams through problem framing, <span class="kw kw-startup">Lean validation</span> and rapid prototyping to deliver pitch-ready <span class="kw kw-startup">MVPs</span> in 48 to 72 hour sprints, helping them turn complex ideas into investor-ready value propositions.</p>
-    </div>
+      <div class="xp">
+        <div class="xp-period">2021 → now</div>
+        <div class="xp-main">
+          <h3>Product Designer &amp; No-code Builder</h3>
+          <div class="xp-org">Freelance</div>
+          <p>Launched multiple production-ready MVPs for early-stage startups, from problem validation and UX research through functional Bubble.io implementation. Long-term partner for a growing startup, evolving its MVP into a scaled platform.</p>
+        </div>
+        <div class="work-tag tag-ai">No-code</div>
+      </div>
 
-    <div class="entry">
-      <div class="period">2021 to present</div>
-      <span class="dot"></span>
-        <div class="role-title">Product Designer &amp; No-code Builder</div>
-        <div class="org">Freelance</div>
-        <p class="desc">Launched multiple production-ready <span class="kw kw-startup">MVPs</span> for early-stage <span class="kw kw-startup">startups</span>, from problem validation and <span class="kw kw-design">UX research</span> through functional <span class="kw kw-ai">Bubble.io</span> implementation. Long-term partner for a growing startup, evolving its MVP into a scaled platform.</p>
-    </div>
-
-    <div class="entry">
-      <div class="period">2020 to 2021</div>
-      <span class="dot"></span>
-        <div class="role-title">Product Lead &amp; Co-founder</div>
-        <div class="org">Mimiroo, Startup Geeks Incubator</div>
-        <p class="desc">End-to-end development of an <span class="kw kw-startup">EdTech project</span>: defined the business model and value proposition, ran competitor analysis, and built/tested a functional <span class="kw kw-startup">MVP</span> in Bubble.io to validate core assumptions with real users.</p>
+      <div class="xp">
+        <div class="xp-period">2020 → 2021</div>
+        <div class="xp-main">
+          <h3>Product Lead &amp; Co-founder</h3>
+          <div class="xp-org">Mimiroo, Startup Geeks Incubator</div>
+          <p>End-to-end development of an EdTech project: defined the business model and value proposition, ran competitor analysis, and built/tested a functional MVP in Bubble.io to validate core assumptions with real users.</p>
+        </div>
+        <div class="work-tag tag-startup">Startup</div>
+      </div>
     </div>
   </section>
 
   <section class="interstitial reveal" id="interstitial">
     <a class="int-frame" href="#offduty">
-      <img src="/isa/isa-talk-xpug-crop.jpg" alt="Isabella speaking on Rethink UX at XPUG Trento" />
+      <span class="int-clip"><img src="/isa/isa-talk-xpug-crop.jpg" alt="Isabella speaking on Rethink UX at XPUG Trento" /></span>
     </a>
     <div class="int-caption jump-link" data-jump="offduty">Rethink UX, XPUG Trento ↓</div>
   </section>
 
-  <section class="block reveal" id="education">
-    <h2>Education</h2>
+  <section class="sec reveal" id="education">
+    <h2 class="sec-label"><span>03</span>Education</h2>
+    <div class="sec-body">
+      <div class="edu">
+        <div class="edu-period">2021 → 2022</div>
+        <div>
+          <h3>UX / UI Design Master</h3>
+          <p class="edu-school">Start2Impact University</p>
+        </div>
+      </div>
 
-    <div class="edu-row">
-      <div class="edu-main"><strong>UX / UI Design Master</strong><span>, Start2Impact University</span></div>
-      <div class="edu-period">2021 to 2022</div>
-    </div>
+      <div class="edu">
+        <div class="edu-period">2020 → 2022</div>
+        <div>
+          <h3>MSc Management of Innovation &amp; Entrepreneurship</h3>
+          <p class="edu-school">University of Milan</p>
+          <p class="edu-thesis">Thesis: "User Experience in Early-Stage Startups: The Impact of Lean UX on Entrepreneurial Idea Development."</p>
+        </div>
+      </div>
 
-    <div class="edu-row">
-      <div class="edu-main"><strong>MSc Management of Innovation &amp; Entrepreneurship</strong><span>, University of Milan</span></div>
-      <div class="edu-period">2020 to 2022</div>
-    </div>
-    <p class="edu-thesis">Thesis: "User Experience in Early-Stage Startups: The Impact of Lean UX on Entrepreneurial Idea Development."</p>
-
-    <div class="edu-row">
-      <div class="edu-main"><strong>BSc Business Administration</strong><span>, University of Brescia</span></div>
-      <div class="edu-period">2017 to 2020</div>
-    </div>
-    <p class="edu-thesis">Thesis on Big Data analytics with Power BI.</p>
-  </section>
-
-  <section class="block reveal" id="skills">
-    <h2>Skills &amp; Tools</h2>
-
-    <div class="skill-row">
-      <div class="label">Design</div>
-      <div class="items"><span class="kw kw-design">UX Research</span>, User Journey &amp; Flow, Wireframing &amp; Prototyping, UI Design, Usability Testing</div>
-    </div>
-    <div class="skill-row">
-      <div class="label">Strategy</div>
-      <div class="items"><span class="kw kw-startup">As-is Analysis</span>, Competitor Analysis, Market Research, Requirements Gathering</div>
-    </div>
-    <div class="skill-row">
-      <div class="label">Facilitation</div>
-      <div class="items"><span class="kw kw-community">Co-design Workshops</span>, Hackathon Facilitation</div>
-    </div>
-
-    <div class="tools-row">
-      <span>Figma</span><span>Bubble.io</span><span>Github</span><span>Framer</span><span>Whimsical</span><span>Miro</span><span>Notion</span><span>Claude</span><span>VS Code</span><span>Midjourney</span><span>Webflow</span>
+      <div class="edu">
+        <div class="edu-period">2017 → 2020</div>
+        <div>
+          <h3>BSc Business Administration</h3>
+          <p class="edu-school">University of Brescia</p>
+          <p class="edu-thesis">Thesis on Big Data analytics with Power BI.</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="block reveal" id="offduty">
-    <h2>Off Duty</h2>
-    <p class="offduty-text">Outside of product work, I'm usually on a yoga mat, out for a run, <strong>slowly, but consistently</strong>, or in the kitchen attempting a pizza that doesn't always come out right. I also spend a lot of time with the <span class="kw kw-community">Digital People</span> community I founded, meeting up in person and talking <span class="kw kw-ai">AI-native design</span> at local events.</p>
-    <div class="offduty-photos">
-      <img src="/isa/isa-talk-1.JPG" alt="Isabella speaking at a tech community event" />
-      <img src="/isa/isa-talk-2.JPG" alt="Isabella facilitating a community event" />
-      <img src="/isa/community.jpeg" alt="Digital People community meetup" />
-      <img src="/isa/photo_2026-07-18 10.58.34.jpeg" alt="Isabella off duty" />
+  <section class="sec reveal" id="skills">
+    <h2 class="sec-label"><span>04</span>Skills &amp; Tools</h2>
+    <div class="sec-body">
+      <div class="skill-cards">
+        <div class="skill-card">
+          <div class="skill-card-label">Design</div>
+          <ul><li>UX Research</li><li>User Journey &amp; Flow</li><li>Wireframing &amp; Prototyping</li><li>UI Design</li><li>Usability Testing</li></ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-label">Strategy</div>
+          <ul><li>As-is Analysis</li><li>Competitor Analysis</li><li>Market Research</li><li>Requirements Gathering</li></ul>
+        </div>
+        <div class="skill-card">
+          <div class="skill-card-label">Facilitation</div>
+          <ul><li>Co-design Workshops</li><li>Hackathon Facilitation</li></ul>
+        </div>
+      </div>
+
+      <div class="tools">
+        <span>Figma</span><span>Bubble.io</span><span>Github</span><span>Framer</span><span>Whimsical</span><span>Miro</span><span>Notion</span><span>Claude</span><span>VS Code</span><span>Midjourney</span><span>Webflow</span>
+      </div>
     </div>
   </section>
 
-  <footer>
-    <p>Isabella Bonora, <a href="mailto:isabellabonora1@gmail.com">isabellabonora1@gmail.com</a></p>
-    <p style="margin-top:6px;">
-      <a href="https://www.linkedin.com/in/isabella-bonora/" target="_blank" rel="noopener">LinkedIn</a>
-    </p>
-  </footer>
-
+  <section class="sec reveal" id="offduty">
+    <h2 class="sec-label"><span>05</span>Off Duty</h2>
+    <div class="sec-body">
+      <p class="offduty-text">Outside of product work, I'm usually on a yoga mat, out for a run, <strong>slowly, but consistently</strong>, or in the kitchen attempting a pizza that doesn't always come out right. I also spend a lot of time with the Digital People community I founded, meeting up in person and talking AI-native design at local events.</p>
+      <div class="offduty-photos">
+        <figure class="od-frame"><img src="/isa/isa-talk-1.JPG" alt="Isabella speaking at a tech community event" /></figure>
+        <figure class="od-frame"><img src="/isa/isa-talk-2.JPG" alt="Isabella facilitating a community event" /></figure>
+        <figure class="od-frame"><img src="/isa/community.jpeg" alt="Digital People community meetup" /></figure>
+        <figure class="od-frame"><img src="/isa/photo_2026-07-18 10.58.34.jpeg" alt="Isabella off duty" /></figure>
+      </div>
+    </div>
+  </section>
 </main>
+
+<div class="buddy" id="buddy">
+  <svg class="orb" id="orb" viewBox="-100 -100 200 200" aria-hidden="true">
+    <defs>
+      <path id="orb-shape" />
+      <clipPath id="orb-clip"><use href="#orb-shape" /></clipPath>
+      <radialGradient id="orb-glass" cx="42%" cy="38%" r="62%">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.35" />
+        <stop offset="0.7" stop-color="#e8f1f0" stop-opacity="0.45" />
+        <stop offset="1" stop-color="#b7cfd0" stop-opacity="0.8" />
+      </radialGradient>
+      <linearGradient id="orb-edge" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.95" />
+        <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.15" />
+        <stop offset="1" stop-color="#5d7f86" stop-opacity="0.45" />
+      </linearGradient>
+      <filter id="orb-blur-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" /></filter>
+      <filter id="orb-blur-l" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9" /></filter>
+      <filter id="orb-blur-xl" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="16" /></filter>
+    </defs>
+    <ellipse id="orb-shadow" cx="0" cy="88" rx="44" ry="6" fill="rgba(93, 127, 134, 0.22)" filter="url(#orb-blur-l)" />
+    <g id="orb-g">
+      <g clip-path="url(#orb-clip)">
+        <rect x="-100" y="-100" width="200" height="200" fill="#f4f7f6" />
+        <g filter="url(#orb-blur-xl)">
+          <circle class="orb-tint" data-k="0" r="36" fill="#a8dccf" />
+          <circle class="orb-tint" data-k="1" r="32" fill="#cbbcf4" />
+          <circle class="orb-tint" data-k="2" r="30" fill="#ffd2bd" />
+        </g>
+        <use href="#orb-shape" fill="url(#orb-glass)" />
+        <ellipse cx="6" cy="56" rx="30" ry="12" fill="#ffffff" opacity="0.7" filter="url(#orb-blur-l)" />
+        <ellipse id="orb-spec" cx="-24" cy="-32" rx="28" ry="15" fill="#fff" opacity="0.75" filter="url(#orb-blur-s)" transform="rotate(-30)" />
+        <ellipse id="orb-spec-dot" cx="-30" cy="-36" rx="10" ry="3.8" fill="#fff" transform="rotate(-30)" />
+      </g>
+      <use href="#orb-shape" fill="none" stroke="url(#orb-edge)" stroke-width="1.6" />
+      <g id="orb-eyes">
+        <g class="orb-eye" transform="translate(-15 -2)">
+          <ellipse rx="4.6" ry="6.4" fill="#1c2a2c" />
+          <circle cx="1.4" cy="-2.2" r="1.4" fill="#fff" />
+        </g>
+        <g class="orb-eye" transform="translate(15 -2)">
+          <ellipse rx="4.6" ry="6.4" fill="#1c2a2c" />
+          <circle cx="1.4" cy="-2.2" r="1.4" fill="#fff" />
+        </g>
+      </g>
+    </g>
+  </svg>
+</div>
+<p class="buddy-say" id="buddy-say" aria-live="polite"></p>
 
 <div class="panel-overlay" id="panel-overlay"></div>
 <aside class="side-panel" id="side-panel">
@@ -1764,14 +1801,55 @@ export default function Home() {
       return { b, handler };
     });
     // clicking a side card turns the compass to it instead of opening it
+    // open a case with a flight: clone the card, grow it to the centre, then navigate
+    const still2 = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const openCase = (k: number) => {
+      const href = `/work/${workItems[k].slug}`;
+      if (still2) { window.location.href = href; return; }
+      const card = cards[k];
+      const r = card.getBoundingClientRect();
+      const fly = card.cloneNode(true) as HTMLElement;
+      fly.classList.add("compass-fly");
+      Object.assign(fly.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px` });
+      const veil = document.createElement("div");
+      veil.className = "page-veil";
+      document.body.append(veil, fly);
+      const w = Math.min(960, window.innerWidth * 0.86);
+      const h = w / 1.232;
+      const target = { left: (window.innerWidth - w) / 2, top: Math.max(24, (window.innerHeight - h) / 2), width: w, height: h };
+      requestAnimationFrame(() => {
+        veil.classList.add("on");
+        Object.assign(fly.style, { left: `${target.left}px`, top: `${target.top}px`, width: `${target.width}px`, height: `${target.height}px` });
+      });
+      try { sessionStorage.setItem("case-fly", JSON.stringify(target)); } catch { /* private mode: no hand-off */ }
+      window.setTimeout(() => { window.location.href = href; }, 620);
+    };
     const cardHandlers = cards.map((c) => {
       const handler = (e: MouseEvent) => {
+        e.preventDefault();
         const k = Number(c.dataset.index);
-        if (k !== active) { e.preventDefault(); goTo(k); }
+        if (k !== active) goTo(k); else openCase(k);
       };
       c.addEventListener("click", handler);
       return { c, handler };
     });
+    const onCta = (e: MouseEvent) => { e.preventDefault(); openCase(active); };
+    cta.addEventListener("click", onCta);
+    // back from a case via bfcache: drop the flight leftovers
+    const onPageShow = () => document.querySelectorAll(".compass-fly, .page-veil").forEach((el) => el.remove());
+    window.addEventListener("pageshow", onPageShow);
+
+    // "/#work-3" lands on that project (used by the back link on case pages)
+    const landFromHash = () => {
+      const m = /^#work-(\d+)$/.exec(window.location.hash);
+      if (!m) return;
+      const k = Math.min(n - 1, Number(m[1]));
+      const travel = host.offsetHeight - window.innerHeight;
+      const top = host.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: top + (k / (n - 1)) * travel + 1, behavior: "auto" });
+    };
+    landFromHash();
+    window.addEventListener("hashchange", landFromHash);
 
     readTarget();
     current = target;
@@ -1786,8 +1864,100 @@ export default function Home() {
       window.removeEventListener("resize", onScroll);
       nameHandlers.forEach(({ b, handler }) => b.removeEventListener("click", handler));
       cardHandlers.forEach(({ c, handler }) => c.removeEventListener("click", handler));
+      cta.removeEventListener("click", onCta);
+      window.removeEventListener("pageshow", onPageShow);
+      window.removeEventListener("hashchange", landFromHash);
     };
   }, []);
+  // The drop comes along: it leaves the hero as you scroll, springs to a dock
+  // in each section (under the sticky label on wide screens, a corner on
+  // phones), says one line about where you are, and lands in the footer.
+  useEffect(() => {
+    const buddy = document.getElementById("buddy");
+    const say = document.getElementById("buddy-say");
+    const heroSpot = document.getElementById("orb-spot");
+    const endSpot = document.getElementById("orb-spot-end");
+    if (!buddy || !say || !heroSpot || !endSpot) return;
+
+    const lines: Record<string, string> = {
+      work: "Scroll to turn the dial. Each stop is a case study.",
+      experience: "Where the work happened.",
+      interstitial: "That's Isa on stage at XPUG.",
+      education: "The theory behind the practice.",
+      skills: "The toolbox.",
+      offduty: "And when Isa's off the clock.",
+    };
+    const sections = Object.keys(lines).map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
+    type Side = "below" | "right" | "above";
+    type Target = { id: string; x: number; y: number; size: number; side: Side };
+
+    const target = (): Target => {
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const hero = heroSpot.getBoundingClientRect();
+      if (hero.bottom > vh * 0.3) return { id: "top", x: hero.left, y: hero.top, size: hero.width, side: "below" };
+      const end = endSpot.getBoundingClientRect();
+      if (end.top < vh * 0.85) return { id: "end", x: end.left, y: end.top, size: end.width, side: "below" };
+      const mid = vh * 0.45;
+      const sec = sections.find((el) => { const r = el.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; }) ?? sections[0];
+      const id = sec.id;
+      if (vw <= 760) return { id, x: vw - 56 - 16, y: vh - 56 - 24, size: 56, side: "above" };
+      if (id === "interstitial") {
+        const f = sec.querySelector(".int-frame")!.getBoundingClientRect();
+        return { id, x: f.left + 28, y: f.bottom - 72 - 28, size: 72, side: "right" };
+      }
+      const label = sec.querySelector(".sec-label") ?? document.querySelector(".sec-label")!;
+      const l = label.getBoundingClientRect();
+      if (id === "work") return { id, x: l.left, y: vh * 0.5, size: 72, side: "below" };
+      return { id, x: l.left, y: Math.max(l.bottom, 0) + 32, size: 72, side: "below" };
+    };
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const pos = { x: 0, y: 0, size: 0 };
+    const vel = { x: 0, y: 0, size: 0 };
+    let first = true;
+    let shown = "";
+    let sayTimer = 0;
+    let raf = 0;
+
+    const frame = () => {
+      const t = target();
+      if (first || reduce) {
+        pos.x = t.x; pos.y = t.y; pos.size = t.size;
+        first = false;
+      } else {
+        // a spring: tight while it sits in the hero, loose (a little bounce) when travelling
+        const [k, damp] = t.id === "top" ? [0.35, 0.45] : [0.08, 0.8];
+        (["x", "y", "size"] as const).forEach((key) => {
+          vel[key] = vel[key] * damp + (t[key] - pos[key]) * k;
+          pos[key] += vel[key];
+        });
+      }
+      const base = buddy.offsetWidth || t.size;
+      buddy.style.transform = `translate3d(${pos.x.toFixed(1)}px, ${pos.y.toFixed(1)}px, 0) scale(${(pos.size / base).toFixed(4)})`;
+
+      if (t.id !== shown) {
+        shown = t.id;
+        say.classList.remove("on");
+        clearTimeout(sayTimer);
+        const text = lines[t.id];
+        if (text) sayTimer = window.setTimeout(() => { say.textContent = text; say.classList.add("on"); }, 450);
+      }
+      const w = say.offsetWidth, h = say.offsetHeight, s = pos.size;
+      const [sx, sy] =
+        t.side === "right" ? [pos.x + s + 12, pos.y + s / 2 - h / 2]
+        : t.side === "above" ? [pos.x + s - w, pos.y - h - 10]
+        : [pos.x, pos.y + s + 10];
+      say.style.transform = `translate3d(${sx.toFixed(1)}px, ${sy.toFixed(1)}px, 0)`;
+
+      raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(sayTimer);
+    };
+  }, []);
+
   // Cinematic scroll-scrubbed reveal: the talk photo starts blurred, desaturated and
   // slightly scaled up, then sharpens/colors/settles continuously as the section
   // crosses the viewport - tied to scroll position, not a fixed-length animation.
@@ -1891,18 +2061,31 @@ export default function Home() {
     window.addEventListener("scroll", onScroll);
 
     // scroll reveal
+    // every block inside a .reveal section appears on its own; blocks that
+    // arrive together are staggered so they come in one after the other
     const revealObserver = new IntersectionObserver(
       (entries) => {
+        let n = 0;
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            revealObserver.unobserve(entry.target);
-          }
+          if (!entry.isIntersecting) return;
+          const el = entry.target as HTMLElement;
+          el.style.setProperty("--d", `${(n++ * 0.09).toFixed(2)}s`);
+          el.classList.add("in");
+          revealObserver.unobserve(el);
         });
       },
-      { threshold: 0.12 }
+      { threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
     );
-    document.querySelectorAll(".reveal").forEach((el) => revealObserver.observe(el));
+    document.querySelectorAll<HTMLElement>(".reveal > *:not(.compass):not(.sec-body), .reveal .sec-body > *, .reveal .xp, .reveal .edu, .reveal .skill-card").forEach((el) => {
+      if (el.querySelector(".xp, .edu, .skill-card")) return; // wrappers: their rows animate instead
+      el.classList.add("rv");
+      revealObserver.observe(el);
+    });
+    const compassEl = document.getElementById("compass");
+    const compassObserver = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { compassEl?.classList.add("in"); compassObserver.disconnect(); }
+    }, { rootMargin: "0px 0px -30% 0px" });
+    if (compassEl) compassObserver.observe(compassEl);
 
     // side nav active state
     const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>(".side-nav a"));
@@ -1944,20 +2127,6 @@ export default function Home() {
       { threshold: 0.6 }
     );
     document.querySelectorAll(".count-up").forEach((el) => countObserver.observe(el));
-
-    // keyword highlight on scroll
-    const kwObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry, i) => {
-          if (entry.isIntersecting) {
-            setTimeout(() => entry.target.classList.add("kw-visible"), i * 40);
-            kwObserver.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.7 }
-    );
-    document.querySelectorAll(".kw").forEach((el) => kwObserver.observe(el));
 
     // topic side panel data
     type PanelItem = { h: string; d: string };
@@ -2109,9 +2278,9 @@ export default function Home() {
       document.removeEventListener("keydown", onEscape);
       document.removeEventListener("click", onDocumentJumpLinkClick);
       revealObserver.disconnect();
+      compassObserver.disconnect();
       navObserver.disconnect();
       countObserver.disconnect();
-      kwObserver.disconnect();
     };
   }, []);
 
@@ -2119,6 +2288,17 @@ export default function Home() {
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
       <div id="portfolio-root" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
+      <footer className="home-end">
+        <div className="home-end-buddy">
+          <div className="orb-spot orb-spot-end" id="orb-spot-end" />
+          <p>That&apos;s the tour. <span>Isa&apos;s one email away.</span></p>
+        </div>
+        <div className="hero-ctas">
+          <a className="btn-pill" href="mailto:isabellabonora1@gmail.com">Contact</a>
+          <a className="link-arrow" href="https://www.linkedin.com/in/isabella-bonora/" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a>
+        </div>
+        <p className="home-end-sign">Isabella Bonora · <a href="mailto:isabellabonora1@gmail.com">isabellabonora1@gmail.com</a></p>
+      </footer>
     </>
   );
 }
