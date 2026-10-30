@@ -1954,7 +1954,7 @@ export default function Home() {
     const sections = Object.keys(lines).map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
     const DOCK = 88;
     type Side = "below" | "right" | "above";
-    type Target = { id: string; x: number; y: number; size: number; side: Side };
+    type Target = { id: string; x: number; y: number; size: number; side: Side; quiet?: boolean };
 
     const target = (): Target => {
       const vw = window.innerWidth, vh = window.innerHeight;
@@ -1965,7 +1965,12 @@ export default function Home() {
       const mid = vh * 0.45;
       const sec = sections.find((el) => { const r = el.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; }) ?? sections[0];
       const id = sec.id;
-      if (vw <= 760) return { id, x: vw - 64 - 16, y: vh - 64 - 24, size: 64, side: "above" };
+      // phones: a corner, out of the way; over the compass it shrinks and keeps quiet,
+      // since the case-study button sits right there
+      if (vw <= 760) {
+        const size = id === "work" ? 48 : 64;
+        return { id, x: vw - size - 16, y: vh - size - 24, size, side: "above", quiet: id === "work" };
+      }
       if (id === "interstitial") {
         const f = sec.querySelector(".int-frame")!.getBoundingClientRect();
         return { id, x: f.left + 28, y: f.bottom - DOCK - 28, size: DOCK, side: "right" };
@@ -2005,7 +2010,14 @@ export default function Home() {
         say.classList.remove("on");
         clearTimeout(sayTimer);
         const text = lines[t.id];
-        if (text) sayTimer = window.setTimeout(() => { say.textContent = text; say.classList.add("on"); }, 450);
+        if (text && !t.quiet) {
+          sayTimer = window.setTimeout(() => {
+            say.textContent = text;
+            say.classList.add("on");
+            // on phones the line is a passing remark: it fades so it never sits on the content
+            if (window.innerWidth <= 760) sayTimer = window.setTimeout(() => say.classList.remove("on"), 4000);
+          }, 450);
+        }
       }
       const w = say.offsetWidth, h = say.offsetHeight, s = pos.size;
       const [sx, sy] =
