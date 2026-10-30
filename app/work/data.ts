@@ -34,7 +34,7 @@ export const projects: Project[] = [
     tags: ["Product Designer + Developer", "Desktop", "Built with AI"],
     heroQuote: "A career framework that lived in spreadsheets, text files and memory. People wanted to grow, but didn't know how to prove it.",
     teaser: "From interviews to shipped code, designed and built end to end with AI.",
-    heroImage: "/work/career paths-large.png",
+    heroImage: "/work/v2/career-paths.jpg",
     brief: {
       text: "A 30-person software house had an official career framework: levels from Junior to Team Leader, a competency checklist for each one, soft skills and promotion rules. In practice the process lived in Excel, text files and memory. People who wanted to grow didn't know how to show it, and the founders had no overview of the team. I owned the project end to end, functional analysis, UX/UI design and development with Claude Code, shipping it as a standalone module that opens from Scrooge, the company's internal app. It was designed separate on purpose: Scrooge itself is next in line for a redesign, and the module will be folded into it then.",
       tags: ["Product discovery", "Design to code", "AI-assisted development"],
@@ -77,7 +77,7 @@ export const projects: Project[] = [
     tags: ["Product Designer", "Desktop + Mobile", "Brand & Conversion"],
     heroQuote: "Complete creative freedom. A wow effect. 48 hours. And one instruction hidden in the brief: build the page around this story.",
     teaser: "Total creative freedom, one hidden instruction, 48 hours.",
-    heroImage: "/work/landing-page-large.png",
+    heroImage: "/work/v2/story-landing.jpg",
     brief: {
       text: "An AI-native SaaS startup was repositioning: born as the internal software of a short-term rental operator, it was becoming a standalone product for B2C brands. One system unifying every comment, DM, call and email, with AI agents handling conversations end to end. They needed a landing page for the new positioning. The brief gave total creative freedom, asked for a \"wow effect\", and pointed at one hero example: a TikTok comment that becomes a paying customer, automatically.",
       tags: ["Narrative design", "Conversion", "AI-assisted workflow"],
@@ -119,7 +119,7 @@ export const projects: Project[] = [
     title: "Bringing digital workflows into a physical environment",
     tags: ["UX/UI Design", "Supply chain", "B2B Internal Tool"],
     heroQuote: "Five systems, no single source of truth. Manual workarounds every single day.",
-    heroImage: "/work/digital workflow-large.png",
+    heroImage: "/work/v2/warehouse.jpg",
     brief: {
       text: "The client is a globally recognized fashion brand operating complex supply chain distribution flows across multiple countries. Internal teams needed a reliable way to manage, execute and monitor the loading of factories, allowing the tracking of goods with minimal friction.",
       tags: ["End-to-end UX", "B2B Internal", "Supply Chain"],
@@ -161,7 +161,7 @@ export const projects: Project[] = [
     title: "Designing a funding application flow that people could actually complete",
     tags: ["UX/UI Designer", "Desktop", "FinTech"],
     heroQuote: "Multi-step, multi-document, zero guidance. Most people gave up halfway.",
-    heroImage: "/work/funding application-large.png",
+    heroImage: "/work/v2/funding-flow.jpg",
     brief: {
       text: "The client helps businesses access funding by acting as intermediary between companies and banks. Their existing process was slow and frustrating: users had to manually download, fill out, and upload multiple documents, often giving up halfway. The goal was a guided experience that felt manageable even for first-time users.",
       tags: ["Guided UX", "High-stakes", "FinTech"],
@@ -203,7 +203,7 @@ export const projects: Project[] = [
     title: "Designing for global store teams with different needs and different devices",
     tags: ["UX/UI Design", "Desktop+Mobile", "Global teams"],
     heroQuote: "Same team. Completely different needs. Completely different devices.",
-    heroImage: "/work/global store teams-large.png",
+    heroImage: "/work/v2/store-teams.jpg",
     brief: {
       text: "A globally operating fashion brand needed two integrated digital tools for store operations: a desktop platform for managers (planning, reporting, oversight) and a mobile app for associates (daily tasks, floor management). Two user groups, fundamentally different contexts, and the tools had to work together without sharing UI complexity.",
       tags: ["Multi-platform", "Mobile + Desktop", "Fashion Retail"],
@@ -245,7 +245,7 @@ export const projects: Project[] = [
     title: "When powerful software becomes too complex to use",
     tags: ["UX/UI Designer", "Desktop", "SaaS"],
     heroQuote: "A platform with everything. That users actively worked around.",
-    heroImage: "/work/powerful software-large.png",
+    heroImage: "/work/v2/facility-saas.jpg",
     brief: {
       text: "The client provides a facility management SaaS used by large organizations to manage buildings, maintenance, and operations. Despite being feature-rich, users created workarounds: spreadsheets, sticky notes, WhatsApp groups, because the interface made simple tasks unnecessarily complex. Goal: redesign around what users actually needed to do.",
       tags: ["UX Redesign", "SaaS", "Internal Tool"],

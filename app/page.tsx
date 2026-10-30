@@ -57,28 +57,28 @@ const css = `
   }
 
   /* ---------- HERO ---------- */
+  /* Fills exactly one screen: greeting on top, the drop in the free space,
+     bio and numbers at the bottom. Rows flex, so nothing falls below the fold. */
   .hero {
-    padding: 96px 0 48px;
-    display: flex;
-    align-items: center;
-    gap: 32px;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    height: 100vh;
+    height: 100svh;
+    min-height: 520px;
+    padding: 76px clamp(16px, 4vw, 48px) clamp(20px, 4.5vh, 44px);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas: "hello hello" "buddy buddy" "bio stats";
+    column-gap: 48px;
     opacity: 0;
-    transform: translateY(8px);
-    animation: rise 0.7s ease forwards;
+    animation: rise 0.9s ease forwards;
   }
 
   @keyframes rise {
     to { opacity: 1; transform: translateY(0); }
   }
 
-  @media (max-width: 560px) {
-    .hero {
-      padding: 72px 0 40px;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 20px;
-    }
-  }
 
   .hero-photo-toggle {
     position: relative;
@@ -200,59 +200,163 @@ const css = `
     transition: width 0.1s linear;
   }
 
-  .hero h1 {
-    font-weight: 500;
-    font-size: clamp(2.4rem, 6vw, 3.4rem);
-    line-height: 1.05;
-    letter-spacing: -0.01em;
-  }
-
-  .hero h1 em {
-    font-style: normal;
-    font-weight: 500;
-    background: linear-gradient(100deg, var(--ink) 20%, var(--accent) 45%, var(--ink) 70%);
-    background-size: 220% 100%;
-    background-position: 0% 50%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: shine 6s ease-in-out infinite;
-  }
-
-  @keyframes shine {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-
-  .hero .role {
-    margin-top: 20px;
-    font-size: 1.08rem;
-    color: var(--ink-soft);
-  }
-
-  .hero .role strong {
-    color: var(--ink);
-    font-weight: 500;
-  }
-
-  .hero-links {
-    margin-top: 22px;
+  .hero-hello {
+    grid-area: hello;
     display: flex;
-    gap: 18px;
-    font-size: 0.92rem;
+    align-items: center;
+    gap: 14px;
+  }
+  .hero-hello .hero-photo-toggle,
+  .hero-hello .hero-photo { flex: none; width: calc(var(--hero-fs) * 3.4); height: calc(var(--hero-fs) * 3.4); }
+  .hero-hello .theme-badge { width: 20px; height: 20px; right: -6px; bottom: -6px; font-size: 0.6rem; }
+  .hero {
+    --hero-fs: clamp(0.9rem, 0.45vw + 0.5rem, 1.3rem);
+  }
+  .hero-hello h1 {
+    font-family: 'Inter', sans-serif !important;
+    font-size: var(--hero-fs);
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+    line-height: 1.35;
+  }
+  .hero-hello p { font-size: var(--hero-fs); color: var(--ink-soft); line-height: 1.35; }
+
+  .hero-buddy {
+    grid-area: buddy;
+    align-self: center;
+    justify-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(8px, 2vh, 18px);
+    text-align: center;
+  }
+  .hero-buddy p { font-size: calc(var(--hero-fs) * 0.95); max-width: 16em; line-height: 1.45; }
+  .hero-buddy p span { color: var(--ink-soft); }
+
+  .orb {
+    width: clamp(84px, 17vh, 210px);
+    height: clamp(84px, 17vh, 210px);
+    overflow: visible;
   }
 
-  .hero-links a {
+  .hero-bio {
+    grid-area: bio;
+    align-self: end;
+    max-width: 27em;
+    font-size: var(--hero-fs);
+  }
+  .hero-lead { font-size: 1em; line-height: 1.55; }
+  .hero-more { margin-top: 12px; font-size: 0.92em; line-height: 1.55; color: var(--ink-soft); }
+  .hero-ctas { margin-top: 20px; display: flex; align-items: center; gap: 18px; }
+  .btn-pill {
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--chip);
+    border: 1px solid var(--line);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 2px 6px -2px rgba(28, 26, 23, 0.15);
     color: var(--ink);
+    font-size: 0.85rem;
     text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .btn-pill:hover { transform: translateY(-1px); background: var(--bg); }
+  .link-arrow { font-size: 0.85rem; color: var(--ink-soft); text-decoration: none; transition: color 0.2s ease; }
+  .link-arrow span { display: inline-block; transition: transform 0.2s ease; }
+  .link-arrow:hover { color: var(--ink); }
+  .link-arrow:hover span { transform: translateX(3px); }
+
+  .hero-stats {
+    grid-area: stats;
+    align-self: end;
+    width: 16em;
+    font-size: calc(var(--hero-fs) * 0.88);
+  }
+  .hero-stats div {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
     border-bottom: 1px solid var(--line);
-    padding-bottom: 1px;
-    transition: border-color 0.2s, color 0.2s;
+  }
+  .hero-stats div:last-child { border-bottom: 0; }
+  .hero-stats dt { color: var(--ink-soft); }
+  .hero-stats dd { font-family: 'JetBrains Mono', monospace; color: var(--ink); }
+
+  /* floating pill nav */
+  .topbar {
+    position: fixed;
+    z-index: 250;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+  }
+  .tb-btn {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 14px -6px rgba(28, 26, 23, 0.2);
+    color: var(--ink);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .tb-btn:hover { transform: translateY(-1px); }
+  .tb-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .tb-list {
+    position: absolute;
+    top: 48px;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 200px;
+    padding: 8px;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 18px 40px -18px rgba(28, 26, 23, 0.3);
+    animation: rise 0.25s ease;
+  }
+  .tb-list[hidden] { display: none; }
+  .tb-list a {
+    display: flex;
+    gap: 12px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    color: var(--ink);
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+  .tb-list a:hover { background: var(--chip); }
+  .tb-list a span { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--ink-soft); padding-top: 3px; }
+
+  @media (max-width: 560px) {
+    .hero {
+      grid-template-columns: 1fr;
+      grid-template-areas: "hello" "buddy" "bio" "stats";
+      padding-top: 72px;
+    }
+    .hero-more { display: none; }
+    .hero-ctas { margin-top: 14px; }
+    .hero-stats { width: auto; margin-top: clamp(12px, 3vh, 24px); }
+    .hero-stats div:nth-child(n+4) { display: none; }
   }
 
-  .hero-links a:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+  /* short screens (small laptops, landscape phones): drop the secondary lines */
+  @media (max-height: 760px) {
+    .hero-more { display: none; }
+    .hero-stats div { padding: 3px 0; }
+  }
+  @media (max-height: 560px) {
+    .hero-stats div:nth-child(n+4) { display: none; }
+    .hero-buddy p { display: none; }
   }
 
   .jump-link {
@@ -271,250 +375,217 @@ const css = `
 
   .flash-target { animation: flash-highlight 0.5s ease 2; }
 
-  /* ---------- ROAD GAME ---------- */
-  .rg-stage {
+  /* ---------- WORK COMPASS ---------- */
+  /* Glass compass: a frosted rim over soft colour (the sidekick's tints),
+     project cards in glass frames riding an arc that turns with the scroll. */
+  .compass {
     position: relative;
-    margin: 40px 0 64px;
-    background: var(--mono-bg);
-    border-radius: 10px;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-top: 8px;
+    --card-w: min(520px, 82vw, calc((100svh - 14svh - 320px) * 1.232));
+    --card-h: calc(var(--card-w) / 1.232);
+    --dial-top: 14svh;
+  }
+  .compass-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
     overflow: hidden;
-    box-shadow: 0 12px 32px -12px rgba(28, 26, 23, 0.35);
-    opacity: 0;
-    animation: rise 0.7s ease forwards 0.15s;
   }
-
-  .rg-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 11px 16px;
-    background: rgba(255,255,255,0.03);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--mono-fg);
-    opacity: 0.7;
-  }
-
-  .rg-bar button {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    background: none;
-    border: 1px solid rgba(255,255,255,0.18);
-    color: var(--mono-fg);
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    opacity: 0.85;
-  }
-
-  .rg-bar button:hover { color: var(--accent); border-color: var(--accent); }
-
-  .rg-svg-wrap { position: relative; }
-  /* fixed to the light-theme paper/ink values (not var(--bg)/var(--ink)) so the
-     stage stays a bright paper strip inside the dark frame in both themes */
-  .rg-svg-wrap svg { display: block; width: 100%; height: clamp(180px, 30vw, 240px); background: #fbf7f2; }
-
-  .rg-ground-tick { fill: #1c1a17; opacity: 0.4; shape-rendering: crispEdges; }
-  .rg-hill { fill: #1c1a17; opacity: 0.12; }
-  .rg-cloud { fill: #1c1a17; opacity: 0.18; }
-
-  .rg-sprite-scale rect { fill: #1c1a17; shape-rendering: crispEdges; }
-
-  .rg-icon { transform: scale(1.8); transform-box: fill-box; transform-origin: center; }
-  .rg-sprite-scale { transform: scale(1.6); transform-box: fill-box; transform-origin: bottom center; }
-  .rg-icon rect, .rg-icon path, .rg-icon circle { shape-rendering: crispEdges; }
-  .rg-icon .fill { fill: var(--accent); }
-  .rg-icon .fill-soft { fill: #1c1a17; }
-  .rg-icon .outline { fill: none; stroke: var(--accent); stroke-width: 1.6; }
-  .rg-pizza-crust { fill: #e8b978; stroke: var(--accent); stroke-width: 1; shape-rendering: crispEdges; }
-  .rg-pizza-topping { fill: var(--accent); shape-rendering: crispEdges; }
-
-  @keyframes rg-pop {
-    0% { transform: scale(1); }
-    40% { transform: scale(1.6); }
-    100% { transform: scale(1); }
-  }
-  @keyframes rg-burst-ring {
-    0% { r: 6; opacity: 0.9; stroke-width: 3; }
-    100% { r: 34; opacity: 0; stroke-width: 0.5; }
-  }
-  .rg-burst { fill: none; stroke: var(--accent); animation: rg-burst-ring 0.5s ease-out forwards; pointer-events: none; }
-
-  .rg-hud {
+  .compass-aura { position: absolute; inset: 0; pointer-events: none; }
+  /* soft colour as radial gradients (no blur filter: cheap to animate) */
+  .compass-aura span {
     position: absolute;
-    top: 14px; right: 14px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-    color: #1c1a17;
-    background: rgba(28,26,23,0.06);
-    border: 1px solid rgba(28,26,23,0.16);
-    border-radius: 5px;
-    padding: 5px 10px;
-  }
-  .rg-hud strong { color: var(--accent); font-variant-numeric: tabular-nums; }
-
-  .rg-card {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.82rem;
-    line-height: 1.55;
-    color: var(--mono-fg);
-    background: var(--mono-bg);
-    border: 1px solid rgba(255,255,255,0.14);
-    border-left: 2px solid var(--accent);
-    border-radius: 6px;
-    padding: 16px 18px;
-    width: min(520px, 92%);
-    max-height: 88%;
-    overflow: auto;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -46%);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.5);
-    z-index: 8;
-  }
-  .rg-card.show { opacity: 1; transform: translate(-50%, -50%); pointer-events: auto; }
-  .rg-card .rg-tag {
-    display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
-    font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 2px;
-  }
-  .rg-card .rg-period {
-    display: block;
-    font-size: 0.66rem;
-    color: var(--mono-fg);
+    border-radius: 50%;
     opacity: 0.6;
-    margin-bottom: 8px;
+    animation: aura-drift 22s ease-in-out infinite alternate;
+    will-change: transform;
   }
-  .rg-card .rg-close { all: unset; cursor: pointer; color: var(--mono-fg); opacity: 0.7; font-size: 1.3rem; line-height: 1; padding: 2px 6px; }
-  .rg-card .rg-close:hover { color: var(--accent); opacity: 1; }
-  .rg-card .rg-cta-row { display: flex; gap: 8px; margin-top: 14px; }
-  .rg-card .rg-cta {
+  .compass-aura span:nth-child(1) { width: 60vw; height: 46vw; left: 0; top: 18svh; background: radial-gradient(closest-side, #a8dccf, rgba(168, 220, 207, 0)); }
+  .compass-aura span:nth-child(2) { width: 54vw; height: 42vw; right: -4vw; top: 8svh; background: radial-gradient(closest-side, #cbbcf4, rgba(203, 188, 244, 0)); animation-delay: -7s; }
+  .compass-aura span:nth-child(3) { width: 52vw; height: 36vw; left: 24vw; top: 46svh; background: radial-gradient(closest-side, #ffd2bd, rgba(255, 210, 189, 0)); animation-delay: -13s; }
+  @keyframes aura-drift {
+    from { transform: translate3d(-3vw, 1vw, 0) scale(1); }
+    to { transform: translate3d(3vw, -2vw, 0) scale(1.08); }
+  }
+  [data-theme="dark"] .compass-aura span { opacity: 0.18; }
+
+  .compass-count {
+    position: absolute;
+    z-index: 3;
+    top: calc(var(--dial-top) - 52px);
+    left: 50%;
+    transform: translateX(-50%);
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.72rem;
-    text-decoration: none;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+  .compass-dial {
+    --d: min(150vw, 1900px);
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    top: var(--dial-top);
+    width: var(--d);
+    height: var(--d);
+    border-radius: 50%;
+    /* frosted glass: a brighter rim band, a faint body, a crisp top edge */
+    background:
+      radial-gradient(circle, rgba(255, 255, 255, 0.16) 0 92.6%, rgba(255, 255, 255, 0.62) 93%, rgba(255, 255, 255, 0.34) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.9),
+      inset 0 0 0 1px rgba(93, 127, 134, 0.08),
+      0 -30px 80px -40px rgba(93, 127, 134, 0.35);
+    transform: translateX(-50%);
+    will-change: transform;
+  }
+  [data-theme="dark"] .compass-dial {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0 92.6%, rgba(255, 255, 255, 0.1) 93%, rgba(255, 255, 255, 0.05) 100%);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  .compass-dial svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .compass-dial line { stroke: var(--ink-soft); stroke-opacity: 0.22; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .compass-dial line.major { stroke-opacity: 0.5; }
+  .compass-name {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 0;
+    height: 50%;
+    padding: 0;
+    border: 0;
     background: none;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    padding: 7px 12px;
-    border-radius: 5px;
-  }
-  .rg-card .rg-cta:hover { background: var(--accent); color: var(--mono-bg); }
-  .rg-card .rg-cta.secondary { border-color: rgba(255,255,255,0.18); color: var(--mono-fg); opacity: 0.7; }
-  .rg-card .rg-cta.secondary:hover { border-color: var(--accent); color: var(--accent); background: none; opacity: 1; }
-
-  .rg-veil {
-    position: absolute; inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.2s ease;
-    z-index: 7;
-  }
-  .rg-veil.show { opacity: 1; pointer-events: auto; }
-
-  .rg-jump-row {
-    padding: 14px 16px 18px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--mono-fg);
-    opacity: 0.75;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .rg-jump-row span { opacity: 1; }
-  .rg-jump-btn {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    background: var(--accent);
-    border: 1px solid var(--accent);
-    color: var(--mono-bg);
-    padding: 8px 16px;
-    border-radius: 5px;
+    transform-origin: 50% 100%;
     cursor: pointer;
   }
-  .rg-jump-btn:hover { opacity: 0.88; }
-  .rg-jump-btn:active { transform: translateY(1px); }
-
-  .rg-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 4px 16px 18px;
-  }
-  .rg-legend button {
+  .compass-name span {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.7rem;
-    background: none;
-    border: 1px solid rgba(255,255,255,0.16);
-    color: var(--mono-fg);
-    padding: 6px 10px;
-    border-radius: 12px;
-    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
     opacity: 0.55;
+    transition: color 0.4s ease, opacity 0.4s ease;
   }
-  .rg-legend button.caught { color: var(--accent); border-color: var(--accent); opacity: 1; }
-  .rg-legend button:hover { opacity: 1; border-color: var(--accent); color: var(--accent); }
+  .compass-name:hover span, .compass-name.is-active span { opacity: 1; }
+  .compass-name.is-active.tag-ai span { color: #3d726b; }
+  .compass-name.is-active.tag-design span { color: #b5502f; }
+  .compass-name.is-active.tag-startup span { color: #8a3450; }
+  .compass-name.is-active.tag-community span { color: #a9822a; }
+  .compass-name:focus-visible span { outline: 1px solid var(--accent); outline-offset: 4px; }
+  .compass-needle {
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    top: calc(var(--dial-top) - 18px);
+    width: 1px;
+    height: 44px;
+    background: linear-gradient(var(--ink), rgba(28, 26, 23, 0));
+  }
+  .compass-needle::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: -3.5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ink);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.7);
+  }
+
+  .compass-cards {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    top: calc(var(--dial-top) + 92px);
+    width: 0;
+    height: 0;
+  }
+  .compass-card {
+    position: absolute;
+    left: calc(var(--card-w) / -2);
+    top: 0;
+    width: var(--card-w);
+    height: var(--card-h);
+    padding: 10px;
+    border-radius: 24px;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.4));
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 30px 60px -30px rgba(40, 60, 70, 0.35);
+    transform-origin: 50% 100%;
+    will-change: transform, opacity, filter;
+  }
+  [data-theme="dark"] .compass-card { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.16); }
+  .compass-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+  }
+  .compass-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+  .compass-meta {
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    top: calc(var(--dial-top) + 92px + var(--card-h) + 26px);
+    width: min(560px, calc(100vw - 32px));
+    transform: translateX(-50%);
+    text-align: center;
+    transition: opacity 0.25s ease, transform 0.35s ease;
+  }
+  .compass-meta.is-changing { opacity: 0; transform: translate(-50%, 6px); }
+  .compass-meta h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.35rem;
+    line-height: 1.25;
+    margin: 8px 0 6px;
+  }
+  .compass-meta p { color: var(--ink-soft); font-size: 0.95rem; }
+  .compass-cta {
+    display: inline-flex;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 6px 18px -10px rgba(40, 60, 70, 0.35);
+    color: var(--ink);
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+  .compass-cta span { transition: transform 0.25s ease; }
+  .compass-cta:hover { background: rgba(255, 255, 255, 0.8); transform: translateY(-1px); }
+  .compass-cta:hover span { transform: translateX(3px); }
 
   @media (max-width: 560px) {
-    .rg-bar { flex-wrap: wrap; gap: 8px; font-size: 0.66rem; }
-    .rg-svg-wrap svg { height: clamp(150px, 46vw, 200px); }
-    .rg-hud { top: 10px; right: 10px; font-size: 0.62rem; padding: 4px 8px; }
-    .rg-card { font-size: 0.76rem; padding: 14px 15px; }
-    .rg-card .rg-cta-row { flex-wrap: wrap; }
-    .rg-card .rg-cta { flex: 1 1 auto; text-align: center; }
-    .rg-jump-row { flex-direction: column; align-items: flex-start; gap: 10px; }
-    .rg-jump-btn { align-self: stretch; text-align: center; }
-    .rg-legend { padding: 4px 12px 16px; gap: 6px; }
-    .rg-legend button { font-size: 0.66rem; padding: 5px 9px; }
+    .compass { --dial-top: 12svh; --card-w: calc(100vw - 48px); }
+    .compass-dial { --d: 230vw; }
+    .compass-cards { top: calc(var(--dial-top) + 80px); }
+    .compass-meta { top: calc(var(--dial-top) + 80px + var(--card-h) + 22px); }
+    .compass-meta p { display: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .rg-item-wrap { animation: none !important; }
+    .compass-aura span { animation: none; }
   }
 
   /* ---------- WORK ---------- */
-  .work-entry {
-    display: grid;
-    grid-template-columns: 96px 1fr;
-    gap: 20px;
-    padding: 16px 14px;
-    margin: 0 -14px 26px;
-    border-radius: 10px;
-    transition: background 0.35s ease;
-    background: none;
-    border-width: 0;
-    width: calc(100% + 28px);
-    text-align: left;
-    cursor: pointer;
-    font-family: inherit;
-    color: var(--ink);
-  }
-
-  .work-entry:last-child { margin-bottom: 0; }
-  .work-entry:hover { background: var(--chip); }
-
-  .work-entry img {
-    width: 96px;
-    height: 96px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid var(--line);
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .work-entry:hover img {
-    transform: scale(1.06) rotate(-1deg);
-  }
-
   .work-tag {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.72rem;
@@ -526,42 +597,6 @@ const css = `
   .work-tag.tag-design { color: #b5502f; }
   .work-tag.tag-startup { color: #8a3450; }
   .work-tag.tag-community { color: #a9822a; }
-
-  .work-entry h3 {
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-top: 4px;
-    transition: color 0.25s ease, transform 0.25s ease;
-    display: inline-block;
-  }
-
-  .work-entry:hover h3 {
-    color: var(--accent);
-    transform: translateX(4px);
-  }
-
-  .work-entry p {
-    margin-top: 6px;
-    font-size: 0.92rem;
-    color: var(--ink-soft);
-  }
-
-  .work-entry .work-tag::after {
-    content: '→';
-    margin-left: 6px;
-    opacity: 0;
-    transition: opacity 0.25s, margin-left 0.25s;
-  }
-
-  .work-entry:hover .work-tag::after {
-    opacity: 1;
-    margin-left: 10px;
-  }
-
-  @media (max-width: 560px) {
-    .work-entry { grid-template-columns: 1fr; }
-    .work-entry img { width: 100%; height: auto; aspect-ratio: 16/9; }
-  }
 
   /* ---------- SECTIONS ---------- */
   section.block {
@@ -1220,36 +1255,149 @@ const css = `
   }
 `;
 
+// Selected Work compass: one stop per case study, in dial order.
+const workItems = [
+  { slug: "career-paths-platform", dial: "Career paths", tag: "HR Tech, Internal Product", tagClass: "tag-ai", img: "/work/v2/career-paths.jpg", title: "Turning a career framework into a tool people actually use", teaser: "From interviews to shipped code, designed and built end to end with AI." },
+  { slug: "narrative-landing-page", dial: "Story landing", tag: "AI SaaS, Landing Page", tagClass: "tag-ai", img: "/work/v2/story-landing.jpg", title: "Designing a landing page that doesn't tell a story, it is one", teaser: "Complete creative freedom, one hidden instruction, and a 48-hour timeframe." },
+  { slug: "warehouse-workflow-manager", dial: "Warehouse", tag: "Fashion &amp; Retail, Logistics", tagClass: "tag-design", img: "/work/v2/warehouse.jpg", title: "Bringing digital workflows into a physical environment", teaser: "Five systems, no single source of truth, manual workarounds every single day." },
+  { slug: "smart-financing-application-flow", dial: "Funding flow", tag: "Financial Technology", tagClass: "tag-startup", img: "/work/v2/funding-flow.jpg", title: "Designing a funding application flow that people could actually complete", teaser: "Multi-step, multi-document, zero guidance. Most people gave up halfway." },
+  { slug: "retail-store-management-tools", dial: "Store teams", tag: "Fashion &amp; Retail, Mobile + Desktop", tagClass: "tag-community", img: "/work/v2/store-teams.jpg", title: "Designing for global store teams with different needs and different devices", teaser: "One team, completely different needs, and devices that had nothing in common." },
+  { slug: "facility-management-platform", dial: "Facility SaaS", tag: "Facility Management, SaaS", tagClass: "tag-design", img: "/work/v2/facility-saas.jpg", title: "When powerful software becomes too complex to use", teaser: "A platform with everything, that users actively worked around." },
+];
+
+const COMPASS_STEP = 22; // degrees between two projects on the dial
+
+const compassTicks = Array.from({ length: 240 }, (_, i) =>
+  `<line x1="0" y1="-491" x2="0" y2="${i % 10 === 0 ? -474 : -484}" transform="rotate(${i * 1.5})" class="${i % 10 === 0 ? "major" : ""}" />`
+).join("");
+
+const compassHtml = `
+    <div class="compass" id="compass" style="height: ${workItems.length * 80 + 100}vh">
+      <div class="compass-stage">
+        <div class="compass-aura" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="compass-count"><span id="compass-index">01</span> / ${String(workItems.length).padStart(2, "0")}</div>
+        <div class="compass-needle" aria-hidden="true"></div>
+        <div class="compass-dial" id="compass-dial">
+          <svg viewBox="-500 -500 1000 1000" aria-hidden="true">${compassTicks}</svg>
+          ${workItems.map((w, i) => `<button type="button" class="compass-name ${w.tagClass}" data-index="${i}" style="transform: rotate(${i * COMPASS_STEP}deg)"><span>${w.dial}</span></button>`).join("")}
+        </div>
+        <div class="compass-cards" id="compass-cards">
+          ${workItems.map((w, i) => `<a class="compass-card" href="/work/${w.slug}" data-index="${i}" tabindex="${i === 0 ? 0 : -1}" aria-label="${w.title}"><img src="${w.img}" alt="" /></a>`).join("")}
+        </div>
+        <div class="compass-meta" id="compass-meta">
+          <div class="work-tag ${workItems[0].tagClass}" id="compass-tag">${workItems[0].tag}</div>
+          <h3 id="compass-title">${workItems[0].title}</h3>
+          <p id="compass-teaser">${workItems[0].teaser}</p>
+          <a class="compass-cta" id="compass-cta" href="/work/${workItems[0].slug}">Read the case study <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+`;
+
 const bodyHtml = `
 <div id="progress-bar"></div>
 <div class="theme-wave" id="theme-wave"></div>
 
-<nav class="side-nav">
-  <a href="#work" data-label="Work"></a>
-  <a href="#experience" data-label="Experience"></a>
-  <a href="#education" data-label="Education"></a>
-  <a href="#skills" data-label="Skills"></a>
-  <a href="#offduty" data-label="Off Duty"></a>
-</nav>
 
 <main>
 
-  <section class="hero">
-    <button class="hero-photo-toggle" id="theme-toggle" type="button" aria-label="Toggle night mode" aria-pressed="false" title="Click for night mode">
-      <img class="hero-photo" src="/isabella-portrait.jpg" alt="Isabella Bonora" />
-      <span class="theme-badge" aria-hidden="true">
-        <span class="icon-sun">☀</span>
-        <span class="icon-moon">☾</span>
-      </span>
-    </button>
-    <div>
-      <h1>Isabella <em>Bonora</em></h1>
-      <p class="role"><strong>Product &amp; UX Designer</strong>, bridging <span class="kw kw-design">design</span> and implementation with <span class="kw kw-ai">AI-native workflows</span> and <span class="kw kw-ai">no-code</span>.</p>
-      <div class="hero-links">
-        <a href="mailto:isabellabonora1@gmail.com">email</a>
-        <a href="https://www.linkedin.com/in/isabella-bonora/" target="_blank" rel="noopener">linkedin</a>
+<header class="topbar">
+  <a class="tb-btn" href="#top" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20h-5.5v-5h-5v5H4z"/></svg>
+  </a>
+  <button class="tb-btn" id="tb-menu" type="button" aria-expanded="false" aria-controls="tb-list" aria-label="Menu">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h14M5 15h14"/></svg>
+  </button>
+  <nav class="tb-list" id="tb-list" hidden>
+    <a href="#work"><span>01</span>Work</a>
+    <a href="#experience"><span>02</span>Experience</a>
+    <a href="#education"><span>03</span>Education</a>
+    <a href="#skills"><span>04</span>Skills</a>
+    <a href="#offduty"><span>05</span>Off duty</a>
+    <a href="mailto:isabellabonora1@gmail.com"><span>06</span>Contact ↗</a>
+  </nav>
+</header>
+
+  <section class="hero" id="top">
+    <div class="hero-hello">
+      <button class="hero-photo-toggle" id="theme-toggle" type="button" aria-label="Toggle night mode" aria-pressed="false" title="Click for night mode">
+        <img class="hero-photo" src="/isabella-portrait.jpg" alt="Isabella Bonora" />
+        <span class="theme-badge" aria-hidden="true">
+          <span class="icon-sun">☀</span>
+          <span class="icon-moon">☾</span>
+        </span>
+      </button>
+      <div>
+        <h1>Hello, I'm Isabella.</h1>
+        <p>I design products, and build them.</p>
       </div>
     </div>
+
+    <div class="hero-buddy">
+      <svg class="orb" id="orb" viewBox="-100 -100 200 200" aria-hidden="true">
+        <defs>
+          <path id="orb-shape" />
+          <clipPath id="orb-clip"><use href="#orb-shape" /></clipPath>
+          <radialGradient id="orb-glass" cx="42%" cy="38%" r="62%">
+            <stop offset="0" stop-color="#ffffff" stop-opacity="0.35" />
+            <stop offset="0.7" stop-color="#e8f1f0" stop-opacity="0.45" />
+            <stop offset="1" stop-color="#b7cfd0" stop-opacity="0.8" />
+          </radialGradient>
+          <linearGradient id="orb-edge" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ffffff" stop-opacity="0.95" />
+            <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.15" />
+            <stop offset="1" stop-color="#5d7f86" stop-opacity="0.45" />
+          </linearGradient>
+          <filter id="orb-blur-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" /></filter>
+          <filter id="orb-blur-l" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9" /></filter>
+          <filter id="orb-blur-xl" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="16" /></filter>
+        </defs>
+        <ellipse id="orb-shadow" cx="0" cy="88" rx="44" ry="6" fill="rgba(93, 127, 134, 0.22)" filter="url(#orb-blur-l)" />
+        <g id="orb-g">
+          <g clip-path="url(#orb-clip)">
+            <rect x="-100" y="-100" width="200" height="200" fill="#f4f7f6" />
+            <g filter="url(#orb-blur-xl)">
+              <circle class="orb-tint" data-k="0" r="36" fill="#a8dccf" />
+              <circle class="orb-tint" data-k="1" r="32" fill="#cbbcf4" />
+              <circle class="orb-tint" data-k="2" r="30" fill="#ffd2bd" />
+            </g>
+            <use href="#orb-shape" fill="url(#orb-glass)" />
+            <ellipse cx="6" cy="56" rx="30" ry="12" fill="#ffffff" opacity="0.7" filter="url(#orb-blur-l)" />
+            <ellipse id="orb-spec" cx="-24" cy="-32" rx="28" ry="15" fill="#fff" opacity="0.75" filter="url(#orb-blur-s)" transform="rotate(-30)" />
+            <ellipse id="orb-spec-dot" cx="-30" cy="-36" rx="10" ry="3.8" fill="#fff" transform="rotate(-30)" />
+          </g>
+          <use href="#orb-shape" fill="none" stroke="url(#orb-edge)" stroke-width="1.6" />
+          <g id="orb-eyes">
+            <g class="orb-eye" transform="translate(-15 -2)">
+              <ellipse rx="4.6" ry="6.4" fill="#1c2a2c" />
+              <circle cx="1.4" cy="-2.2" r="1.4" fill="#fff" />
+            </g>
+            <g class="orb-eye" transform="translate(15 -2)">
+              <ellipse rx="4.6" ry="6.4" fill="#1c2a2c" />
+              <circle cx="1.4" cy="-2.2" r="1.4" fill="#fff" />
+            </g>
+          </g>
+        </g>
+      </svg>
+      <p>Hi, I'm Isa's sidekick. <span>Scroll on, I'll show you around.</span></p>
+    </div>
+
+    <div class="hero-bio">
+      <p class="hero-lead">Product &amp; UX designer with a non-linear path: a startup of my own in 2020, then projects with early-stage teams, and since 2023 at CodicePlastico, from discovery to shipped code.</p>
+      <p class="hero-more">I also facilitate hackathons, speak at events and run a tech community.</p>
+      <div class="hero-ctas">
+        <a class="btn-pill" href="mailto:isabellabonora1@gmail.com">Contact</a>
+        <a class="link-arrow" href="#work">See the work <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+    <dl class="hero-stats">
+      <div><dt>Years in product</dt><dd>06</dd></div>
+      <div><dt>Case studies</dt><dd>06</dd></div>
+      <div><dt>Community members</dt><dd>90+</dd></div>
+      <div><dt>Public talks</dt><dd>03</dd></div>
+      <div><dt>Hackathons facilitated</dt><dd>02</dd></div>
+    </dl>
   </section>
 
   <div class="topic-pills">
@@ -1260,139 +1408,11 @@ const bodyHtml = `
     <button class="pill-btn pill-community" data-topic="community">Community</button>
   </div>
 
-  <a class="work-scroll-cue" href="#work">
-    See my work below <span class="arrow" aria-hidden="true">↓</span>
-  </a>
-
-  <section class="rg-stage" id="road-game">
-    <div class="rg-bar">
-      <span id="rg-state">play to discover more about me</span>
-      <button id="rg-reset">reset</button>
-    </div>
-
-    <div class="rg-svg-wrap" id="rg-svg-wrap">
-      <svg id="rg-svg" viewBox="0 0 900 260" preserveAspectRatio="xMidYMid meet">
-        <g id="rg-scenery"></g>
-        <g id="rg-ground-ticks"></g>
-
-        <g id="rg-item-wrap" class="rg-item-wrap" style="display:none;">
-          <g class="rg-icon" id="rg-icon-athletics">
-            <rect class="fill" x="-8" y="5" width="16" height="3" />
-            <rect class="fill" x="-7" y="0" width="12" height="5" />
-            <rect class="fill" x="3" y="-2" width="4" height="4" />
-          </g>
-          <g class="rg-icon" id="rg-icon-falsestart" style="display:none;">
-            <rect class="outline" x="-7" y="-2" width="14" height="11" />
-            <rect class="fill" x="-2" y="-6" width="4" height="4" />
-          </g>
-          <g class="rg-icon" id="rg-icon-economics" style="display:none;">
-            <rect class="fill" x="-7" y="1" width="3" height="8" />
-            <rect class="fill" x="-2" y="-3" width="3" height="12" />
-            <rect class="fill" x="3" y="-7" width="3" height="16" />
-          </g>
-          <g class="rg-icon" id="rg-icon-masters" style="display:none;">
-            <path class="fill" d="M -9 -1 L 0 -7 L 9 -1 L 0 4 Z" />
-            <rect class="fill" x="6" y="-1" width="1.6" height="9" />
-          </g>
-          <g class="rg-icon" id="rg-icon-startup" style="display:none;">
-            <path class="fill" d="M 0 -10 C 5 -6, 5 2, 0 8 C -5 2, -5 -6, 0 -10 Z" />
-            <path class="fill" d="M -4 4 L -8 9 L -2 7 Z" />
-            <path class="fill" d="M 4 4 L 8 9 L 2 7 Z" />
-          </g>
-          <g class="rg-icon" id="rg-icon-uxnocode" style="display:none;">
-            <rect class="outline" x="-8" y="-6" width="16" height="10" />
-            <rect class="fill" x="-9" y="4" width="18" height="2.5" />
-          </g>
-          <g class="rg-icon" id="rg-icon-product" style="display:none;">
-            <path class="rg-pizza-crust" d="M -9 -2 L 9 -2 L 0 12 Z" />
-            <circle class="rg-pizza-topping" cx="-2" cy="2" r="1.4" />
-            <circle class="rg-pizza-topping" cx="3" cy="1" r="1.4" />
-            <circle class="rg-pizza-topping" cx="0" cy="6" r="1.4" />
-          </g>
-          <g class="rg-icon" id="rg-icon-now" style="display:none;">
-            <path class="fill" d="M 0 -9 C 6 -9, 8 -3, 0 8 C -8 -3, -6 -9, 0 -9 Z" />
-            <circle class="fill-soft" cx="0" cy="-3" r="2.6" />
-          </g>
-        </g>
-
-        <g id="rg-sprite">
-          <g class="rg-sprite-scale">
-            <rect x="-5" y="-15" width="10" height="8" />
-            <rect x="-3" y="-7" width="3" height="3" id="rg-leg-a" />
-            <rect x="1" y="-7" width="3" height="3" id="rg-leg-b" />
-          </g>
-        </g>
-      </svg>
-
-      <div class="rg-hud"><strong id="rg-hud-count">0</strong>/8 caught</div>
-      <div id="rg-veil" class="rg-veil"></div>
-      <div id="rg-active-card" class="rg-card"></div>
-    </div>
-
-    <div class="rg-jump-row">
-      <span>hit space (or the button) to catch a story from my life</span>
-      <button class="rg-jump-btn" id="rg-jump-btn">jump ↑</button>
-    </div>
-
-    <div class="rg-legend" id="rg-legend"></div>
-  </section>
 
   <section class="block reveal" id="work">
     <h2>Selected Work</h2>
 
-    <button class="work-entry" data-case="careers">
-      <img src="/work/career paths-large.png" alt="Career paths internal product project" />
-      <div>
-        <div class="work-tag tag-ai">HR Tech, Internal Product</div>
-        <h3>Turning a career framework into a tool people actually use</h3>
-        <p>From interviews to shipped code, designed and built end to end with AI.</p>
-      </div>
-    </button>
-
-    <button class="work-entry" data-case="saas">
-      <img src="/work/landing-page-large.png" alt="AI SaaS landing page project" />
-      <div>
-        <div class="work-tag tag-ai">AI SaaS, Landing Page</div>
-        <h3>Designing a landing page that doesn't tell a story, it is one</h3>
-        <p>Complete creative freedom, one hidden instruction, and a 48-hour timeframe.</p>
-      </div>
-    </button>
-
-    <button class="work-entry" data-case="retail">
-      <img src="/work/digital workflow-large.png" alt="Fashion and retail logistics project" />
-      <div>
-        <div class="work-tag tag-design">Fashion &amp; Retail, Logistics</div>
-        <h3>Bringing digital workflows into a physical environment</h3>
-        <p>Five systems, no single source of truth, manual workarounds every single day.</p>
-      </div>
-    </button>
-
-    <button class="work-entry" data-case="fintech">
-      <img src="/work/funding application-large.png" alt="Fintech funding application project" />
-      <div>
-        <div class="work-tag tag-startup">Financial Technology</div>
-        <h3>Designing a funding application flow that people could actually complete</h3>
-        <p>Multi-step, multi-document, zero guidance. Most people gave up halfway.</p>
-      </div>
-    </button>
-
-    <button class="work-entry" data-case="storeteams">
-      <img src="/work/global store teams-large.png" alt="Fashion and retail mobile and desktop project" />
-      <div>
-        <div class="work-tag tag-community">Fashion &amp; Retail, Mobile + Desktop</div>
-        <h3>Designing for global store teams with different needs and different devices</h3>
-        <p>One team, completely different needs, and devices that had nothing in common.</p>
-      </div>
-    </button>
-
-    <button class="work-entry" data-case="facility">
-      <img src="/work/powerful software-large.png" alt="Facility management SaaS project" />
-      <div>
-        <div class="work-tag tag-design">Facility Management, SaaS</div>
-        <h3>When powerful software becomes too complex to use</h3>
-        <p>A platform with everything, that users actively worked around.</p>
-      </div>
-    </button>
+${compassHtml}
   </section>
 
   <section class="block reveal" id="experience">
@@ -1527,6 +1547,247 @@ const bodyHtml = `
 `;
 
 export default function Home() {
+  // The drop: a soft blob whose outline breathes, that leans toward the cursor
+  // and floats; the highlight slides the other way so it reads as a 3D surface.
+  useEffect(() => {
+    const shape = document.getElementById("orb-shape");
+    const g = document.getElementById("orb-g");
+    const shadow = document.getElementById("orb-shadow");
+    const spec = document.getElementById("orb-spec");
+    const dot = document.getElementById("orb-spec-dot");
+    const svg = document.getElementById("orb");
+    if (!shape || !g || !shadow || !spec || !dot || !svg) return;
+
+    const tints = Array.from(svg.querySelectorAll<SVGCircleElement>(".orb-tint"));
+    const eyes = svg.querySelector<SVGGElement>("#orb-eyes")!;
+    const N = 8;
+    const R = 62;
+    const lean = { x: 0, y: 0 };
+    let target = { x: 0, y: 0 };
+    let raf = 0;
+    let blinkAt = 2.5;
+
+    // closed Catmull-Rom spline through the points, as cubic Béziers
+    const toPath = (pts: { x: number; y: number }[]) => {
+      let d = `M${pts[0].x.toFixed(2)},${pts[0].y.toFixed(2)}`;
+      for (let i = 0; i < pts.length; i++) {
+        const p0 = pts[(i - 1 + pts.length) % pts.length];
+        const p1 = pts[i];
+        const p2 = pts[(i + 1) % pts.length];
+        const p3 = pts[(i + 2) % pts.length];
+        const c1x = p1.x + (p2.x - p0.x) / 6, c1y = p1.y + (p2.y - p0.y) / 6;
+        const c2x = p2.x - (p3.x - p1.x) / 6, c2y = p2.y - (p3.y - p1.y) / 6;
+        d += `C${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`;
+      }
+      return d + "Z";
+    };
+
+    const frame = (ms: number) => {
+      const t = ms / 1000;
+      lean.x += (target.x - lean.x) * 0.06;
+      lean.y += (target.y - lean.y) * 0.06;
+      const leanAngle = Math.atan2(lean.y, lean.x);
+      const leanMag = Math.min(1, Math.hypot(lean.x, lean.y));
+
+      // nearly round: a gentle breath plus a soft squash while floating
+      const float = Math.sin(t * 1.1);
+      const pts = Array.from({ length: N }, (_, i) => {
+        const a = (i / N) * Math.PI * 2;
+        const wobble = 0.018 * Math.sin(t * 0.8 + i * 1.7) + 0.01 * Math.sin(t * 1.5 + i * 2.9);
+        const pull = 0.05 * leanMag * Math.max(0, Math.cos(a - leanAngle));
+        const r = R * (1 + wobble + pull);
+        return { x: Math.cos(a) * r * (1 + float * 0.015), y: Math.sin(a) * r * (1 - float * 0.015) };
+      });
+      shape.setAttribute("d", toPath(pts));
+
+      // colour drifting inside the glass
+      tints.forEach((c, k) => {
+        const ph = t * 0.35 + k * 2.1;
+        c.setAttribute("cx", (Math.cos(ph) * 26 - lean.x * 10).toFixed(2));
+        c.setAttribute("cy", (Math.sin(ph * 1.3) * 24 - lean.y * 10).toFixed(2));
+      });
+
+      // eyes follow the cursor and blink every few seconds
+      let lid = 1;
+      if (t > blinkAt) {
+        const k = (t - blinkAt) / 0.16;
+        lid = k < 1 ? Math.abs(1 - 2 * k) * 0.9 + 0.1 : 1;
+        if (k >= 1) blinkAt = t + 2.5 + Math.random() * 3.5;
+      }
+      eyes.setAttribute("transform", `translate(${(lean.x * 12).toFixed(2)} ${(lean.y * 9).toFixed(2)}) scale(1 ${lid.toFixed(3)})`);
+
+      g.setAttribute("transform", `translate(${(lean.x * 6).toFixed(2)} ${(float * 5 + lean.y * 4).toFixed(2)})`);
+      shadow.setAttribute("rx", (44 - float * 5).toFixed(2));
+      shadow.setAttribute("opacity", (0.9 - float * 0.12).toFixed(2));
+      spec.setAttribute("transform", `translate(${(-lean.x * 8).toFixed(2)} ${(-lean.y * 8).toFixed(2)}) rotate(-30)`);
+      dot.setAttribute("transform", `translate(${(-lean.x * 10).toFixed(2)} ${(-lean.y * 10).toFixed(2)}) rotate(-30)`);
+      raf = requestAnimationFrame(frame);
+    };
+
+    const onMove = (e: PointerEvent) => {
+      const r = svg.getBoundingClientRect();
+      const dx = e.clientX - (r.left + r.width / 2);
+      const dy = e.clientY - (r.top + r.height / 2);
+      const reach = Math.max(window.innerWidth, window.innerHeight) * 0.6;
+      target = { x: dx / reach, y: dy / reach };
+    };
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      frame(0);
+      cancelAnimationFrame(raf);
+      return;
+    }
+    raf = requestAnimationFrame(frame);
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("pointermove", onMove);
+    };
+  }, []);
+
+  // Floating pill nav: the menu opens a small list of sections.
+  useEffect(() => {
+    const btn = document.getElementById("tb-menu");
+    const list = document.getElementById("tb-list");
+    if (!btn || !list) return;
+    const setOpen = (open: boolean) => {
+      list.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+    };
+    const onBtn = (e: MouseEvent) => { e.stopPropagation(); setOpen(list.hidden); };
+    const onDoc = (e: MouseEvent) => { if (!list.contains(e.target as Node)) setOpen(false); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    btn.addEventListener("click", onBtn);
+    document.addEventListener("click", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      btn.removeEventListener("click", onBtn);
+      document.removeEventListener("click", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, []);
+
+  // Selected Work compass: scroll turns the dial; the project cards ride an arc
+  // with it (active one centred and sharp, neighbours smaller and blurred).
+  // The position eases toward the scroll target so the motion stays soft.
+  useEffect(() => {
+    const host = document.getElementById("compass");
+    const dial = document.getElementById("compass-dial");
+    if (!host || !dial) return;
+    const cards = Array.from(host.querySelectorAll<HTMLAnchorElement>(".compass-card"));
+    const names = Array.from(host.querySelectorAll<HTMLButtonElement>(".compass-name"));
+    const meta = document.getElementById("compass-meta")!;
+    const cta = document.getElementById("compass-cta") as HTMLAnchorElement;
+    const tag = document.getElementById("compass-tag")!;
+    const title = document.getElementById("compass-title")!;
+    const teaser = document.getElementById("compass-teaser")!;
+    const index = document.getElementById("compass-index")!;
+    const n = workItems.length;
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let active = -1;
+    let current = 0;
+    let target = 0;
+    let raf = 0;
+    let swap = 0;
+    let idle = 0;
+    let settled = false;
+
+    const setActive = (i: number) => {
+      if (i === active) return;
+      active = i;
+      const w = workItems[i];
+      names.forEach((b, k) => b.classList.toggle("is-active", k === i));
+      cards.forEach((c, k) => { c.tabIndex = k === i ? 0 : -1; });
+      index.textContent = String(i + 1).padStart(2, "0");
+      cta.href = `/work/${w.slug}`;
+      meta.classList.add("is-changing");
+      clearTimeout(swap);
+      swap = window.setTimeout(() => {
+        tag.className = `work-tag ${w.tagClass}`;
+        tag.innerHTML = w.tag;
+        title.textContent = w.title;
+        teaser.textContent = w.teaser;
+        meta.classList.remove("is-changing");
+      }, 220);
+    };
+
+    const render = (c: number) => {
+      dial.style.transform = `translateX(-50%) rotate(${-c * COMPASS_STEP}deg)`;
+      const arc = Math.min(1100, window.innerWidth * 1.1);
+      cards.forEach((card, k) => {
+        const d = k - c;
+        const ad = Math.abs(d);
+        if (ad > 2.2) { card.style.visibility = "hidden"; return; }
+        card.style.visibility = "visible";
+        const angle = d * 28 * (Math.PI / 180);
+        const x = Math.sin(angle) * arc;
+        const y = (1 - Math.cos(angle)) * arc;
+        const scale = 1 - Math.min(ad, 2) * 0.2;
+        card.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${(d * 28).toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+        card.style.opacity = String(Math.max(0, 1 - ad * 0.5).toFixed(3));
+        card.style.filter = ad < 0.05 ? "none" : `blur(${(ad * 3).toFixed(2)}px)`;
+        card.style.zIndex = String(10 - Math.round(ad * 3));
+      });
+      setActive(Math.round(c));
+    };
+
+    const readTarget = () => {
+      const travel = host.offsetHeight - window.innerHeight;
+      const p = Math.min(1, Math.max(0, -host.getBoundingClientRect().top / travel));
+      target = p * (n - 1);
+    };
+    // once scrolling pauses, the compass settles like a magnet on the nearest project
+    const tick = () => {
+      const goal = settled ? Math.round(target) : target;
+      current += (goal - current) * (settled ? 0.08 : 0.14);
+      if (Math.abs(goal - current) < 0.001) current = goal;
+      render(current);
+      raf = current === goal ? 0 : requestAnimationFrame(tick);
+    };
+    const onScroll = () => {
+      readTarget();
+      settled = false;
+      clearTimeout(idle);
+      idle = window.setTimeout(() => { settled = true; if (!raf) raf = requestAnimationFrame(tick); }, 160);
+      if (still) { current = target; render(current); return; }
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+
+    const goTo = (i: number) => {
+      const travel = host.offsetHeight - window.innerHeight;
+      const top = host.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: top + (i / (n - 1)) * travel + 1, behavior: still ? "auto" : "smooth" });
+    };
+    const nameHandlers = names.map((b) => {
+      const handler = () => goTo(Number(b.dataset.index));
+      b.addEventListener("click", handler);
+      return { b, handler };
+    });
+    // clicking a side card turns the compass to it instead of opening it
+    const cardHandlers = cards.map((c) => {
+      const handler = (e: MouseEvent) => {
+        const k = Number(c.dataset.index);
+        if (k !== active) { e.preventDefault(); goTo(k); }
+      };
+      c.addEventListener("click", handler);
+      return { c, handler };
+    });
+
+    readTarget();
+    current = target;
+    render(current);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(swap);
+      clearTimeout(idle);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      nameHandlers.forEach(({ b, handler }) => b.removeEventListener("click", handler));
+      cardHandlers.forEach(({ c, handler }) => c.removeEventListener("click", handler));
+    };
+  }, []);
   // Cinematic scroll-scrubbed reveal: the talk photo starts blurred, desaturated and
   // slightly scaled up, then sharpens/colors/settles continuously as the section
   // crosses the viewport - tied to scroll position, not a fixed-length animation.
@@ -1565,326 +1826,6 @@ export default function Home() {
       cancelAnimationFrame(raf);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
-    };
-  }, []);
-
-  // Road game: dino-runner mechanics replacing the old terminal. The figure
-  // stays put, ground ticks scroll left (driven by the same offset as the
-  // approaching item, so direction/speed can never drift out of sync), and
-  // catching an item (space to jump) opens a card with that career stop.
-  useEffect(() => {
-    const svg = document.getElementById("rg-svg") as unknown as SVGSVGElement;
-    const svgWrap = document.getElementById("rg-svg-wrap") as HTMLElement;
-    const sprite = document.getElementById("rg-sprite") as unknown as SVGGElement;
-    const legA = document.getElementById("rg-leg-a") as unknown as SVGRectElement;
-    const legB = document.getElementById("rg-leg-b") as unknown as SVGRectElement;
-    const itemWrap = document.getElementById("rg-item-wrap") as unknown as SVGGElement;
-    const groundTicksEl = document.getElementById("rg-ground-ticks") as unknown as SVGGElement;
-    const sceneryEl = document.getElementById("rg-scenery") as unknown as SVGGElement;
-    const hudCount = document.getElementById("rg-hud-count") as HTMLElement;
-    const activeCard = document.getElementById("rg-active-card") as HTMLElement;
-    const cardVeil = document.getElementById("rg-veil") as HTMLElement;
-    const stageState = document.getElementById("rg-state") as HTMLElement;
-    const jumpBtn = document.getElementById("rg-jump-btn") as HTMLButtonElement;
-    const resetBtn = document.getElementById("rg-reset") as HTMLButtonElement;
-    const legendEl = document.getElementById("rg-legend") as HTMLElement;
-
-    const CHAR_X = 150;
-    const GROUND_Y = 200;
-    const ITEM_Y = 130; // must be airborne to reach this
-    const CATCH_RADIUS = 48;
-    const SCROLL_SPEED = 230; // px/sec, shared by ground ticks and the item so they can never drift out of sync
-    const JUMP_DURATION = 0.55; // sec
-    const JUMP_HEIGHT = 78;
-    const TICK_GAP = 24;
-    const VIEW_W = 900;
-    const SVGNS = "http://www.w3.org/2000/svg";
-
-    let worldOffset = 0;
-    const tickCount = Math.ceil(VIEW_W / TICK_GAP) + 2;
-    const ticks: SVGRectElement[] = [];
-    for (let i = 0; i < tickCount; i++) {
-      const t = document.createElementNS(SVGNS, "rect");
-      t.setAttribute("class", "rg-ground-tick");
-      t.setAttribute("y", String(GROUND_Y));
-      t.setAttribute("width", "10");
-      t.setAttribute("height", "2");
-      groundTicksEl.appendChild(t);
-      ticks.push(t);
-    }
-    function layoutTicks() {
-      const shift = ((worldOffset % TICK_GAP) + TICK_GAP) % TICK_GAP;
-      ticks.forEach((t, i) => t.setAttribute("x", String(i * TICK_GAP - shift - TICK_GAP)));
-    }
-
-    const HILL_TILE = 300, HILL_PARALLAX = 0.35;
-    const CLOUD_TILE = 260, CLOUD_PARALLAX = 0.55;
-    const hills: SVGPathElement[] = [];
-    const hillCount = Math.ceil(VIEW_W / HILL_TILE) + 2;
-    for (let i = 0; i < hillCount; i++) {
-      const h = document.createElementNS(SVGNS, "path");
-      h.setAttribute("class", "rg-hill");
-      h.setAttribute("d", "M 0 0 Q 75 -46 150 0 Q 225 -30 300 0 L 300 40 L 0 40 Z");
-      sceneryEl.appendChild(h);
-      hills.push(h);
-    }
-    const clouds: SVGGElement[] = [];
-    const cloudCount = Math.ceil(VIEW_W / CLOUD_TILE) + 2;
-    for (let i = 0; i < cloudCount; i++) {
-      const c = document.createElementNS(SVGNS, "g") as unknown as SVGGElement;
-      c.setAttribute("class", "rg-cloud");
-      c.innerHTML = '<rect x="0" y="0" width="26" height="7" rx="3.5"></rect><rect x="8" y="-5" width="16" height="7" rx="3.5"></rect>';
-      sceneryEl.appendChild(c);
-      clouds.push(c);
-    }
-    function layoutScenery() {
-      const hillShift = (((worldOffset * HILL_PARALLAX) % HILL_TILE) + HILL_TILE) % HILL_TILE;
-      hills.forEach((h, i) => {
-        h.setAttribute("transform", `translate(${i * HILL_TILE - hillShift - HILL_TILE},${GROUND_Y - 40})`);
-      });
-      const cloudShift = (((worldOffset * CLOUD_PARALLAX) % CLOUD_TILE) + CLOUD_TILE) % CLOUD_TILE;
-      clouds.forEach((c, i) => {
-        c.setAttribute("transform", `translate(${i * CLOUD_TILE - cloudShift - CLOUD_TILE},${40 + (i % 3) * 18})`);
-      });
-    }
-
-    const order = ["athletics", "falsestart", "economics", "masters", "startup", "uxnocode", "product", "now"];
-    const content: Record<string, { tag: string; period: string; text: string }> = {
-      athletics: {
-        tag: "athletics", period: "growing up in Italy",
-        text: "Born in 1997. Years of competitive athletics before I knew what a career even was. Training was the first thing that was ever fully mine.",
-      },
-      falsestart: {
-        tag: "false start", period: "2016, after high school",
-        text: "A year studying Languages for Business, then a summer working in a B&B in the middle of nowhere in Scotland, before switching direction entirely.",
-      },
-      economics: {
-        tag: "economics & business", period: "2017 to 2020",
-        text: "BSc in Business Administration, University of Brescia. The switch that actually stuck.",
-      },
-      masters: {
-        tag: "master's, milan", period: "2020 to 2022",
-        text: "MSc Management of Innovation & Entrepreneurship, University of Milan. Thesis on Lean UX in early-stage startups.",
-      },
-      startup: {
-        tag: "startup & incubator", period: "2020 to 2021",
-        text: "Co-founded Mimiroo, an edtech startup, inside a startup incubator during the Master's. This is where discovering design and development could happen in the same project changed everything after.",
-      },
-      uxnocode: {
-        tag: "ux & no-code", period: "2021 to 2023",
-        text: "A UX/UI Design Master alongside freelance work: going deep on UX research and prototyping while shipping real, working products for early-stage startups using no-code tools like Bubble.io.",
-      },
-      product: {
-        tag: "product, ux & community", period: "2023 to now",
-        text: "Working as a Product & UX Designer, leading discovery for B2B and B2C platforms. Alongside that: founded an 80+ person tech community (Digital People) in Northern Italy, facilitate startup hackathons, and give talks on UX and AI at events like Product Heroes and XPUG.",
-      },
-      now: {
-        tag: "now: europe", period: "today",
-        text: "Based wherever I happen to be in Europe at the moment. Laptop, curiosity, and a stubborn habit of showing up.",
-      },
-    };
-
-    order.forEach((id) => {
-      const btn = document.createElement("button");
-      btn.textContent = content[id].tag;
-      btn.dataset.id = id;
-      btn.addEventListener("click", () => openCard(id, true));
-      legendEl.appendChild(btn);
-    });
-
-    const caught = new Set<string>();
-    let queue = [...order];
-    let activeItemId: string | null = null;
-    let itemX = VIEW_W + 60;
-    let paused = false;
-    let jumping = false;
-    let jumpStart = 0;
-    let lastFrame: number | null = null;
-    let strideAt = 0;
-    let strideToggle = false;
-    let completionShown = false;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    function spriteY() {
-      if (!jumping) return 0;
-      const t = Math.min(1, (performance.now() - jumpStart) / (JUMP_DURATION * 1000));
-      if (t >= 1) { jumping = false; return 0; }
-      return -JUMP_HEIGHT * 4 * t * (1 - t);
-    }
-
-    function spawnNext() {
-      if (queue.length === 0) {
-        activeItemId = null;
-        itemWrap.style.display = "none";
-        stageState.textContent = "that's all of me, for now";
-        return;
-      }
-      activeItemId = queue.shift() as string;
-      itemX = VIEW_W + 60;
-      itemWrap.setAttribute("transform", `translate(${itemX},${ITEM_Y})`);
-      itemWrap.style.display = "";
-      itemWrap.querySelectorAll<SVGGElement>(".rg-icon").forEach((g) => {
-        g.style.display = g.id === "rg-icon-" + activeItemId ? "" : "none";
-      });
-      stageState.textContent = "play to discover more about me";
-    }
-
-    function burstAt(x: number, y: number) {
-      const ring = document.createElementNS(SVGNS, "circle");
-      ring.setAttribute("cx", String(x));
-      ring.setAttribute("cy", String(y));
-      ring.setAttribute("class", "rg-burst");
-      svg.appendChild(ring);
-      ring.addEventListener("animationend", () => ring.remove());
-    }
-
-    function showCompletion() {
-      completionShown = true;
-      activeCard.innerHTML =
-        '<span class="rg-tag">path complete<button class="rg-close" aria-label="close">×</button></span>'
-        + '<span class="rg-period">all 8 caught</span>'
-        + "That's the path so far, ready for what's next. If any of this looks like a fit, I'd like to hear from you."
-        + '<div class="rg-cta-row">'
-        + '<a class="rg-cta" href="mailto:isabellabonora1@gmail.com">email me</a>'
-        + '<a class="rg-cta secondary" href="https://www.linkedin.com/in/isabella-bonora/" target="_blank" rel="noopener">linkedin</a>'
-        + "</div>";
-      activeCard.classList.add("show");
-      cardVeil.classList.add("show");
-      paused = true;
-      activeCard.querySelector(".rg-close")?.addEventListener("click", closeCard);
-      cardVeil.onclick = closeCard;
-    }
-
-    function openCard(id: string, fromLegend: boolean) {
-      const c = content[id];
-      activeCard.innerHTML = '<span class="rg-tag">' + c.tag + '<button class="rg-close" aria-label="close">×</button></span>'
-        + '<span class="rg-period">' + c.period + "</span>" + c.text;
-      activeCard.classList.add("show");
-      cardVeil.classList.add("show");
-      paused = true;
-      if (!caught.has(id)) {
-        caught.add(id);
-        hudCount.textContent = String(caught.size);
-        const legendBtn = legendEl.querySelector<HTMLButtonElement>(`[data-id="${id}"]`);
-        legendBtn?.classList.add("caught");
-        if (!fromLegend) burstAt(CHAR_X, ITEM_Y);
-      }
-      activeCard.querySelector(".rg-close")?.addEventListener("click", closeCard);
-      cardVeil.onclick = closeCard;
-    }
-
-    function closeCard() {
-      activeCard.classList.remove("show");
-      cardVeil.classList.remove("show");
-      paused = false;
-      lastFrame = null;
-      if (activeItemId === null && queue.length === 0) {
-        stageState.textContent = "that's all of me, for now";
-        if (!completionShown && caught.size === order.length) {
-          setTimeout(showCompletion, 450);
-        }
-      } else if (activeItemId === null) {
-        spawnNext();
-      }
-    }
-
-    function tryJump() {
-      if (paused || jumping) return;
-      jumping = true;
-      jumpStart = performance.now();
-    }
-
-    function onKeydownSpace(e: KeyboardEvent) {
-      if (e.code !== "Space") return;
-      e.preventDefault();
-      if (activeCard.classList.contains("show")) { closeCard(); return; }
-      tryJump();
-    }
-    document.addEventListener("keydown", onKeydownSpace);
-    jumpBtn.addEventListener("click", tryJump);
-
-    function onStagePointerDown(e: PointerEvent) {
-      if ((e.target as HTMLElement).closest(".rg-card") || (e.target as HTMLElement).closest(".rg-veil")) return;
-      tryJump();
-    }
-    svgWrap.addEventListener("pointerdown", onStagePointerDown);
-
-    function onReset() {
-      caught.clear();
-      queue = [...order];
-      activeItemId = null;
-      worldOffset = 0;
-      completionShown = false;
-      hudCount.textContent = "0";
-      legendEl.querySelectorAll(".caught").forEach((b) => b.classList.remove("caught"));
-      closeCard();
-      spawnNext();
-    }
-    resetBtn.addEventListener("click", onReset);
-
-    let raf = 0;
-
-    function loop(now: number) {
-      if (lastFrame === null) lastFrame = now;
-      const dt = (now - lastFrame) / 1000;
-      lastFrame = now;
-
-      if (!paused) {
-        worldOffset += SCROLL_SPEED * dt;
-        layoutTicks();
-        layoutScenery();
-
-        if (now - strideAt > 130) { strideToggle = !strideToggle; strideAt = now; }
-        legA.setAttribute("y", strideToggle ? "-7" : "-5");
-        legB.setAttribute("y", strideToggle ? "-5" : "-7");
-
-        if (activeItemId) {
-          itemX -= SCROLL_SPEED * dt;
-          const dx = Math.abs(itemX - CHAR_X);
-          const airborne = jumping && spriteY() < -34;
-          if (dx < CATCH_RADIUS && airborne) {
-            itemWrap.style.display = "none";
-            const caughtId = activeItemId;
-            activeItemId = null;
-            openCard(caughtId, false);
-          } else if (itemX < CHAR_X - CATCH_RADIUS - 20) {
-            queue.push(activeItemId);
-            activeItemId = null;
-            itemWrap.style.display = "none";
-            setTimeout(() => { if (!paused) spawnNext(); }, 900);
-          } else {
-            const bob = Math.sin(now / 300) * 6;
-            itemWrap.setAttribute("transform", `translate(${itemX},${ITEM_Y + bob})`);
-          }
-        }
-      }
-
-      const y = spriteY();
-      sprite.setAttribute("transform", `translate(${CHAR_X},${GROUND_Y + y})`);
-
-      raf = requestAnimationFrame(loop);
-    }
-
-    layoutTicks();
-    layoutScenery();
-    spawnNext();
-    if (reducedMotion) {
-      order.forEach((id) => {
-        caught.add(id);
-        legendEl.querySelector<HTMLButtonElement>(`[data-id="${id}"]`)?.classList.add("caught");
-      });
-      hudCount.textContent = String(order.length);
-      stageState.textContent = "reduced motion: use the list below, all stops already available";
-      itemWrap.style.display = "none";
-    }
-    raf = requestAnimationFrame(loop);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      document.removeEventListener("keydown", onKeydownSpace);
-      jumpBtn.removeEventListener("click", tryJump);
-      svgWrap.removeEventListener("pointerdown", onStagePointerDown);
-      resetBtn.removeEventListener("click", onReset);
     };
   }, []);
 
@@ -2058,122 +1999,12 @@ export default function Home() {
         title: "Community",
         tagline: "Building spaces where people learn from each other, in person and consistently.",
         items: [
-          { h: "Founder, Digital People", d: "Founded and scaled a tech community of 80+ members, running monthly meetups since 2025." },
+          { h: "Founder, Digital People", d: "Founded and scaled a tech community of 90+ members, running monthly meetups since 2025." },
           { h: "Co-design workshops & facilitation", d: "Facilitating alignment sessions that turn complex ideas into clear, shared value propositions." },
         ],
       },
     };
 
-    const cases: Record<string, CaseData> = {
-      careers: {
-        tag: "HR Tech, Internal Product",
-        tagColor: "#3d726b",
-        title: "Turning a career framework into a tool people actually use",
-        role: "Product Designer + Developer, Desktop, Built with AI",
-        tagline: "A career framework that lived in spreadsheets, text files and memory. People wanted to grow, but didn't know how to prove it.",
-        gallery: ["/work/career paths-large.png", "/work/career paths-detail.png"],
-        items: [
-          { h: "The brief", d: "A 30-person software house had an official career framework, levels, competency checklists and promotion rules, but the process lived in Excel and memory. I owned it end to end, analysis, UX/UI and development with Claude Code, shipping it as a standalone module of Scrooge, the company's internal app." },
-          { h: "The problem", d: "The document described rigid scores, while promotions were really decided in conversation. The pain wasn't filling in a form, it was proving what you'd done: \"I feel like I've done it, but I can't prove it.\"" },
-        ],
-        process: [
-          { h: "Discovery: the real process", d: "Two interviews picked for contrast showed the same need underneath: orientation on one side, evidence on the other. The journal had to weigh almost nothing." },
-          { h: "Decisions written down", d: "Domain model, as-is and to-be flows, a decision doc with options for the biggest fork, and MoSCoW prioritization in a live FigJam session." },
-          { h: "Designing and building in one loop", d: "Built in the real codebase with Claude Code, mockup before code. Two rounds of usability testing, 31 issues in the second, all closed before launch." },
-        ],
-        quote: "The official document and the real process are never the same thing. Designing and building with AI collapses the loop, but only with clear rules: mockup before code, every step tested in the browser.",
-      },
-      saas: {
-        tag: "AI SaaS, Landing Page",
-        tagColor: "#3d726b",
-        title: "A landing page that doesn't tell a story, it is one",
-        role: "Product Designer, Desktop + Mobile, Brand & Conversion",
-        tagline: "Complete creative freedom, a wow effect, 48 hours, and one instruction hidden in the brief: build the page around this story.",
-        gallery: ["/work/landing-page-large.png", "/work/landing-page-detail.png"],
-        items: [
-          { h: "The brief", d: "An AI-native SaaS startup was repositioning from an internal tool into a standalone product. They needed a landing page, total creative freedom, and pointed at one hero example: a comment that becomes a paying customer, automatically." },
-          { h: "The challenge", d: "With no constraints, most landing pages converge on the same safe layout. One line in the brief, \"build the page around this story,\" was meant as content. Taking it literally as architecture became the whole project." },
-        ],
-        process: [
-          { h: "Research before pixels", d: "Mapped the company mid-pivot, its old visual identity, and the market gap between enterprise AI tools and consumer DM automation." },
-          { h: "The story as the architecture", d: "Structured the scroll itself as a five-step story, one comment becoming an order, with color used semantically: red for the alert, blue for the system acting, green for resolved." },
-          { h: "From static frames to a living page", d: "Built with an AI-assisted workflow, from structured HTML into Figma, then an animated prototype for everything a static frame can’t show." },
-        ],
-        quote: "Freedom in a brief doesn’t make work more creative, it makes everyone converge on the safe answer. The real brief is hidden in one line. The job is finding it, and defending where it takes you.",
-      },
-      retail: {
-        tag: "Fashion & Retail, Logistics",
-        tagColor: "#b5502f",
-        title: "Bringing digital workflows into a physical environment",
-        role: "UX & Product Designer, B2B Internal Tool, Supply Chain",
-        tagline: "Five systems, no single source of truth, manual workarounds every single day.",
-        gallery: ["/work/digital workflow-large.png", "/work/digital workflow-detail.png"],
-        items: [
-          { h: "The brief", d: "A global fashion brand needed a dependable system for warehouse teams to manage, execute and monitor factory loading operations across multiple countries." },
-          { h: "The problem", d: "The platform existed, the process did not. Warehouse teams relied on five disconnected systems, spreadsheets, Teams, paper forms and two legacy tools, with a 20-minute reconciliation before every shift." },
-        ],
-        process: [
-          { h: "Understanding physical reality", d: "Spent time on the warehouse floor mapping goods from unloading to staging, revealing what each of the five systems was patching for." },
-          { h: "Designing for the warehouse context", d: "Tablet-first, large touch targets for gloved hands, low-light readable, max two taps per action, no dropdowns or jargon." },
-          { h: "One source of truth", d: "Unified all five systems into a single real-time timeline shared by pickers, managers and dispatch, removing the pre-shift reconciliation entirely." },
-        ],
-        quote: "If I could go back, I’d have spent more time with night-shift workers, not just day teams, workflow patterns changed significantly after midnight.",
-      },
-      fintech: {
-        tag: "Financial Technology",
-        tagColor: "#8a3450",
-        title: "A funding application flow that people could actually complete",
-        role: "UX/UI Designer, Desktop, FinTech",
-        tagline: "Multi-step, multi-document, zero guidance, most people gave up halfway.",
-        gallery: ["/work/funding application-large.png", "/work/funding application-detail.png"],
-        items: [
-          { h: "The brief", d: "A financial intermediary connecting businesses with banks needed a guided, first-time-friendly application flow to replace a tedious, manual document process." },
-          { h: "The problem", d: "Vague instructions, scattered document requirements and zero progress indicators. The most common feedback was \"I thought I did it wrong.\"" },
-        ],
-        process: [
-          { h: "Discovery & journey mapping", d: "Mapped the end-to-end flow to find every dropout point and its underlying cause, ambiguous guidance, too many documents, no visibility into progress." },
-          { h: "Conversational flow redesign", d: "Turned the form into a sequential, dialogue-like progression, questions grouped thematically with context at each step." },
-          { h: "AI automation", d: "Added auto document population from user answers, live validation, and instant identity extraction from ID scans." },
-        ],
-        quote: "Designing high-stakes processes demands a different approach, beyond reducing friction, you have to design for the anxiety underneath it.",
-      },
-      storeteams: {
-        tag: "Fashion & Retail, Mobile + Desktop",
-        tagColor: "#a9822a",
-        title: "Designing for global store teams with different needs and different devices",
-        role: "UX/UI Designer, Mobile + Desktop, Fashion & Retail",
-        tagline: "One team, completely different needs, and devices that had nothing in common.",
-        gallery: ["/work/global store teams-large.png", "/work/global store teams-detail.png"],
-        items: [
-          { h: "The brief", d: "A global fashion brand needed two synchronized tools: a desktop platform for managers and a mobile app for store associates, working together without forcing a shared interface." },
-          { h: "The problem", d: "Managers worked in spreadsheets on weekly timelines, associates worked on the floor in two-hour windows. A unified interface would have failed one of the two groups." },
-        ],
-        process: [
-          { h: "Parallel research tracks", d: "Shadowed managers during planning and associates on the floor, surfacing sharply different mental models between the two groups." },
-          { h: "A shared data foundation", d: "Defined the data both platforms needed before designing either interface, so planning and task decisions were made once and reflected everywhere." },
-          { h: "Multilingual testing", d: "Testing across markets and languages showed icon-heavy navigation beat text labels for speed, especially under time pressure on the shop floor." },
-        ],
-        quote: "Store associates were more tech-savvy than stakeholders assumed, they just had no patience for slow, cluttered UIs. Designing for both without compromising either was the real challenge.",
-      },
-      facility: {
-        tag: "Facility Management, SaaS",
-        tagColor: "#b5502f",
-        title: "When powerful software becomes too complex to use",
-        role: "UX/UI Designer, Desktop SaaS",
-        tagline: "A platform with everything, that users actively worked around.",
-        gallery: ["/work/powerful software-large.png", "/work/powerful software-detail.png"],
-        items: [
-          { h: "The brief", d: "A facility management SaaS used by large organizations to manage buildings, maintenance and operations. Feature-rich, but users kept working around it with spreadsheets, sticky notes and WhatsApp groups." },
-          { h: "The problem", d: "Years of accumulated features, none ever removed. New users took weeks to become productive, and experienced users had memorized paths that no longer made sense." },
-        ],
-        process: [
-          { h: "Mapping what users did vs. what the system expected", d: "Task analysis of 12 common actions: only 3 matched the path the system expected, the other 9 required knowing where things lived first." },
-          { h: "Ruthless information hierarchy", d: "Card sorting with real users across departments, reorganizing the IA around what people were trying to achieve, not how the system was built." },
-          { h: "Progressive disclosure", d: "Kept every power feature, but removed them from primary navigation, surfacing advanced functionality only when needed in context." },
-        ],
-        quote: "The hardest part wasn’t designing the new experience, it was convincing stakeholders that removing visible features could increase product value.",
-      },
-    };
 
     const overlay = document.getElementById("panel-overlay") as HTMLElement;
     const panel = document.getElementById("side-panel") as HTMLElement;
@@ -2247,13 +2078,6 @@ export default function Home() {
       pillButtons.forEach((b) => b.classList.remove("active"));
     }
 
-    const workEntries = Array.from(document.querySelectorAll<HTMLButtonElement>(".work-entry"));
-    const workHandlers = workEntries.map((btn) => {
-      const handler = () => openPanel(cases[btn.dataset.case as string]);
-      btn.addEventListener("click", handler);
-      return { btn, handler };
-    });
-
     const pillHandlers = pillButtons.map((btn) => {
       const handler = () => {
         if (btn.classList.contains("active")) {
@@ -2279,7 +2103,6 @@ export default function Home() {
       themeToggle.removeEventListener("click", onThemeToggle);
       window.removeEventListener("scroll", onScroll);
       panelExpand.removeEventListener("click", onPanelExpand);
-      workHandlers.forEach(({ btn, handler }) => btn.removeEventListener("click", handler));
       pillHandlers.forEach(({ btn, handler }) => btn.removeEventListener("click", handler));
       panelCloseBtn.removeEventListener("click", closePanel);
       overlay.removeEventListener("click", closePanel);
