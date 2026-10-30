@@ -446,7 +446,7 @@ const css = `
     width: 100vw;
     margin-left: calc(50% - 50vw);
     margin-top: 8px;
-    --card-w: min(520px, 82vw, calc((100svh - 14svh - 320px) * 1.232));
+    --card-w: min(520px, 82vw, calc((100svh - 14svh - 360px) * 1.232));
     --card-h: calc(var(--card-w) / 1.232);
     --dial-top: 14svh;
   }
@@ -607,33 +607,46 @@ const css = `
     transition: opacity 0.25s ease, transform 0.35s ease;
   }
   .compass-meta.is-changing { opacity: 0; transform: translate(-50%, 6px); }
-  .compass-meta h3 {
+  /* #portfolio-root: beats the global h3 weight/tracking */
+  #portfolio-root .compass-meta h3 {
     font-family: 'Fraunces', serif;
-    font-weight: 500;
-    font-size: 1.35rem;
-    line-height: 1.25;
-    margin: 8px 0 6px;
+    font-weight: 400;
+    font-size: clamp(1.3rem, 1.6vw, 1.55rem);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 10px auto 8px;
+    max-width: 40ch;
+    text-wrap: balance;
   }
-  .compass-meta p { color: var(--ink-soft); font-size: 0.95rem; }
+  /* title and teaser always take two lines, so the button doesn't jump from project to project */
+  #portfolio-root .compass-meta h3, .compass-meta p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    min-height: calc(2lh);
+  }
+  .compass-meta p { max-width: 46ch; margin: 0 auto; color: var(--ink-soft); font-size: 0.95rem; text-wrap: balance; }
+  /* the one action on the stage: solid ink, so it reads over the glass and aura */
   .compass-cta {
     display: inline-flex;
-    gap: 8px;
-    margin-top: 14px;
-    padding: 9px 16px;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    padding: 11px 20px;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    background: rgba(255, 255, 255, 0.7);
-    box-shadow: 0 6px 18px -10px rgba(60, 40, 25, 0.35);
-    color: var(--ink);
-    font-size: 0.85rem;
+    background: var(--ink);
+    color: var(--bg);
+    box-shadow: 0 12px 26px -14px rgba(28, 26, 23, 0.6);
+    font-size: 0.86rem;
+    font-weight: 500;
     text-decoration: none;
-    transition: background 0.25s ease, transform 0.25s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
   }
   .compass-cta span { transition: transform 0.25s ease; }
-  .compass-cta:hover { background: rgba(255, 255, 255, 0.8); transform: translateY(-1px); }
-  [data-theme="dark"] .compass-cta { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.16); box-shadow: none; }
-  [data-theme="dark"] .compass-cta:hover { background: rgba(255, 255, 255, 0.12); }
+  .compass-cta:hover { transform: translateY(-1px); box-shadow: 0 16px 30px -14px rgba(28, 26, 23, 0.7); }
   .compass-cta:hover span { transform: translateX(3px); }
+  [data-theme="dark"] .compass-cta { box-shadow: none; }
 
   @media (max-width: 560px) {
     .compass { --dial-top: 12svh; --card-w: calc(100vw - 48px); }
