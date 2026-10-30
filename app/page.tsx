@@ -253,7 +253,7 @@ const css = `
     will-change: transform;
     animation: buddy-in 1.1s ease 0.35s both;
   }
-  .buddy .orb { display: block; }
+  .buddy .orb { display: block; filter: drop-shadow(0 8px 16px rgba(60, 90, 100, 0.22)); }
   @keyframes buddy-in { from { opacity: 0; } to { opacity: 1; } }
   .buddy-say {
     position: fixed;
@@ -1564,7 +1564,7 @@ ${compassHtml}
       <linearGradient id="orb-edge" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stop-color="#ffffff" stop-opacity="0.95" />
         <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.15" />
-        <stop offset="1" stop-color="#5d7f86" stop-opacity="0.45" />
+        <stop offset="1" stop-color="#5d7f86" stop-opacity="0.7" />
       </linearGradient>
       <filter id="orb-blur-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" /></filter>
       <filter id="orb-blur-l" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9" /></filter>
@@ -1575,16 +1575,16 @@ ${compassHtml}
       <g clip-path="url(#orb-clip)">
         <rect x="-100" y="-100" width="200" height="200" fill="#f4f7f6" />
         <g filter="url(#orb-blur-xl)">
-          <circle class="orb-tint" data-k="0" r="36" fill="#a8dccf" />
-          <circle class="orb-tint" data-k="1" r="32" fill="#cbbcf4" />
-          <circle class="orb-tint" data-k="2" r="30" fill="#ffd2bd" />
+          <circle class="orb-tint" data-k="0" r="42" fill="#a8dccf" />
+          <circle class="orb-tint" data-k="1" r="38" fill="#cbbcf4" />
+          <circle class="orb-tint" data-k="2" r="36" fill="#ffd2bd" />
         </g>
         <use href="#orb-shape" fill="url(#orb-glass)" />
         <ellipse cx="6" cy="56" rx="30" ry="12" fill="#ffffff" opacity="0.7" filter="url(#orb-blur-l)" />
         <ellipse id="orb-spec" cx="-24" cy="-32" rx="28" ry="15" fill="#fff" opacity="0.75" filter="url(#orb-blur-s)" transform="rotate(-30)" />
         <ellipse id="orb-spec-dot" cx="-30" cy="-36" rx="10" ry="3.8" fill="#fff" transform="rotate(-30)" />
       </g>
-      <use href="#orb-shape" fill="none" stroke="url(#orb-edge)" stroke-width="1.6" />
+      <use href="#orb-shape" fill="none" stroke="url(#orb-edge)" stroke-width="2.4" />
       <g id="orb-eyes">
         <g class="orb-eye" transform="translate(-15 -2)">
           <ellipse rx="4.6" ry="6.4" fill="#1c2a2c" />
@@ -1632,10 +1632,17 @@ export default function Home() {
 
     const tints = Array.from(svg.querySelectorAll<SVGCircleElement>(".orb-tint"));
     const eyes = svg.querySelector<SVGGElement>("#orb-eyes")!;
-    const N = 8;
+    const N = 12;
     const R = 62;
     const lean = { x: 0, y: 0 };
     let target = { x: 0, y: 0 };
+    // poking: when the cursor is over the drop, the side it touches gives way
+    // (a dent, with a bulge opposite) and a quick jiggle runs through it
+    const pointer = { x: -1e4, y: -1e4 };
+    let poke = 0;
+    let pokeAngle = 0;
+    let jiggle = 0;
+    let wasIn = false;
     let raf = 0;
     let blinkAt = 2.5;
 
@@ -1661,13 +1668,27 @@ export default function Home() {
       const leanAngle = Math.atan2(lean.y, lean.x);
       const leanMag = Math.min(1, Math.hypot(lean.x, lean.y));
 
+      // cursor position in the drawing's own units (the viewBox is 200 wide)
+      const box = svg.getBoundingClientRect();
+      const ux = ((pointer.x - (box.left + box.width / 2)) / box.width) * 200;
+      const uy = ((pointer.y - (box.top + box.height / 2)) / box.height) * 200;
+      const inside = Math.hypot(ux, uy) < R * 1.15;
+      if (inside && !wasIn) jiggle = 1;
+      wasIn = inside;
+      if (inside) pokeAngle = Math.atan2(uy, ux);
+      poke += ((inside ? 1 : 0) - poke) * 0.12;
+      jiggle *= 0.965;
+
       // nearly round: a gentle breath plus a soft squash while floating
       const float = Math.sin(t * 1.1);
       const pts = Array.from({ length: N }, (_, i) => {
         const a = (i / N) * Math.PI * 2;
         const wobble = 0.018 * Math.sin(t * 0.8 + i * 1.7) + 0.01 * Math.sin(t * 1.5 + i * 2.9);
         const pull = 0.05 * leanMag * Math.max(0, Math.cos(a - leanAngle));
-        const r = R * (1 + wobble + pull);
+        const facing = Math.cos(a - pokeAngle);
+        const dent = poke * (-0.22 * Math.max(0, facing) ** 3 + 0.07 * Math.max(0, -facing));
+        const jig = 0.08 * jiggle * Math.sin(t * 13 + i * 2.4);
+        const r = R * (1 + wobble + pull + dent + jig);
         return { x: Math.cos(a) * r * (1 + float * 0.015), y: Math.sin(a) * r * (1 - float * 0.015) };
       });
       shape.setAttribute("d", toPath(pts));
@@ -1686,6 +1707,7 @@ export default function Home() {
         lid = k < 1 ? Math.abs(1 - 2 * k) * 0.9 + 0.1 : 1;
         if (k >= 1) blinkAt = t + 2.5 + Math.random() * 3.5;
       }
+      lid *= 1 - 0.5 * poke; // squints while poked
       eyes.setAttribute("transform", `translate(${(lean.x * 12).toFixed(2)} ${(lean.y * 9).toFixed(2)}) scale(1 ${lid.toFixed(3)})`);
 
       g.setAttribute("transform", `translate(${(lean.x * 6).toFixed(2)} ${(float * 5 + lean.y * 4).toFixed(2)})`);
@@ -1697,6 +1719,8 @@ export default function Home() {
     };
 
     const onMove = (e: PointerEvent) => {
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
       const r = svg.getBoundingClientRect();
       const dx = e.clientX - (r.left + r.width / 2);
       const dy = e.clientY - (r.top + r.height / 2);
@@ -1918,11 +1942,12 @@ export default function Home() {
       work: "Isa found out at an incubator that designing and building go together. Never stopped.",
       experience: "Fun fact: Startup Geeks incubated Isa's first startup. Now Isa mentors there.",
       interstitial: "That's Isa on stage at XPUG.",
-      education: "Isa started with a year of business languages. Wrong path, quick switch.",
+      education: "Before Business Administration, Isa spent a year studying foreign languages. Wrong path, quick switch.",
       skills: "First job abroad? A guesthouse in the middle of nowhere, Scotland.",
       offduty: "Isa was racing on the track before knowing what a career was.",
     };
     const sections = Object.keys(lines).map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
+    const DOCK = 88;
     type Side = "below" | "right" | "above";
     type Target = { id: string; x: number; y: number; size: number; side: Side };
 
@@ -1935,15 +1960,15 @@ export default function Home() {
       const mid = vh * 0.45;
       const sec = sections.find((el) => { const r = el.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; }) ?? sections[0];
       const id = sec.id;
-      if (vw <= 760) return { id, x: vw - 56 - 16, y: vh - 56 - 24, size: 56, side: "above" };
+      if (vw <= 760) return { id, x: vw - 64 - 16, y: vh - 64 - 24, size: 64, side: "above" };
       if (id === "interstitial") {
         const f = sec.querySelector(".int-frame")!.getBoundingClientRect();
-        return { id, x: f.left + 28, y: f.bottom - 72 - 28, size: 72, side: "right" };
+        return { id, x: f.left + 28, y: f.bottom - DOCK - 28, size: DOCK, side: "right" };
       }
       const label = sec.querySelector(".sec-label") ?? document.querySelector(".sec-label")!;
       const l = label.getBoundingClientRect();
-      if (id === "work") return { id, x: l.left, y: vh * 0.5, size: 72, side: "below" };
-      return { id, x: l.left, y: Math.max(l.bottom, 0) + 32, size: 72, side: "below" };
+      if (id === "work") return { id, x: l.left, y: vh * 0.5, size: DOCK, side: "below" };
+      return { id, x: l.left, y: Math.max(l.bottom, 0) + 32, size: DOCK, side: "below" };
     };
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
