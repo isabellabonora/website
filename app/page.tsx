@@ -1408,7 +1408,7 @@ ${compassHtml}
         <div class="xp-main">
           <h3>Product &amp; UX Designer</h3>
           <div class="xp-org">CodicePlastico</div>
-          <p>End-to-end UX for B2B and B2C products: from co-design workshops with clients to hi-fi prototypes and developer handoff. AI is part of the daily workflow (Claude, Gemini, Figma AI), to get from requirements to something testable faster.</p>
+          <p>End-to-end UX for B2B and B2C products across 14 clients: from co-design workshops to hi-fi prototypes and developer handoff. AI is part of the daily workflow (Claude, Gemini, Figma AI), to get from requirements to something testable faster.</p>
         </div>
         <div class="work-tag tag-design">Design</div>
       </div>
@@ -1417,7 +1417,7 @@ ${compassHtml}
         <div class="xp-main">
           <h3>Product Designer &amp; No-code Builder</h3>
           <div class="xp-org">Freelance</div>
-          <p>Design and build MVPs for early-stage startups in Bubble.io, from user research to production. Long-term partner for one startup, growing its MVP into a scaled platform.</p>
+          <p>Design and build MVPs for early-stage startups (3 so far) in Bubble.io, from user research to production. Long-term partner for one of them, growing its MVP into a scaled platform.</p>
         </div>
         <div class="work-tag tag-ai">No-code</div>
       </div>
@@ -1437,7 +1437,7 @@ ${compassHtml}
         <div class="xp-main">
           <h3>Startup Mentor</h3>
           <div class="xp-org">Startup Geeks</div>
-          <p>Back at the incubator that hosted Mimiroo, now mentoring early-stage founders.</p>
+          <p>Back at the incubator that hosted Mimiroo, now mentoring early-stage founders on problem and idea validation and on scoping the MVP.</p>
         </div>
         <div class="work-tag tag-startup">Startup</div>
       </div>
@@ -1446,7 +1446,7 @@ ${compassHtml}
         <div class="xp-main">
           <h3>Hackathon Facilitator</h3>
           <div class="xp-org">Sprintaly</div>
-          <p>Two editions of a residential hackathon in Turin for under-30s, from problem framing to MVP.</p>
+          <p>Two editions of a residential hackathon in Turin for under-30s, about 170 participants in total, from problem framing to MVP.</p>
         </div>
         <div class="work-tag tag-startup">Startup</div>
       </div>
@@ -1455,7 +1455,7 @@ ${compassHtml}
         <div class="xp-main">
           <h3>Founder &amp; Community Organizer</h3>
           <div class="xp-org">Digital People</div>
-          <p>A <span class="count-up" data-target="90">0</span>+ member community for tech people in Trentino-Alto Adige. Monthly meetups, talks on AI-native design.</p>
+          <p>A <span class="count-up" data-target="90">0</span>+ member community for tech people in Trentino-Alto Adige. 7+ meetups so far, talks on AI-native design.</p>
         </div>
         <div class="work-tag tag-community">Community</div>
       </div>
