@@ -231,8 +231,8 @@ const css = `
     position: relative;
     isolation: isolate;
   }
-  /* the sidekick's tints, loose in the air around it: they drift on their own,
-     lean away from the cursor and swell a little when the drop is poked (JS) */
+  /* the sidekick's tints, loose in the air around it: they drift on their own
+     and lean away from the cursor (JS) */
   .hero-aura {
     position: absolute;
     z-index: -1;
@@ -279,7 +279,7 @@ const css = `
     will-change: transform;
     animation: buddy-in 1.1s ease 0.35s both;
   }
-  .buddy .orb { display: block; filter: drop-shadow(0 8px 16px rgba(60, 90, 100, 0.22)); }
+  .buddy .orb { display: block; }
   @keyframes buddy-in { from { opacity: 0; } to { opacity: 1; } }
   .buddy-say {
     position: fixed;
@@ -1584,21 +1584,22 @@ ${compassHtml}
       <path id="orb-shape" />
       <clipPath id="orb-clip"><use href="#orb-shape" /></clipPath>
       <radialGradient id="orb-glass" cx="42%" cy="38%" r="62%">
-        <stop offset="0" stop-color="#ffffff" stop-opacity="0.35" />
-        <stop offset="0.7" stop-color="#e8f1f0" stop-opacity="0.45" />
-        <stop offset="1" stop-color="#b7cfd0" stop-opacity="0.8" />
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.45" />
+        <stop offset="0.7" stop-color="#e8f1f0" stop-opacity="0.6" />
+        <stop offset="1" stop-color="#9fbcbf" stop-opacity="0.95" />
       </radialGradient>
       <linearGradient id="orb-edge" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stop-color="#ffffff" stop-opacity="0.95" />
         <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.15" />
-        <stop offset="1" stop-color="#5d7f86" stop-opacity="0.7" />
+        <stop offset="1" stop-color="#4a6b72" stop-opacity="0.9" />
       </linearGradient>
       <filter id="orb-blur-s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" /></filter>
-      <filter id="orb-blur-l" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9" /></filter>
+      <filter id="orb-blur-l" x="-60%" y="-300%" width="220%" height="700%"><feGaussianBlur stdDeviation="9" /></filter>
       <filter id="orb-blur-xl" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="16" /></filter>
+      <filter id="orb-lift" x="-40%" y="-40%" width="180%" height="190%"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#32565d" flood-opacity="0.3" /></filter>
     </defs>
     <ellipse id="orb-shadow" cx="0" cy="88" rx="44" ry="6" fill="rgba(93, 127, 134, 0.22)" filter="url(#orb-blur-l)" />
-    <g id="orb-g">
+    <g id="orb-g" filter="url(#orb-lift)">
       <g clip-path="url(#orb-clip)">
         <rect x="-100" y="-100" width="200" height="200" fill="#f4f7f6" />
         <g filter="url(#orb-blur-xl)">
@@ -1660,17 +1661,10 @@ export default function Home() {
     const tints = Array.from(svg.querySelectorAll<SVGCircleElement>(".orb-tint"));
     const eyes = svg.querySelector<SVGGElement>("#orb-eyes")!;
     const aura = document.getElementById("hero-aura");
-    const N = 18;
+    const N = 8;
     const R = 62;
     const lean = { x: 0, y: 0 };
     let target = { x: 0, y: 0 };
-    // poking: only the spot under the cursor gives way, a shallow local dent
-    // that quivers for a moment when touched; the rest of the drop stays put
-    const pointer = { x: -1e4, y: -1e4 };
-    let poke = 0;
-    let pokeAngle = 0;
-    let jiggle = 0;
-    let wasIn = false;
     let raf = 0;
     let blinkAt = 2.5;
 
@@ -1696,17 +1690,6 @@ export default function Home() {
       const leanAngle = Math.atan2(lean.y, lean.x);
       const leanMag = Math.min(1, Math.hypot(lean.x, lean.y));
 
-      // cursor position in the drawing's own units (the viewBox is 200 wide)
-      const box = svg.getBoundingClientRect();
-      const ux = ((pointer.x - (box.left + box.width / 2)) / box.width) * 200;
-      const uy = ((pointer.y - (box.top + box.height / 2)) / box.height) * 200;
-      const inside = Math.hypot(ux, uy) < R * 1.15;
-      if (inside && !wasIn) jiggle = 1;
-      wasIn = inside;
-      if (inside) pokeAngle = Math.atan2(uy, ux);
-      poke += ((inside ? 1 : 0) - poke) * 0.12;
-      jiggle *= 0.965;
-
       // nearly round: a gentle breath plus a soft squash while floating
       const float = Math.sin(t * 1.1);
       const pts = Array.from({ length: N }, (_, i) => {
@@ -1714,9 +1697,7 @@ export default function Home() {
         // low harmonics of the angle, so the outline stays smooth however many points it has
         const wobble = 0.018 * Math.sin(t * 0.8 + a * 2) + 0.01 * Math.sin(t * 1.5 + a * 3 + 1.3);
         const pull = 0.05 * leanMag * Math.max(0, Math.cos(a - leanAngle));
-        const near = Math.max(0, Math.cos(a - pokeAngle)) ** 10; // 1 under the cursor, 0 a little way off
-        const dent = -near * (0.1 * poke + 0.03 * jiggle * Math.sin(t * 12));
-        const r = R * (1 + wobble + pull + dent);
+        const r = R * (1 + wobble + pull);
         return { x: Math.cos(a) * r * (1 + float * 0.015), y: Math.sin(a) * r * (1 - float * 0.015) };
       });
       shape.setAttribute("d", toPath(pts));
@@ -1735,8 +1716,7 @@ export default function Home() {
         lid = k < 1 ? Math.abs(1 - 2 * k) * 0.9 + 0.1 : 1;
         if (k >= 1) blinkAt = t + 2.5 + Math.random() * 3.5;
       }
-      lid *= 1 - 0.2 * poke; // a slight squint while poked
-      aura?.style.setProperty("transform", `translate(${(-lean.x * 60).toFixed(1)}px, ${(-lean.y * 40).toFixed(1)}px) scale(${(1 + poke * 0.08).toFixed(3)})`);
+      aura?.style.setProperty("transform", `translate(${(-lean.x * 60).toFixed(1)}px, ${(-lean.y * 40).toFixed(1)}px)`);
       eyes.setAttribute("transform", `translate(${(lean.x * 12).toFixed(2)} ${(lean.y * 9).toFixed(2)}) scale(1 ${lid.toFixed(3)})`);
 
       g.setAttribute("transform", `translate(${(lean.x * 6).toFixed(2)} ${(float * 5 + lean.y * 4).toFixed(2)})`);
@@ -1748,8 +1728,6 @@ export default function Home() {
     };
 
     const onMove = (e: PointerEvent) => {
-      pointer.x = e.clientX;
-      pointer.y = e.clientY;
       const r = svg.getBoundingClientRect();
       const dx = e.clientX - (r.left + r.width / 2);
       const dy = e.clientY - (r.top + r.height / 2);
