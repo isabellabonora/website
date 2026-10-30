@@ -675,11 +675,14 @@ const css = `
   [data-theme="dark"] .compass-cta { box-shadow: none; }
 
   @media (max-width: 560px) {
-    .compass { --dial-top: 12svh; --card-w: calc(100vw - 48px); }
+    /* dial starts below the floating nav, so the count isn't hidden behind it;
+       the card gives up width on short phones to leave room for a 3-line title */
+    .compass { --dial-top: max(15svh, 120px); --card-w: min(calc(100vw - 48px), calc((100svh - max(15svh, 120px) - 360px) * 1.232)); }
     .compass-dial { --d: 230vw; }
     .compass-cards { top: calc(var(--dial-top) + 80px); }
     .compass-meta { top: calc(var(--dial-top) + 80px + var(--card-h) + 22px); }
     .compass-meta p { display: none; }
+    #portfolio-root .compass-meta h3 { -webkit-line-clamp: 3; min-height: calc(3lh); }
   }
 
   @media (prefers-reduced-motion: reduce) {
