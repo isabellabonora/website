@@ -279,6 +279,9 @@ const css = `
     will-change: transform;
     animation: buddy-in 1.1s ease 0.35s both;
   }
+  /* where it has something to say, tapping it opens and closes the line */
+  .buddy.talks { pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .buddy:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 50%; }
   .buddy .orb { display: block; }
   @keyframes buddy-in { from { opacity: 0; } to { opacity: 1; } }
   .buddy-say {
@@ -1579,7 +1582,7 @@ ${compassHtml}
   </section>
 </main>
 
-<div class="buddy" id="buddy">
+<div class="buddy" id="buddy" role="button" tabindex="-1" aria-label="Isa's sidekick: tap to hear what it says">
   <svg class="orb" id="orb" viewBox="-100 -100 200 200" aria-hidden="true">
     <defs>
       <path id="orb-shape" />
@@ -1957,7 +1960,7 @@ export default function Home() {
     const sections = Object.keys(lines).map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
     const DOCK = 88;
     type Side = "below" | "right" | "above";
-    type Target = { id: string; x: number; y: number; size: number; side: Side; quiet?: boolean };
+    type Target = { id: string; x: number; y: number; size: number; side: Side; brief?: boolean };
 
     const target = (): Target => {
       const vw = window.innerWidth, vh = window.innerHeight;
@@ -1968,11 +1971,11 @@ export default function Home() {
       const mid = vh * 0.45;
       const sec = sections.find((el) => { const r = el.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; }) ?? sections[0];
       const id = sec.id;
-      // phones: a corner, out of the way; over the compass it shrinks and keeps quiet,
-      // since the case-study button sits right there
+      // phones: a corner, out of the way; over the compass it shrinks and speaks only
+      // briefly, since the case-study button sits right there
       if (vw <= 760) {
         const size = id === "work" ? 48 : 64;
-        return { id, x: vw - size - 16, y: vh - size - 24, size, side: "above", quiet: id === "work" };
+        return { id, x: vw - size - 16, y: vh - size - 24, size, side: "above", brief: id === "work" };
       }
       if (id === "interstitial") {
         const f = sec.querySelector(".int-frame")!.getBoundingClientRect();
@@ -2013,12 +2016,15 @@ export default function Home() {
         say.classList.remove("on");
         clearTimeout(sayTimer);
         const text = lines[t.id];
-        if (text && !t.quiet) {
+        buddy.classList.toggle("talks", !!text);
+        buddy.tabIndex = text ? 0 : -1;
+        if (text) {
           sayTimer = window.setTimeout(() => {
             say.textContent = text;
             say.classList.add("on");
-            // on phones the line is a passing remark: it fades so it never sits on the content
-            if (window.innerWidth <= 760) sayTimer = window.setTimeout(() => say.classList.remove("on"), 4000);
+            // on phones the line is a passing remark: it fades so it never sits on the
+            // content (sooner over the compass); tapping the drop brings it back
+            if (window.innerWidth <= 760) sayTimer = window.setTimeout(() => say.classList.remove("on"), t.brief ? 2500 : 4000);
           }, 450);
         }
       }
@@ -2031,8 +2037,24 @@ export default function Home() {
 
       raf = requestAnimationFrame(frame);
     };
+    // tap (or Enter/Space) toggles the current line
+    const toggleSay = () => {
+      const text = lines[shown];
+      if (!text) return;
+      clearTimeout(sayTimer);
+      say.textContent = text;
+      say.classList.toggle("on");
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleSay(); }
+    };
+    buddy.addEventListener("click", toggleSay);
+    buddy.addEventListener("keydown", onKey);
+
     raf = requestAnimationFrame(frame);
     return () => {
+      buddy.removeEventListener("click", toggleSay);
+      buddy.removeEventListener("keydown", onKey);
       cancelAnimationFrame(raf);
       clearTimeout(sayTimer);
     };
