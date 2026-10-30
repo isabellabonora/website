@@ -1340,6 +1340,15 @@ const bodyHtml = `
   <section class="block reveal" id="work">
     <h2>Selected Work</h2>
 
+    <button class="work-entry" data-case="careers">
+      <img src="/work/career paths-large.png" alt="Career paths internal product project" />
+      <div>
+        <div class="work-tag tag-ai">HR Tech, Internal Product</div>
+        <h3>Turning a career framework into a tool people actually use</h3>
+        <p>From interviews to shipped code, designed and built end to end with AI.</p>
+      </div>
+    </button>
+
     <button class="work-entry" data-case="saas">
       <img src="/work/landing-page-large.png" alt="AI SaaS landing page project" />
       <div>
@@ -2056,6 +2065,24 @@ export default function Home() {
     };
 
     const cases: Record<string, CaseData> = {
+      careers: {
+        tag: "HR Tech, Internal Product",
+        tagColor: "#3d726b",
+        title: "Turning a career framework into a tool people actually use",
+        role: "Product Designer + Developer, Desktop, Built with AI",
+        tagline: "A career framework that lived in spreadsheets, text files and memory. People wanted to grow, but didn't know how to prove it.",
+        gallery: ["/work/career paths-large.png", "/work/career paths-detail.png"],
+        items: [
+          { h: "The brief", d: "A 30-person software house had an official career framework, levels, competency checklists and promotion rules, but the process lived in Excel and memory. I owned it end to end, analysis, UX/UI and development with Claude Code, shipping it as a standalone module of Scrooge, the company's internal app." },
+          { h: "The problem", d: "The document described rigid scores, while promotions were really decided in conversation. The pain wasn't filling in a form, it was proving what you'd done: \"I feel like I've done it, but I can't prove it.\"" },
+        ],
+        process: [
+          { h: "Discovery: the real process", d: "Two interviews picked for contrast showed the same need underneath: orientation on one side, evidence on the other. The journal had to weigh almost nothing." },
+          { h: "Decisions written down", d: "Domain model, as-is and to-be flows, a decision doc with options for the biggest fork, and MoSCoW prioritization in a live FigJam session." },
+          { h: "Designing and building in one loop", d: "Built in the real codebase with Claude Code, mockup before code. Two rounds of usability testing, 31 issues in the second, all closed before launch." },
+        ],
+        quote: "The official document and the real process are never the same thing. Designing and building with AI collapses the loop, but only with clear rules: mockup before code, every step tested in the browser.",
+      },
       saas: {
         tag: "AI SaaS, Landing Page",
         tagColor: "#3d726b",

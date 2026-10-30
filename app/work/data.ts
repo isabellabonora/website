@@ -27,8 +27,51 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "narrative-landing-page",
+    slug: "career-paths-platform",
     num: "01",
+    sector: "HR Tech · Internal Product",
+    title: "Turning a career framework into a tool people actually use",
+    tags: ["Product Designer + Developer", "Desktop", "Built with AI"],
+    heroQuote: "A career framework that lived in spreadsheets, text files and memory. People wanted to grow, but didn't know how to prove it.",
+    teaser: "From interviews to shipped code, designed and built end to end with AI.",
+    heroImage: "/work/career paths-large.png",
+    brief: {
+      text: "A 30-person software house had an official career framework: levels from Junior to Team Leader, a competency checklist for each one, soft skills and promotion rules. In practice the process lived in Excel, text files and memory. People who wanted to grow didn't know how to show it, and the founders had no overview of the team. I owned the project end to end, functional analysis, UX/UI design and development with Claude Code, shipping it as a standalone module that opens from Scrooge, the company's internal app. It was designed separate on purpose: Scrooge itself is next in line for a redesign, and the module will be folded into it then.",
+      tags: ["Product discovery", "Design to code", "AI-assisted development"],
+      stat: "1 person, from interviews to production",
+    },
+    challenge: {
+      heading: "The document and the real process didn't match.",
+      text: "The framework described rigid thresholds and scores. Interviews told a different story: promotions were decided together, in a conversation. And the real pain wasn't filling in a form, it was proving what you'd done. Connecting everyday work to a line in a checklist was the hard part. That moved the goal from calculating progress to helping people show their value.",
+      stat1: { value: "\"I feel like I've done it, but I can't prove it\"", label: "developer, user interview" },
+      stat2: { value: "Guide, don't constrain", label: "the principle behind every decision" },
+    },
+    process: [
+      {
+        heading: "Discovery: the real process, not the written one",
+        body: "I ran two interviews picked for contrast: someone on the administrative track and a developer. One wanted orientation, \"you are here, this is where you can go\". The other wanted objective evidence. Underneath, it was the same need: help me give value to what I do, don't just record it. Both already kept a lightweight log, one in Excel, one in a dated text file, so the journal had to weigh almost nothing and let everyone write their own way.",
+      },
+      {
+        heading: "Decisions written down, options on the table",
+        body: "I modeled the domain and the as-is and to-be flows, then wrote a decision doc for the biggest fork: how a person reaches the right checklist. I recommended self-selection over an automatic questionnaire, because the risk of misclassifying people was high and the real branches were only two. Requirements were prioritized with MoSCoW in a live FigJam session, consciously leaving peer endorsements and salary ranges out of the first release. A design log tracked every decision with its context and status, so I could revisit my own assumptions without losing the thread.",
+      },
+      {
+        heading: "Designing and building in the same loop",
+        body: "I built the module in the real codebase (Elixir, React, PostgreSQL) with Claude Code, under one rule: mockup first, then code, and every step tested in the browser. Usability tests with four colleagues from different tracks were triaged by confidence and type, and conflicting feedback went to the founders as options, not compromises. The review became a guided three-step wizard, and a second test round surfaced 31 issues, all closed before launch.",
+      },
+    ],
+    screensImage: "/work/career paths-detail.png",
+    screensPoints: [
+      "A lightweight journal that links everyday work to checklist items with a single @mention",
+      "A career map with three clear states and a guided three-step review",
+      "Live across the company, with a documented design system and principles reused in every screen",
+    ],
+    reflection: "The official document and the real process are never the same thing. Interviews moved the goal from calculating progress to helping people prove their value. Designing and building as one person, with AI, collapses the loop between idea, mockup, code and test, but only with clear rules: mockup before code, and every step tested in the browser.",
+    color: "rgba(90,75,200,",
+  },
+  {
+    slug: "narrative-landing-page",
+    num: "02",
     sector: "AI SaaS · Landing Page",
     title: "Designing a landing page that doesn't tell a story. It is one",
     tags: ["Product Designer", "Desktop + Mobile", "Brand & Conversion"],
@@ -71,7 +114,7 @@ export const projects: Project[] = [
   },
   {
     slug: "warehouse-workflow-manager",
-    num: "02",
+    num: "03",
     sector: "Fashion & Retail · Logistics",
     title: "Bringing digital workflows into a physical environment",
     tags: ["UX/UI Design", "Supply chain", "B2B Internal Tool"],
@@ -113,7 +156,7 @@ export const projects: Project[] = [
   },
   {
     slug: "smart-financing-application-flow",
-    num: "03",
+    num: "04",
     sector: "Financial Technology",
     title: "Designing a funding application flow that people could actually complete",
     tags: ["UX/UI Designer", "Desktop", "FinTech"],
@@ -155,7 +198,7 @@ export const projects: Project[] = [
   },
   {
     slug: "retail-store-management-tools",
-    num: "04",
+    num: "05",
     sector: "Fashion & Retail · Mobile + Desktop",
     title: "Designing for global store teams with different needs and different devices",
     tags: ["UX/UI Design", "Desktop+Mobile", "Global teams"],
@@ -197,7 +240,7 @@ export const projects: Project[] = [
   },
   {
     slug: "facility-management-platform",
-    num: "05",
+    num: "06",
     sector: "Facility Management · SaaS",
     title: "When powerful software becomes too complex to use",
     tags: ["UX/UI Designer", "Desktop", "SaaS"],
